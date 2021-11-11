@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/ic_launcher_background.xml" value="0.31979166666666664" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/ic_login_bk.xml" value="0.31979166666666664" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/login_shape_bk.xml" value="0.31979166666666664" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout-w1240dp/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout-w936dp/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/activity_login.xml" value="0.1" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/blanktest.xml" value="0.14910130718954248" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/home_page.xml" value="0.4528302049755674" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/layout_login.xml" value="0.2859960552268245" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/layout_register.xml" value="0.33727810650887574" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster.xml" value="0.22" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/title_page.xml" value="0.30364583333333334" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
