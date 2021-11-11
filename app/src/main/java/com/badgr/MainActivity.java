@@ -18,13 +18,13 @@ public class MainActivity extends Activity {
 
 
 
-    public void loginClick() {
+    public void loginClick(View view) {
         Intent login = new Intent(this, LoginActivity.class);
         startActivity(login);
     }
 
 
-    public void registerClick() {
+    public void registerClick(View view) {
         Intent register = new Intent(this, RegisterActivity.class);
         startActivity(register);
     }

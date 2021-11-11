@@ -21,7 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textColor="@color/black"
-        android:text="Sign in" />
+        android:text="Sign in"
+        android:onClick="loginClick"/>
 
     <Button
         android:id="@+id/btnNewUser"
@@ -29,6 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textColor="@color/black"
-        android:text="Register New User" />
+        android:text="Register New User"
+        android:onClick="registerClick"/>
 
 </LinearLayout>
