@@ -3,24 +3,20 @@ package com.badgr.ui.login;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
@@ -31,6 +27,7 @@ import com.badgr.ui.login.LoginViewModel;
 import com.badgr.ui.login.LoginViewModelFactory;
 import com.badgr.databinding.ActivityLoginBinding;
 import com.badgr.sql.sqlRunner;
+import com.badgr.ui.register.RegisterActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -39,16 +36,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        com.badgr.databinding.ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());                                                              //sets activityLayout
+        setContentView(R.layout.activity_login);                                                              //sets activityLayout
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText usernameEditText = binding.username;
-        final EditText passwordEditText = binding.password;
-        final Button loginButton = binding.login;
+        final EditText usernameEditText = findViewById(R.id.username);
+        final EditText passwordEditText = findViewById(R.id.password);
+        final Button loginButton = findViewById(R.id.login);
 
 
         //sees if text-boxes changed
@@ -118,6 +113,9 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
     private void updateUiWithUser(@NonNull LoggedInUserView model) {
         String welcome = (getString(R.string.welcome) + " " + model.getDisplayName() + "!");
         // TODO : initiate successful logged in experience
@@ -131,9 +129,14 @@ public class LoginActivity extends AppCompatActivity {
         Intent open = new Intent(this, scoutmasterPage.class);
         startActivity(open);
     }
+
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
 
 
+    public void viewRegisterClicked(View view) {
+        Intent openRegister = new Intent(this, RegisterActivity.class);
+        startActivity(openRegister);
+    }
 }
