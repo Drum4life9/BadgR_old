@@ -1,6 +1,6 @@
 package com.badgr.data;
 
-import com.badgr.scoutClasses.scoutMaster;
+import com.badgr.scoutClasses.scoutPerson;
 
 /**
  * Class that requests authentication and user information from the remote data source and
@@ -14,7 +14,7 @@ public class LoginRepository {
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
-    private scoutMaster user = null;
+    private scoutPerson user = null;
 
     // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
@@ -37,17 +37,17 @@ public class LoginRepository {
         dataSource.logout();
     }
 
-    private void setLoggedInUser(scoutMaster user) {
+    private void setLoggedInUser(scoutPerson user) {
         this.user = user;
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<scoutMaster> login(String username, String password) {
+    public Result<scoutPerson> login(String username, String password) {
         // handle login
-        Result<scoutMaster> result = dataSource.login(username, password);
+        Result<scoutPerson> result = (Result<scoutPerson>) dataSource.login(username, password);
         if (result instanceof Result.Success) {
-            setLoggedInUser(((Result.Success<scoutMaster>) result).getData());
+            setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         }
         return result;
     }

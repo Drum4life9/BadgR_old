@@ -8,9 +8,8 @@ import android.util.Patterns;
 
 import com.badgr.data.LoginRepository;
 import com.badgr.data.Result;
-import com.badgr.data.model.LoggedInUser;
+import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.R;
-import com.badgr.scoutClasses.scoutMaster;
 
 public class LoginViewModel extends ViewModel {
 
@@ -32,11 +31,11 @@ public class LoginViewModel extends ViewModel {
 
     public void login(String username, String password) {
         // can be launched in a separate asynchronous job
-        Result<scoutMaster> result = loginRepository.login(username, password);
+        //TODO figure out this connection
+        Result<scoutPerson> result = loginRepository.login(username, password);
 
         if (result instanceof Result.Success) {
-            scoutMaster data = ((Result.Success<scoutMaster>) result).getData();
-            loginResult.setValue(new LoginResult(new LoggedInUserView(data.getFName())));
+            loginResult.setValue(new LoginResult(new scoutPerson()));
         } else {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }
@@ -68,6 +67,6 @@ public class LoginViewModel extends ViewModel {
     // A placeholder password validation check
     //TODO password stuff
     private boolean isPasswordValid(String password) {
-        return password != null && password.trim().length() > 5;
+        return password != null && password.length() > 5;
     }
 }

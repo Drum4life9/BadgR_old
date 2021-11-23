@@ -1,13 +1,14 @@
 package com.badgr.ui.login;
 
 import androidx.annotation.Nullable;
+import com.badgr.scoutClasses.scoutPerson;
 
 /**
  * Authentication result : success (user details) or error message.
  */
 class LoginResult {
     @Nullable
-    private LoggedInUserView success;
+    private scoutPerson success;
     @Nullable
     private Integer error;
 
@@ -15,12 +16,12 @@ class LoginResult {
         this.error = error;
     }
 
-    LoginResult(@Nullable LoggedInUserView success) {
+    LoginResult(@Nullable scoutPerson success) {
         this.success = success;
     }
 
     @Nullable
-    LoggedInUserView getSuccess() {
+    scoutPerson getSuccess() {
         return success;
     }
 

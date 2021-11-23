@@ -108,16 +108,14 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         });
 
-        loginButton.setOnClickListener(v -> {
-            loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-        });
+        loginButton.setOnClickListener(v -> loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString()));
     }
 
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
-    private void updateUiWithUser(@NonNull LoggedInUserView model) {
-        String welcome = (getString(R.string.welcome) + " " + model.getDisplayName() + "!");
+    private void updateUiWithUser(@NonNull scoutPerson p) {
+        String welcome = (getString(R.string.welcome) + " " + p.getFName() + "!");
         // TODO : initiate successful logged in experience
 
         openApp();
