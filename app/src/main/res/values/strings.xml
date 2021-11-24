@@ -17,5 +17,9 @@
     <string name="login_password_hint">Password</string>
     <string name="signup_login_hint">Already have an account? Sign In</string>
     <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="troop">Troop #</string>
+    <string name="submit">Submit</string>
+    <string name="age">Age</string>
+    <string name="first_name">First Name</string>
 
 </resources>

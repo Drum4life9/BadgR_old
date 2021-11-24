@@ -27,19 +27,19 @@
 
             <EditText
                 style="@style/parent"
-                android:id="@+id/fName"
+                android:id="@+id/registerFName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:hint="First Name"
+                android:hint="@string/first_name"
                 android:inputType="text"
                 android:maxLines="1" />
 
             <EditText
-                style="@style/parent"
+                android:id="@+id/registerLName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -53,8 +53,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
+
             <EditText
-                style="@style/parent"
+                android:id="@+id/registerUser"
+                android:layout_width="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_height="match_parent"
                 android:inputType="textEmailAddress"
@@ -65,22 +67,52 @@
                 android:paddingEnd="20dp"/>
 
             <EditText
-                style="@style/parent"
+                android:id="@+id/registerPass"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:hint="@string/login_password_hint"
                 android:maxLines="1"
                 android:layout_weight="1"
                 android:inputType="textPassword"/>
-    </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/registerAge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/age"
+                android:inputType="number"
+                />
+
+            <EditText
+                android:id="@+id/registerTroop"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/troop"
+                android:inputType="number"
+                />
+        </LinearLayout>
 
         <Button
-            style="@style/loginButton"
+            android:id="@+id/registerButton"
             android:layout_height="match_parent"
-            android:id="@+id/button"
-            android:textColor="@color/black"
-            android:layout_gravity="center"
-            android:text="Submit" />
+            style="@style/loginButton"
+            android:enabled="false"
+            android:drawable="@drawable/change_color"
+            android:drawableTint="@drawable/change_back_color"
+            android:text="@string/submit"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            android:onClick="successRegister"/>
 
         <TextView
             style="@style/parent"

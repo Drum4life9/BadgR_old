@@ -51,9 +51,9 @@ public class LoginActivity extends AppCompatActivity {
             if (loginFormState == null) {                                                                   //return null if blank login form
                 return;
             }
-            loginButton.setEnabled(loginFormState.isDataValid());
+            loginButton.setEnabled(loginFormState.isDataValid());                                           //sets button enabled
             if (loginFormState.getUsernameError() != null) {
-                usernameEditText.setError(getString(loginFormState.getUsernameError()));                   //changes & enables submit button
+                usernameEditText.setError(getString(loginFormState.getUsernameError()));                   //sets error messages for text boxes
             }
             if (loginFormState.getPasswordError() != null) {
                 passwordEditText.setError(getString(loginFormState.getPasswordError()));
@@ -114,12 +114,12 @@ public class LoginActivity extends AppCompatActivity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
+
     private void updateUiWithUser(@NonNull scoutPerson p) {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + "!");
         // TODO : initiate successful logged in experience
 
         openApp();
-        //sqlRunner.addUser(new scoutPerson());
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_SHORT).show();
     }
 

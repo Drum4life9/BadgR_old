@@ -12,7 +12,7 @@ public class LoginDataSource {
     public Object login(String username, String password) {
 
         try {
-            // TODO: handle loggedInUser authentication
+            // TODO: handle loggedInUser authentication, SEARCH SQL DATABASE HERE
                 scoutPerson masTest = new scoutPerson("Bill", "Henning", 45, 39, username, password);
             return new Result.Success<>(masTest);
         } catch (Exception e) {

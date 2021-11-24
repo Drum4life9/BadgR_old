@@ -34,9 +34,7 @@ public class LoginViewModel extends ViewModel {
         //TODO figure out this connection
         Result<scoutPerson> result = loginRepository.login(username, password);
 
-        if (result instanceof Result.Success) {
-            loginResult.setValue(new LoginResult(new scoutPerson()));
-        } else {
+        if (!(result instanceof Result.Success)) {
             loginResult.setValue(new LoginResult(R.string.login_failed));
         }
     }
