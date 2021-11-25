@@ -112,7 +112,7 @@
             android:text="@string/submit"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/loginViewsMargin"
-            android:onClick="successRegister"/>
+            android:onClick="attemptRegister"/>
 
         <TextView
             style="@style/parent"
