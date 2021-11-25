@@ -12,7 +12,7 @@ public class sqlRunner {
     private final static String strd = "', '";                                                              //divider string is easier to call than type out
     private final static String intd = ", ";
 
-    public static AtomicBoolean addUser(scoutPerson p) {
+    public static void addUser(scoutPerson p) {
 
         AtomicBoolean success = new AtomicBoolean(false);
         String url = "jdbc:mysql://192.168.1.39:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true";
@@ -27,16 +27,13 @@ public class sqlRunner {
                             p.getAge() + intd + p.isSM() + intd +  p.getTroop() + "); " +
                             "INSERT INTO `users`.`troop` VALUES (" + p.getTroop() + ", last_insert_id(), " + p.isSM() + ");";
                     stmt.executeUpdate(addStmt);
-                    success.set(true);
                 } catch (SQLException ignored) {
                 }
-            } catch (SQLException e) {
-                success.set(false);
+            } catch (SQLException ignored) {
 
             }
         });
 
         add.start();
-        return success;
     }
 }

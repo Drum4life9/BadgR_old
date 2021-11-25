@@ -10,7 +10,7 @@ public class RegisterViewModel extends ViewModel {
 
 
     public static boolean registerDataChanged(String fName, String lName, String user, String pass, String age, String troop) {
-        return isNameValid(fName, lName) && isUserNameValid(user) && isPasswordValid(pass) && isAgeValid(Integer.parseInt(age)) && isTroopValid(Integer.parseInt(troop));
+        return isNameValid(fName, lName) && isUserNameValid(user) && isPasswordValid(pass) && isAgeValid(age) && isTroopValid(troop);
     }
 
     private static boolean isUserNameValid(String username) {
@@ -29,15 +29,32 @@ public class RegisterViewModel extends ViewModel {
             if (specialChar.contains(c)) {validSC = true;}
             if (Character.isUpperCase(c.charAt(0))) {validUP = true;}
         }
-        return password.length() > 8 && validSC && validUP;
+
+        return password.length() >= 8 && validSC && validUP;
     }
 
-    private static boolean isAgeValid(int a) {
-        return a > 0 && a < 120;
+    private static boolean isAgeValid(String a) {
+        int age;
+        try {
+            age = Integer.parseInt(a);
+        }
+        catch (NumberFormatException e)
+        {
+            age = 0;
+        }
+        return age > 0 && age <= 120;
     }
 
-    private static boolean isTroopValid(int t) {
-        return t > 0 && t <= 9999;
+    private static boolean isTroopValid(String t) {
+        int troop;
+        try {
+            troop = Integer.parseInt(t);
+        }
+        catch (NumberFormatException e)
+        {
+            troop = 0;
+        }
+        return troop > 0 && troop <= 9999;
     }
 
     private static boolean isNameValid(String fn, String ln) {

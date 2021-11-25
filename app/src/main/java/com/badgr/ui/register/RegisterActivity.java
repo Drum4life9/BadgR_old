@@ -79,13 +79,10 @@ public class RegisterActivity extends Activity {
         p.setAge(ageEdit.getText().toString());
         p.setTroop(troopEdit.getText().toString());
 
-        if (sqlRunner.addUser(p).get()) {
-            Intent oLogin = new Intent(this, LoginActivity.class);
-            startActivity(oLogin);
-        }
-        else {
-            Toast.makeText(this, "An Error occurred. Please try again.", Toast.LENGTH_LONG).show();
-        }
+        sqlRunner.addUser(p);
+        //TODO LOGIN USER HERE
+        Intent oLogin = new Intent(this, LoginActivity.class);
+        startActivity(oLogin);
 
     }
 
