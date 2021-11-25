@@ -10,7 +10,8 @@ public class RegisterViewModel extends ViewModel {
 
 
     public static boolean registerDataChanged(String fName, String lName, String user, String pass, String age, String troop) {
-        return isNameValid(fName, lName) && isUserNameValid(user) && isPasswordValid(pass) && isAgeValid(age) && isTroopValid(troop);
+        return isNameValid(fName, lName) && isUserNameValid(user) && isAgeValid(age) && isTroopValid(troop) &&
+                passNumberValid(pass) && passLengthValid(pass) && passUpperValid(pass);
     }
 
     private static boolean isUserNameValid(String username) {
@@ -21,17 +22,37 @@ public class RegisterViewModel extends ViewModel {
 
     }
 
+    public static boolean passUpperValid(String p) {
+        for (int i = 0; i < p.length(); i++) {
+            if (Character.isUpperCase(p.charAt(i))) {return true;}
+        }
+        return false;
+    }
+
+    public static boolean passNumberValid(String p) {
+        for (int i = 0; i < p.length(); i++) {
+            if (Character.isDigit(p.charAt(i))) {return true;}
+        }
+        return false;
+    }
+
+    public static boolean passLengthValid(String p) {
+        return p.length() >= 8;
+    }
+
+    /**
     private static boolean isPasswordValid(String password) {
-        String specialChar = "@#$%&?";
+        //String specialChar = "@#$%&?";
         boolean validSC = false, validUP = false;
         for (int i = 0; i < password.length(); i++) {
             String c = password.substring(i, i + 1);
-            if (specialChar.contains(c)) {validSC = true;}
+            //if (specialChar.contains(c)) {validSC = true;}
             if (Character.isUpperCase(c.charAt(0))) {validUP = true;}
         }
 
-        return password.length() >= 8 && validSC && validUP;
+        return password.length() >= 8 && validUP; //validSC
     }
+     **/
 
     private static boolean isAgeValid(String a) {
         int age;
@@ -40,7 +61,7 @@ public class RegisterViewModel extends ViewModel {
         }
         catch (NumberFormatException e)
         {
-            age = 0;
+            age = -1;
         }
         return age > 0 && age <= 120;
     }
@@ -52,7 +73,7 @@ public class RegisterViewModel extends ViewModel {
         }
         catch (NumberFormatException e)
         {
-            troop = 0;
+            troop = -1;
         }
         return troop > 0 && troop <= 9999;
     }

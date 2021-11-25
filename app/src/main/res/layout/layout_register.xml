@@ -62,7 +62,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:layout_weight="1"
-                android:hint="@string/login_email_hint"
+                android:hint="Email"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"/>
 
@@ -101,6 +101,51 @@
                 android:inputType="number"
                 />
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:id="@+id/blank"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_centerHorizontal="true"
+                />
+
+
+            <TextView
+                android:id="@+id/lengthCheck"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#FF0000"
+                android:text="@string/passwordChars"
+                android:layout_toEndOf="@id/blank"/>
+
+            <TextView
+                android:id="@+id/numberCheck"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#FF0000"
+                android:text="@string/numberString"
+                android:layout_toEndOf="@id/blank"
+                android:layout_below="@id/lengthCheck"/>
+
+
+            <TextView
+                android:id="@+id/capitalCheck"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:textColor="#FF0000"
+                android:text="@string/password_must_contain_a_capital_letter"
+                android:layout_toEndOf="@id/blank"
+                android:layout_below="@id/numberCheck"/>
+
+
+        </RelativeLayout>
+
+
+
 
         <Button
             android:id="@+id/registerButton"
