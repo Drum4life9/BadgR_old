@@ -19,72 +19,24 @@ public class sqlRunner {
         String username = "AppRunner";
         String password = "AppRunner1";
 
-        Thread passwordAdd = new Thread(() -> {
+        Thread add = new Thread(() -> {
             try (Connection c = DriverManager.getConnection(url, username, password)) {
                 try (Statement stmt = c.createStatement()) {
-                    String addPass = "INSERT INTO `users`.`userpass` VALUES (userPassID, '" + p.getPass() + "'); " +
+                    String addStmt = "INSERT INTO `users`.`userpass` VALUES (userPassID, '" + p.getPass() + "'); " +
                             "INSERT INTO `users`.`users` VALUES (userID, '" + p.getFName() + strd + p.getLName() + strd + p.getUser() + "', last_insert_id(), " +
                             p.getAge() + intd + p.isSM() + intd +  p.getTroop() + "); " +
                             "INSERT INTO `users`.`troop` VALUES (" + p.getTroop() + ", last_insert_id(), " + p.isSM() + ");";
-                    System.out.println(addPass);
-                    stmt.executeUpdate(addPass);
+                    stmt.executeUpdate(addStmt);
                     success.set(true);
                 } catch (SQLException ignored) {
-                    ignored.printStackTrace();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
                 success.set(false);
 
             }
         });
 
-        passwordAdd.start();
+        add.start();
         return success;
-/**
-  "INSERT INTO userpass VALUES (userPassID, '" + p.getPass() + "');" + "\n" +
-                      "INSERT INTO users (`userID`, `firstName`, `lastName`, `username`, `age`, `isScoutmaster`, `UserPassID`, `troop`) " +
-                              "VALUES (userID, '" + p.getFName() + strd + p.getLName() + strd + p.getUser() + "', " +
-                              p.getAge() + intd + p.isSM() + intd + "last_insert_id(), " + p.getTroop() + ");" + "\n" +
-                              "INSERT INTO troop VALUES (" + p.getTroop() + ", last_insert_id(), " + p.isSM() + ");";
- **/
-        /**
-        Thread userAdd = new Thread(() -> {
-            try (Connection c = DriverManager.getConnection(url, username, password)) {
-                try (Statement stmt = c.createStatement()) {
-                    System.out.println("attempt add user");
-                    String addUser = "INSERT INTO user VALUES (userID, '" + p.getFName() + strd + p.getLName() + strd + p.getUser() + "', userPassID, " +
-                            p.getAge() + intd + p.isSM() + intd + "last_insert_id(), " + p.getTroop() + ");";
-                    stmt.executeUpdate(addUser);
-                } catch (SQLException ignored) {
-                    System.out.println("User error");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-        userAdd.start();
-        userAdd.interrupt();
-        userAdd = null;
-
-        Thread troopAdd = new Thread(() -> {
-            try (Connection c = DriverManager.getConnection(url, username, password)) {
-                try (Statement stmt = c.createStatement()) {
-                    System.out.println("attempt add troop");
-                    String addTroop = "INSERT INTO troop values (" + p.getTroop() + ", last_insert_id(), " + p.isSM() + ");";
-                    stmt.executeUpdate(addTroop);
-                } catch (SQLException ignored) {
-                    System.out.println("troop error");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
-
-        troopAdd.start();
-        troopAdd.interrupt();
-        troopAdd = null;
-        **/
     }
 }
