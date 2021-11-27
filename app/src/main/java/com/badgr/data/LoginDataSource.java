@@ -13,7 +13,9 @@ public class LoginDataSource {
 
         try {
             // TODO: handle loggedInUser authentication, SEARCH SQL DATABASE HERE
-                scoutPerson masTest = new scoutPerson("Bill", "Henning", username, password,  45, 39, true);
+
+
+            scoutPerson masTest = new scoutPerson("Bill", "Henning", username, password,  45, 39, true);
             return new Result.Success<>(masTest);
         } catch (Exception e) {
             return new Result.Error(new IOException("Error logging in", e));

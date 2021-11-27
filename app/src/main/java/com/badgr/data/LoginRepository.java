@@ -16,7 +16,6 @@ public class LoginRepository {
     // @see https://developer.android.com/training/articles/keystore
     private scoutPerson user = null;
 
-    // private constructor : singleton access
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
     }
@@ -44,7 +43,8 @@ public class LoginRepository {
     }
 
     public Result<scoutPerson> login(String username, String password) {
-        // handle login
+        //handles login
+        //TODO Stuff here
         Result<scoutPerson> result = (Result<scoutPerson>) dataSource.login(username, password);
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());

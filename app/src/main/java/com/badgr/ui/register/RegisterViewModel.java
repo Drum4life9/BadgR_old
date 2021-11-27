@@ -8,12 +8,13 @@ import android.util.Patterns;
 
 public class RegisterViewModel extends ViewModel {
 
-
+    //uses class's checks to return whether the register info is valid
     public static boolean registerDataChanged(String fName, String lName, String user, String pass, String age, String troop) {
         return isNameValid(fName, lName) && isUserNameValid(user) && isAgeValid(age) && isTroopValid(troop) &&
                 passNumberValid(pass) && passLengthValid(pass) && passUpperValid(pass);
     }
 
+    //checks whether the username is formatted like an email correctly
     private static boolean isUserNameValid(String username) {
         if (username == null) {
             return false;
@@ -22,6 +23,7 @@ public class RegisterViewModel extends ViewModel {
 
     }
 
+    //checks if there is an uppercase letter in the password
     public static boolean passUpperValid(String p) {
         for (int i = 0; i < p.length(); i++) {
             if (Character.isUpperCase(p.charAt(i))) {return true;}
@@ -29,6 +31,7 @@ public class RegisterViewModel extends ViewModel {
         return false;
     }
 
+    //checks if there is a number in the password
     public static boolean passNumberValid(String p) {
         for (int i = 0; i < p.length(); i++) {
             if (Character.isDigit(p.charAt(i))) {return true;}
@@ -36,24 +39,12 @@ public class RegisterViewModel extends ViewModel {
         return false;
     }
 
+    //checks if password.length() >= 8 chars
     public static boolean passLengthValid(String p) {
         return p.length() >= 8;
     }
 
-    /**
-    private static boolean isPasswordValid(String password) {
-        //String specialChar = "@#$%&?";
-        boolean validSC = false, validUP = false;
-        for (int i = 0; i < password.length(); i++) {
-            String c = password.substring(i, i + 1);
-            //if (specialChar.contains(c)) {validSC = true;}
-            if (Character.isUpperCase(c.charAt(0))) {validUP = true;}
-        }
-
-        return password.length() >= 8 && validUP; //validSC
-    }
-     **/
-
+    //checks if 0 < age <= 120
     private static boolean isAgeValid(String a) {
         int age;
         try {
@@ -66,6 +57,7 @@ public class RegisterViewModel extends ViewModel {
         return age > 0 && age <= 120;
     }
 
+    //checks if  0 < troop <= 9999
     private static boolean isTroopValid(String t) {
         int troop;
         try {
@@ -78,7 +70,9 @@ public class RegisterViewModel extends ViewModel {
         return troop > 0 && troop <= 9999;
     }
 
+    //checks name has no numbers and exists
     private static boolean isNameValid(String fn, String ln) {
+        if (fn.equals("") || ln.equals("")) {return false;}
         String name = fn + " " + ln;
         for (int i = 0; i < name.length(); i++)
         {

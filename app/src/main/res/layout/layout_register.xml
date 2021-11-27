@@ -142,6 +142,14 @@
                 android:layout_below="@id/numberCheck"/>
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                android:text="@string/userExists"
+                android:id="@+id/userExists"
+                android:textSize="20sp"
+                />
         </RelativeLayout>
 
 

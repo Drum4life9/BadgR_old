@@ -111,6 +111,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(v -> loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString()));
     }
 
+    //Changes orientation successfully
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
@@ -131,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
     private void showLoginFailed(@StringRes Integer errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
     }
-
 
     public void viewRegisterClicked(View view) {
         Intent openRegister = new Intent(this, RegisterActivity.class);
