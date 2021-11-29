@@ -17,11 +17,6 @@ import android.widget.Toast;
 import java.util.concurrent.*;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
 
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
@@ -29,10 +24,6 @@ import com.badgr.sql.sqlRunner;
 
 import com.badgr.R;
 import com.badgr.ui.login.LoginActivity;
-import com.badgr.ui.login.LoginResult;
-import com.badgr.ui.login.LoginViewModel;
-import com.badgr.ui.login.LoginViewModelFactory;
-import com.badgr.appPages.scoutmasterPage;
 
 
 public class RegisterActivity extends Activity {
@@ -83,7 +74,7 @@ public class RegisterActivity extends Activity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (!RegisterViewModel.isFNameValid(fNameEdit.getText().toString()))
-                        fNameEdit.setError("Invalid Fisrt Name");
+                        fNameEdit.setError("Invalid First Name");
                     regButton.setEnabled(update());
                 }
 
@@ -296,15 +287,6 @@ public class RegisterActivity extends Activity {
 
     }
 
-    public void updateUiWithUser(scoutPerson p)
-    {
-        //TODO add nuances here
-        Intent oLogin = new Intent(this, scoutmasterPage.class);
-        startActivity(oLogin);
-        String welcome = (getString(R.string.welcome) + " " + p.getFName() + " "+ p.getLName() + "!");
-        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
-    }
-
     //checks to see if email is already in database using the sqlRunner class method userInDatabase
     private boolean checkUsernameExists() {
         userEdit = findViewById(R.id.registerUser);
@@ -343,14 +325,8 @@ public class RegisterActivity extends Activity {
         startActivity(oLogin);
     }
 
-    public void openLoginAppError()
-    {
-        Toast.makeText(this, "There was an error logging in. Please log in from the login page.", Toast.LENGTH_LONG).show();
-        Intent oLogin = new Intent(this, LoginActivity.class);
-        startActivity(oLogin);
-    }
 
-    //TODO FIX THISSS!!!!!!!
+    //TODO FIX THIS!!!!!!!
     private void toggleVis()
     {
         loading = findViewById(R.id.loadingScreen);

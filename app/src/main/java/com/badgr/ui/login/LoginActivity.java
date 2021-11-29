@@ -3,8 +3,7 @@ package com.badgr.ui.login;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
+
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.res.Configuration;
@@ -43,9 +42,9 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText usernameEditText = (EditText) findViewById(R.id.username);
-        final EditText passwordEditText = (EditText) findViewById(R.id.password);
-        final Button loginButton = (Button) findViewById(R.id.login);
+        final EditText usernameEditText = findViewById(R.id.username);
+        final EditText passwordEditText = findViewById(R.id.password);
+        final Button loginButton = findViewById(R.id.login);
 
 
         loginViewModel.getLoginResult().observe(this, loginResult -> {
@@ -107,9 +106,7 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         });
 
-        loginButton.setOnClickListener(v -> {
-            loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-        });
+        loginButton.setOnClickListener(v -> loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString()));
     }
 
     //Changes orientation successfully
@@ -132,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_LONG).show();
-        EditText pass = (EditText) findViewById(R.id.password);
+        EditText pass = findViewById(R.id.password);
         pass.setText("");
 
     }
