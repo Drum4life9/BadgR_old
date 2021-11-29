@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     style="@style/loginCard"
     app:cardCornerRadius="@dimen/loginCardRadius"
-    android:elevation="5dp"
+    android:elevation="20dp"
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
@@ -26,7 +29,6 @@
             android:orientation="horizontal">
 
             <EditText
-                style="@style/parent"
                 android:id="@+id/registerFName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -36,7 +38,8 @@
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:hint="@string/first_name"
                 android:inputType="text"
-                android:maxLines="1" />
+                android:maxLines="1"
+                android:autofillHints="First name" />
 
             <EditText
                 android:id="@+id/registerLName"
@@ -140,16 +143,6 @@
                 android:text="@string/password_must_contain_a_capital_letter"
                 android:layout_toEndOf="@id/blank"
                 android:layout_below="@id/numberCheck"/>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="invisible"
-                android:text="@string/userExists"
-                android:id="@+id/userExists"
-                android:textSize="20sp"
-                />
         </RelativeLayout>
 
 
@@ -173,10 +166,38 @@
             android:textAlignment="center"
             android:textStyle="bold"
             android:textColor="@color/primaryTextColor"
-            android:outlineSpotShadowColor="@color/white"
             android:text="@string/signup_login_hint"
             android:onClick="openLoginApp"
-            android:layout_marginTop="@dimen/loginViewsMargin"/>
+            android:layout_marginTop="@dimen/loginViewsMargin"
+            tools:ignore="UsingOnClickInXml" />
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/loadingScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".9"
+        android:visibility="invisible"
+        android:background="@color/grey">
+
+        <ProgressBar
+            android:id="@+id/progress_loader"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleX="4"
+            android:scaleY="4"/>
+        <TextView
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Loading"
+            android:textColor="@color/white"
+            android:scaleY="2"
+            android:scaleX="2"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+
 </androidx.cardview.widget.CardView>

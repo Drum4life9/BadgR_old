@@ -25,5 +25,6 @@
     <string name="numberString">Password must contain at least 1 number</string>
     <string name="passwordChars">Password must be at least 8 characters</string>
     <string name="userExists">Username already exists</string>
+    <string name="Loading">LOADING, PLEASE WAIT</string>
 
 </resources>

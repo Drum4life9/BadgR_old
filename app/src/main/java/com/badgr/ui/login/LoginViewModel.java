@@ -4,17 +4,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import android.util.Patterns;
-
 import com.badgr.data.LoginRepository;
 import com.badgr.data.Result;
-import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.R;
 
 public class LoginViewModel extends ViewModel {
 
     private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
-    private MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
+    public MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
@@ -25,39 +21,19 @@ public class LoginViewModel extends ViewModel {
         return loginFormState;
     }
 
-    LiveData<LoginResult> getLoginResult() {
+    public LiveData<LoginResult> getLoginResult() {
         return loginResult;
     }
 
     public void login(String username, String password) {
         //Links to loginRepository, tries to log in user
-        Result<scoutPerson> result = loginRepository.login(username, password);
+        Result result = loginRepository.login(username, password);
 
-
+        //if the result is a not a success, set error message with the return from result, that will display to screen
         if (!(result instanceof Result.Success)) {
-            loginResult.setValue(new LoginResult(R.string.login_failed));
+            loginResult.setValue(new LoginResult(result.toString()));
         }
-    }
+        else loginResult.setValue(new LoginResult(LoginRepository.getUser()));
 
-    //is called when text is edited on the login screen
-    public void loginDataChanged(String username, String password) {
-        if (!isUserNameValid(username)) {
-            loginFormState.setValue(new LoginFormState(R.string.invalid_username, null));
-        } else {
-            loginFormState.setValue(new LoginFormState(true));
-        }
     }
-
-    //checks to see if username is valid
-    private boolean isUserNameValid(String username) {
-        if (username == null) {
-            return false;
-        }
-        if (username.contains("@")) {
-            return Patterns.EMAIL_ADDRESS.matcher(username).matches();
-        } else {
-            return !username.trim().isEmpty();
-        }
-    }
-
 }

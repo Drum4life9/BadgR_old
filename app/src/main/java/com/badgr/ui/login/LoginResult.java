@@ -4,15 +4,15 @@ import androidx.annotation.Nullable;
 import com.badgr.scoutClasses.scoutPerson;
 
 /**
- * Authentication result : success (user details) or error message.
+ * Authentication result : success (scoutPerson) or error message.
  */
-class LoginResult {
+public class LoginResult {
     @Nullable
     private scoutPerson success;
     @Nullable
-    private Integer error;
+    private String error;
 
-    LoginResult(@Nullable Integer error) {
+    LoginResult(@Nullable String error) {
         this.error = error;
     }
 
@@ -21,12 +21,12 @@ class LoginResult {
     }
 
     @Nullable
-    scoutPerson getSuccess() {
+    public scoutPerson getSuccess() {
         return success;
     }
 
     @Nullable
-    Integer getError() {
+    public String getError() {
         return error;
     }
 }

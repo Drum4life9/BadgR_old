@@ -10,11 +10,17 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.concurrent.*;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 
 import com.badgr.scoutClasses.scoutPerson;
@@ -23,12 +29,15 @@ import com.badgr.sql.sqlRunner;
 
 import com.badgr.R;
 import com.badgr.ui.login.LoginActivity;
-
-import java.util.concurrent.TimeUnit;
+import com.badgr.ui.login.LoginResult;
+import com.badgr.ui.login.LoginViewModel;
+import com.badgr.ui.login.LoginViewModelFactory;
+import com.badgr.appPages.scoutmasterPage;
 
 
 public class RegisterActivity extends Activity {
 
+    //---------------------------------------------Class Fields-------------------------------------//
 
     private EditText fNameEdit;
     private EditText lNameEdit;
@@ -41,9 +50,11 @@ public class RegisterActivity extends Activity {
     private TextView passLength;
     private TextView passCapital;
     private TextView passNumber;
+    private FrameLayout loading;
 
     private boolean usernameCheckSuccess = false;
     private boolean userInDB = false;
+
 
     @Override
     public void onCreate(Bundle SIS) {
@@ -52,17 +63,18 @@ public class RegisterActivity extends Activity {
 
         //sets texts and buttons from layout
         {
-            fNameEdit = (EditText) findViewById(R.id.registerFName);
-            lNameEdit = (EditText) findViewById(R.id.registerLName);
-            userEdit = (EditText) findViewById(R.id.registerUser);
-            passEdit = (EditText) findViewById(R.id.registerPass);
-            ageEdit = (EditText) findViewById(R.id.registerAge);
-            troopEdit = (EditText) findViewById(R.id.registerTroop);
-            regButton = (Button) findViewById(R.id.registerButton);
+            fNameEdit = findViewById(R.id.registerFName);
+            lNameEdit = findViewById(R.id.registerLName);
+            userEdit = findViewById(R.id.registerUser);
+            passEdit = findViewById(R.id.registerPass);
+            ageEdit = findViewById(R.id.registerAge);
+            troopEdit = findViewById(R.id.registerTroop);
+            regButton = findViewById(R.id.registerButton);
 
-            passLength = (TextView) findViewById(R.id.lengthCheck);
-            passCapital = (TextView) findViewById(R.id.capitalCheck);
-            passNumber = (TextView) findViewById(R.id.numberCheck);
+            passLength = findViewById(R.id.lengthCheck);
+            passCapital = findViewById(R.id.capitalCheck);
+            passNumber = findViewById(R.id.numberCheck);
+            loading = findViewById(R.id.loadingScreen);
         }
 
         //adds textChangeListeners to items, tries to update button whenever text is changed
@@ -70,6 +82,8 @@ public class RegisterActivity extends Activity {
             fNameEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (!RegisterViewModel.isFNameValid(fNameEdit.getText().toString()))
+                        fNameEdit.setError("Invalid Fisrt Name");
                     regButton.setEnabled(update());
                 }
 
@@ -79,12 +93,16 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!RegisterViewModel.isFNameValid(fNameEdit.getText().toString()))
+                        fNameEdit.setError("Invalid First Name");
                     regButton.setEnabled(update());
                 }
             });
             lNameEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (!RegisterViewModel.isFNameValid(lNameEdit.getText().toString()))
+                        lNameEdit.setError("Invalid Last Name");
                     regButton.setEnabled(update());
                 }
 
@@ -94,12 +112,16 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!RegisterViewModel.isFNameValid(lNameEdit.getText().toString()))
+                        lNameEdit.setError("Invalid Last Name");
                     regButton.setEnabled(update());
                 }
             });
             userEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
+                        userEdit.setError("Invalid username");
                     regButton.setEnabled(update());
                 }
 
@@ -109,10 +131,12 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
+                        userEdit.setError("Invalid username");
                     regButton.setEnabled(update());
                 }
             });
-        passEdit.addTextChangedListener(new TextWatcher() {
+            passEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                     regButton.setEnabled(update());
@@ -142,9 +166,11 @@ public class RegisterActivity extends Activity {
 
                 }
             });
-        ageEdit.addTextChangedListener(new TextWatcher() {
+            ageEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (!RegisterViewModel.isAgeValid(ageEdit.getText().toString()))
+                        ageEdit.setError("Age must be <= 120 and > 0");
                     regButton.setEnabled(update());
                 }
 
@@ -154,12 +180,16 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!RegisterViewModel.isAgeValid(ageEdit.getText().toString()))
+                        ageEdit.setError("Age must be <= 120 and > 0");
                     regButton.setEnabled(update());
                 }
             });
-        troopEdit.addTextChangedListener(new TextWatcher() {
+            troopEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
+                    if (!RegisterViewModel.isTroopValid(troopEdit.getText().toString()))
+                        troopEdit.setError("Troop must be <= 9999 and > 0");
                     regButton.setEnabled(update());
                 }
 
@@ -169,30 +199,14 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if (!RegisterViewModel.isTroopValid(troopEdit.getText().toString()))
+                        troopEdit.setError("Troop must be <= 9999 and > 0");
                     regButton.setEnabled(update());
                 }
             });
         }
-
-
     }
 
-
-    /**
-     * Tries to run the text checks located in RegisterViewModel to update the submit button status
-     *
-     * @return if text checks are true, so the regButton.setEnabled(update()) returns true
-     */
-    private boolean update() {
-        return RegisterViewModel.registerDataChanged(
-                fNameEdit.getText().toString(),
-                lNameEdit.getText().toString(),
-                userEdit.getText().toString(),
-                passEdit.getText().toString(),
-                ageEdit.getText().toString(),
-                troopEdit.getText().toString());
-
-    }
 
     /**
      * Creates a new scoutPerson p and uses it to add user to database
@@ -200,6 +214,10 @@ public class RegisterActivity extends Activity {
      * @param v needed for android:onClick
      */
     public void attemptRegister(View v) {
+
+        //-------------------------------------------------Toggles Loading Screen Layout Over Register Page-----------------------------//
+
+        toggleVis();
 
         //creates a new scoutPerson with the given info
         scoutPerson p = new scoutPerson();
@@ -212,8 +230,8 @@ public class RegisterActivity extends Activity {
         p.setTroop(troopEdit.getText().toString());
 
 
-        //TODO loading screen?
 
+        //-------------------------------------------Username check----------------------------------------//
 
         //if username exists
         if (checkUsernameExists())
@@ -221,15 +239,20 @@ public class RegisterActivity extends Activity {
             if (usernameCheckSuccess)
             {
                 //display toast that username exists
+                toggleVis();
                 Toast.makeText(this, "Username already exists. Please try a different email.", Toast.LENGTH_LONG).show();
             }
             else
             {
-                //hopefully shoud never run, but error message in case of username check failure
+                //hopefully should never run, but error message in case of username check failure
+                toggleVis();
                 Toast.makeText(this, "There was an error checking username. Please try again.", Toast.LENGTH_LONG).show();
             }
             return;
         }
+
+
+        //---------------------------------------------Add User Attempt------------------------------------//
 
         //Sets a countDownLatch, which ensures this thread is run before anything else happens
         CountDownLatch cDL = new CountDownLatch(1);
@@ -248,59 +271,43 @@ public class RegisterActivity extends Activity {
         try {
             cDL.await();
         } catch (InterruptedException e) {
+            toggleVis();
             Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
 
         //if error, kill method and tell user to try again
         if (!sqlRunner.getRegisterSuccess()) {
+            toggleVis();
             Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             return;
         }
 
 
-        //creates yet another countDownLatch
-        CountDownLatch authCDL = new CountDownLatch(1);
+        //---------------------------------------------Open Login page-------------------------------------//
 
-        //thread to authenticate the user
-        Thread authUser = new Thread(() -> {
-            sqlRunner.authUser(p.getUser(), p.getPass());
-            authCDL.countDown();
+        toggleVis();
 
-        });
-
-
-        authUser.start();
-        //waits until previous thread has completed to move on
-        try {
-            cDL.await();
-        } catch (InterruptedException ignored) {
-        }
-
-
-
-        //if authentication was not successful, Toast an error message and kill the attempt
-        if (!sqlRunner.getAuthSuccess())
-        {
-            Toast.makeText(this, "There was an error logging in. Please log in from the login page.", Toast.LENGTH_LONG).show();
-            Intent oLogin = new Intent(this, LoginActivity.class);
-            startActivity(oLogin);
-            return;
-        }
-
-
-        //TODO login user here (somehow.....)
+        Toast.makeText(this, "Register Successful. Please Log In.", Toast.LENGTH_LONG).show();
         Intent oLogin = new Intent(this, LoginActivity.class);
         startActivity(oLogin);
 
+
     }
 
-    //TODO fix this
+    public void updateUiWithUser(scoutPerson p)
+    {
+        //TODO add nuances here
+        Intent oLogin = new Intent(this, scoutmasterPage.class);
+        startActivity(oLogin);
+        String welcome = (getString(R.string.welcome) + " " + p.getFName() + " "+ p.getLName() + "!");
+        Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
+    }
+
     //checks to see if email is already in database using the sqlRunner class method userInDatabase
     private boolean checkUsernameExists() {
-        userEdit = (EditText) findViewById(R.id.registerUser);
+        userEdit = findViewById(R.id.registerUser);
 
         //Sets a countDownLatch, which ensures this thread is run before anything else happens
         CountDownLatch cDL = new CountDownLatch(1);
@@ -327,11 +334,8 @@ public class RegisterActivity extends Activity {
     }
 
 
-
     //orientation change handler
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+    public void onConfigurationChanged(@NonNull Configuration newConfig) { super.onConfigurationChanged(newConfig); }
 
     //opens the login screen
     public void openLoginApp(View view) {
@@ -339,4 +343,52 @@ public class RegisterActivity extends Activity {
         startActivity(oLogin);
     }
 
+    public void openLoginAppError()
+    {
+        Toast.makeText(this, "There was an error logging in. Please log in from the login page.", Toast.LENGTH_LONG).show();
+        Intent oLogin = new Intent(this, LoginActivity.class);
+        startActivity(oLogin);
+    }
+
+    //TODO FIX THISSS!!!!!!!
+    private void toggleVis()
+    {
+        loading = findViewById(R.id.loadingScreen);
+        ProgressBar spinner = findViewById(R.id.progress_loader);
+        TextView loadingText = findViewById(R.id.loading);
+
+        loading.clearAnimation();
+        spinner.clearAnimation();
+        loadingText.clearAnimation();
+
+        if (loading.getVisibility() == View.INVISIBLE)
+        {
+            loading.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.VISIBLE);
+            loadingText.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            loading.setVisibility(View.INVISIBLE);
+            spinner.setVisibility(View.INVISIBLE);
+            loadingText.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+    /**
+     * Tries to run the text checks located in RegisterViewModel to update the submit button status
+     *
+     * @return if text checks are true, so the regButton.setEnabled(update()) returns true
+     */
+    private boolean update() {
+        return RegisterViewModel.registerDataChanged(
+                fNameEdit.getText().toString(),
+                lNameEdit.getText().toString(),
+                userEdit.getText().toString(),
+                passEdit.getText().toString(),
+                ageEdit.getText().toString(),
+                troopEdit.getText().toString());
+
+    }
 }

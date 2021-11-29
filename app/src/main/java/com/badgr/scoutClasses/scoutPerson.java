@@ -1,5 +1,7 @@
 package com.badgr.scoutClasses;
 
+import java.util.ArrayList;
+
 public class scoutPerson {
 
     private String fName, lName;
@@ -22,6 +24,22 @@ public class scoutPerson {
 
     public scoutPerson() {
         this("defaultf", "defaultl", "user", "pass", 0, 0, false);
+    }
+
+    public scoutPerson(ArrayList<String> list) {
+        fName = String.valueOf(list.get(1));
+        lName = String.valueOf(list.get(2));
+        user = String.valueOf(list.get(3));
+
+        String a = list.get(5);
+        age = Integer.parseInt(a);
+
+        String sm = list.get(6);
+        isSM = Integer.parseInt(sm) == 1;
+
+        String t = list.get(7);
+        troop = Integer.parseInt(t);
+
     }
 
     public int getAge() {

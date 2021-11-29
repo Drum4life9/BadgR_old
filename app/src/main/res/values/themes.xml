@@ -45,12 +45,12 @@
     </style>
 
     <style name="headerTextPrimary" parent="headerText">
-        <item name="android:textColor">@color/primaryTextColor</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="modifiedEditText" parent="parent">
         <item name="android:textSize">@dimen/newsMoreTextSize</item>
-        <item name="android:backgroundTint">@color/primaryTextColor</item>
+        <item name="android:backgroundTint">@color/colorAccent</item>
     </style>
 
     <style name="viewParent">
@@ -59,7 +59,6 @@
     </style>
 
     <style name="loginButton">
-        <item name="android:textStyle">bold</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">200dp</item>
     </style>

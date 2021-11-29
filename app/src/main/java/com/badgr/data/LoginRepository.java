@@ -14,7 +14,7 @@ public class LoginRepository {
 
     // If user credentials will be cached in local storage, it is recommended it be encrypted
     // @see https://developer.android.com/training/articles/keystore
-    private scoutPerson user = null;
+    private static scoutPerson user = null;
 
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
@@ -36,16 +36,20 @@ public class LoginRepository {
         dataSource.logout();
     }
 
+    public static scoutPerson getUser()
+    {
+        return user;
+    }
+
     private void setLoggedInUser(scoutPerson user) {
-        this.user = user;
+        LoginRepository.user = user;
         // If user credentials will be cached in local storage, it is recommended it be encrypted
         // @see https://developer.android.com/training/articles/keystore
     }
 
-    public Result<scoutPerson> login(String username, String password) {
+    public Result login(String username, String password) {
         //handles login
-        //TODO Stuff here
-        Result<scoutPerson> result = (Result<scoutPerson>) dataSource.login(username, password);
+        Result result = (Result) dataSource.login(username, password);
         if (result instanceof Result.Success) {
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         }

@@ -20,4 +20,5 @@
     <!--colors for card-->
     <color name="whiteCardColor">#fff</color>
     <color name="green">#18C718</color>
+    <color name="grey">#242121</color>
 </resources>

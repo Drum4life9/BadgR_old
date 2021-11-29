@@ -10,12 +10,12 @@ public class RegisterViewModel extends ViewModel {
 
     //uses class's checks to return whether the register info is valid
     public static boolean registerDataChanged(String fName, String lName, String user, String pass, String age, String troop) {
-        return isNameValid(fName, lName) && isUserNameValid(user) && isAgeValid(age) && isTroopValid(troop) &&
+        return isFNameValid(fName) && isLNameValid(lName) && isUserNameValid(user) && isAgeValid(age) && isTroopValid(troop) &&
                 passNumberValid(pass) && passLengthValid(pass) && passUpperValid(pass);
     }
 
     //checks whether the username is formatted like an email correctly
-    private static boolean isUserNameValid(String username) {
+    public static boolean isUserNameValid(String username) {
         if (username == null) {
             return false;
         }
@@ -45,7 +45,7 @@ public class RegisterViewModel extends ViewModel {
     }
 
     //checks if 0 < age <= 120
-    private static boolean isAgeValid(String a) {
+    public static boolean isAgeValid(String a) {
         int age;
         try {
             age = Integer.parseInt(a);
@@ -58,7 +58,7 @@ public class RegisterViewModel extends ViewModel {
     }
 
     //checks if  0 < troop <= 9999
-    private static boolean isTroopValid(String t) {
+    public static boolean isTroopValid(String t) {
         int troop;
         try {
             troop = Integer.parseInt(t);
@@ -71,12 +71,21 @@ public class RegisterViewModel extends ViewModel {
     }
 
     //checks name has no numbers and exists
-    private static boolean isNameValid(String fn, String ln) {
-        if (fn.equals("") || ln.equals("")) {return false;}
-        String name = fn + " " + ln;
-        for (int i = 0; i < name.length(); i++)
+    public static boolean isFNameValid(String fn) {
+        if (fn.equals("")) {return false;}
+        for (int i = 0; i < fn.length(); i++)
         {
-            if (Character.isDigit(name.charAt(i))) {return false;}
+            if (Character.isDigit(fn.charAt(i))) {return false;}
+        }
+        return true;
+    }
+
+    //checks name has no numbers and exists
+    public static boolean isLNameValid(String ln) {
+        if (ln.equals("")) {return false;}
+        for (int i = 0; i < ln.length(); i++)
+        {
+            if (Character.isDigit(ln.charAt(i))) {return false;}
         }
         return true;
     }
