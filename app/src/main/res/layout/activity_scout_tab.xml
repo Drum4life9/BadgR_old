@@ -6,15 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".scoutPagesAndClasses.scoutPage">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textStyle="italic"
+        android:id="@+id/welcomeScout"
+        android:textColor="@color/black"
+        android:background="@color/primaryTextColor"
+        android:text="WelcomeChange"
+        android:paddingTop="7dp"
+        android:paddingBottom="7dp"
+        />
+
+    <View
+        android:id="@+id/spacer"
+        android:layout_below="@id/welcomeScout"
+        android:layout_width="match_parent"
+        android:layout_height="11px"
+        android:background="@color/black"/>
 
     <com.google.android.material.tabs.TabLayout
+        android:layout_below="@id/spacer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabIndicatorColor="@color/black"
         android:background="@color/colorAccent"
         android:id="@+id/tab_layout"
         app:tabSelectedTextColor="@color/black"
-        app:tabTextColor="#E21D1D">
+        app:tabTextColor="#FFFFFF">
 
 
     </com.google.android.material.tabs.TabLayout>

@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.MyListFragment"
-    android:background="#DF987D">
+    tools:context="Fragments.ScoutFrags.EmailSM"
+    android:background="#81C7DD">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -12,6 +12,6 @@
         android:gravity="center"
         android:textSize="40sp"
         android:textColor="@color/black"
-        android:text="MyListFrag" />
+        android:text="EmailSM" />
 
 </FrameLayout>
