@@ -2,8 +2,6 @@ package com.badgr.data;
 
 import androidx.annotation.NonNull;
 
-import com.badgr.scoutClasses.scoutPerson;
-
 /**
  * A generic class that holds a result success w/ data or an error exception.
  */
@@ -20,7 +18,7 @@ public class Result {
             return "Success[data=" + success.getData().toString() + "]";
         } else if (this instanceof Result.Error) {
             Result.Error error = (Result.Error) this;
-            return error.getError().toString();
+            return error.getError();
         }
         return "";
     }

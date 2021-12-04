@@ -1,18 +1,13 @@
 package com.badgr.data;
 
-import android.content.Intent;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Timer;
+
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
-import com.badgr.ui.login.LoginActivity;
+
 
 /**
  * Class that handles authentication w/ login credentials and retrieves user information.

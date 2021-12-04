@@ -8,11 +8,11 @@ public class scoutMaster extends scoutPerson {
     private ArrayList<scout> scouts;
 
     public scoutMaster(){
-        this("defaultf", "defaultl","user", "pass", 0, 0);
+        this("defaultf", "defaultl","user", "pass", 0, 0, 0);
     }
 
-    public scoutMaster(String fn, String ln, String u, String p, int a, int t) {
-        super(fn, ln, u, p,  a, t, true);
+    public scoutMaster(String fn, String ln, String u, String p, int a, int t, int uID) {
+        super(fn, ln, u, p,  a, t, uID, true);
         scouts = new ArrayList<scout>();
     }
 

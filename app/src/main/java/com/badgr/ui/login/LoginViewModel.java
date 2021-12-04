@@ -9,16 +9,11 @@ import com.badgr.data.Result;
 
 public class LoginViewModel extends ViewModel {
 
-    private MutableLiveData<LoginFormState> loginFormState = new MutableLiveData<>();
     public MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
-    }
-
-    LiveData<LoginFormState> getLoginFormState() {
-        return loginFormState;
     }
 
     public LiveData<LoginResult> getLoginResult() {

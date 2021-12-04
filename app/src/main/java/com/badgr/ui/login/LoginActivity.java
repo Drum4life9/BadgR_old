@@ -21,9 +21,9 @@ import android.widget.Toast;
 import android.content.Intent;
 
 import com.badgr.R;
-import com.badgr.appPages.scoutmasterPage;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.databinding.ActivityLoginBinding;
+import com.badgr.scoutPagesAndClasses.scoutPage;
 import com.badgr.ui.register.RegisterActivity;
 import com.badgr.ui.register.RegisterViewModel;
 
@@ -31,10 +31,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);                                                              //sets activityLayout
+        setContentView(R.layout.layout_login);
 
         com.badgr.databinding.ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -65,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString()))
-                    usernameEditText.setError("Invalid username");
+                    usernameEditText.setError("Invalid email");
                 loginButton.setEnabled(updateBut());
             }
 
@@ -76,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString()))
-                    usernameEditText.setError("Invalid username");
+                    usernameEditText.setError("Invalid email");
                 loginButton.setEnabled(updateBut());
             }
         });
@@ -118,12 +119,19 @@ public class LoginActivity extends AppCompatActivity {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + " "+ p.getLName() + "!");
         // TODO : initiate successful logged in experience
 
-        openApp();
+        if (p.isSM()) openSMApp();
+        else openApp();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
     public void openApp() {
-        Intent open = new Intent(this, scoutmasterPage.class);
+        Intent open = new Intent(this, scoutPage.class);
+        startActivity(open);
+    }
+
+    //TODO fix
+    public void openSMApp() {
+        Intent open = new Intent(this, scoutPage.class);
         startActivity(open);
     }
 

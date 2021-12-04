@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        app:srcCompat="@drawable/ic_launcher_background" />
+        app:srcCompat="@drawable/ic_launcher_background"
+        android:contentDescription="TODO" />
 
     <Button
         android:id="@+id/btnSignIn"

@@ -14,11 +14,6 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
     <!--designs for login and register-->
     <style name="parent">
         <item name="android:layout_width">match_parent</item>
@@ -38,7 +33,7 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="loginCard" parent="parent"/>
+    <style name="loginCard" parent="parent" />
 
     <style name="linearParent" parent="parent">
         <item name="android:orientation">vertical</item>
@@ -48,10 +43,6 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
-    <style name="modifiedEditText" parent="parent">
-        <item name="android:textSize">@dimen/newsMoreTextSize</item>
-        <item name="android:backgroundTint">@color/colorAccent</item>
-    </style>
 
     <style name="viewParent">
         <item name="android:layout_width">wrap_content</item>
@@ -62,4 +53,16 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_width">200dp</item>
     </style>
+
+    <style name="Theme.BadgR.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="modifiedEditText">
+        <item name="android:textSize">@dimen/newsMoreTextSize</item>
+    </style>
+
+    <style name="Theme.BadgR.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

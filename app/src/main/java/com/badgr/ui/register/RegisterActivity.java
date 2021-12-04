@@ -112,7 +112,7 @@ public class RegisterActivity extends Activity {
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
-                        userEdit.setError("Invalid username");
+                        userEdit.setError("Invalid email");
                     regButton.setEnabled(update());
                 }
 
@@ -123,7 +123,7 @@ public class RegisterActivity extends Activity {
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
-                        userEdit.setError("Invalid username");
+                        userEdit.setError("Invalid email");
                     regButton.setEnabled(update());
                 }
             });

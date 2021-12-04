@@ -37,7 +37,9 @@
                 android:layout_weight="1"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:hint="@string/first_name"
+                android:nextFocusForward="@id/registerLName"
                 android:inputType="text"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:maxLines="1"
                 android:autofillHints="First name" />
 
@@ -46,7 +48,9 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:nextFocusForward="@id/registerUser"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:inputType="text"
                 android:maxLines="1"
                 android:hint="Last Name"/>
@@ -65,6 +69,7 @@
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
                 android:layout_weight="1"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:hint="Email"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"/>
@@ -74,6 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:hint="@string/login_password_hint"
                 android:maxLines="1"
                 android:layout_weight="1"
@@ -91,6 +97,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:hint="@string/age"
                 android:inputType="number"
                 />
@@ -100,6 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="@dimen/newsMoreTextSize"
                 android:hint="@string/troop"
                 android:inputType="number"
                 />
@@ -154,6 +162,7 @@
             style="@style/loginButton"
             android:enabled="false"
             android:drawable="@drawable/change_color"
+            android:textSize="@dimen/newsMoreTextSize"
             android:drawableTint="@drawable/change_back_color"
             android:text="@string/submit"
             android:layout_gravity="center_horizontal"

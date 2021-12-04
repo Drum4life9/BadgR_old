@@ -4,12 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="312dp"
-        android:layout_height="96dp"
-        android:text="This is the scoutmaster page!"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-        tools:layout_editor_absoluteX="144dp"
-        tools:layout_editor_absoluteY="183dp" />
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="598dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="122dp"
+        tools:ignore="MissingConstraints">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Badge List" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search Badges" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email SM" />
+    </com.google.android.material.tabs.TabLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,27 +6,31 @@ public class scoutPerson {
 
     private String fName, lName;
     private String user, pass;
-    private int age, troop;
+    private int age, troop, userID;
     private boolean isSM;
 
 
 
-    public scoutPerson(String fn, String ln, String u, String p, int a, int t, boolean iSM) {
+    public scoutPerson(String fn, String ln, String u, String p, int a, int t, int id, boolean iSM) {
         fName = fn;
         lName = ln;
         age = a;
         troop = t;
         user = u;
+        userID = id;
         pass = p;
         isSM = iSM;
 
     }
 
     public scoutPerson() {
-        this("defaultf", "defaultl", "user", "pass", 0, 0, false);
+        this("defaultf", "defaultl", "user", "pass", 0, 0, 0, false);
     }
 
     public scoutPerson(ArrayList<String> list) {
+        String uID = list.get(0);
+        age = Integer.parseInt(uID);
+
         fName = String.valueOf(list.get(1));
         lName = String.valueOf(list.get(2));
         user = String.valueOf(list.get(3));
@@ -91,4 +95,8 @@ public class scoutPerson {
     public void setSM(boolean SM) {
         isSM = SM;
     }
+
+    public int getUserID() { return userID; }
+
+    public void setUserID(int userID) { this.userID = userID; }
 }
