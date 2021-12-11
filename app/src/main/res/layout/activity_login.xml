@@ -83,5 +83,32 @@
 
 
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/loadingScreenLogin"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".9"
+        android:visibility="invisible"
+        android:background="@color/grey">
+
+        <ProgressBar
+            android:id="@+id/progress_loader_login"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleX="4"
+            android:scaleY="4"/>
+        <TextView
+            android:id="@+id/loading_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Loading"
+            android:textColor="@color/white"
+            android:scaleY="2"
+            android:scaleX="2"
+            android:layout_gravity="center"/>
+    </FrameLayout>
 </androidx.cardview.widget.CardView>
 

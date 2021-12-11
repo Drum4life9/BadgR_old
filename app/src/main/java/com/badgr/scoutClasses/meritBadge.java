@@ -1,11 +1,33 @@
 package com.badgr.scoutClasses;
 
+import androidx.annotation.NonNull;
+
 public class meritBadge {
 
     private String name;
-    private boolean isEagle, hasEarned;
-    private int numReq;
+    private boolean isEagle;
+    private int numReqs, id;
 
+
+    public meritBadge()
+    {
+        this("defaultName", false, 0, 0);
+    }
+
+    public meritBadge(String n, boolean iE, int nR, int i)
+    {
+        name = n;
+        isEagle = iE;
+        numReqs = nR;
+        id = i;
+    }
+
+
+    @NonNull
+    public String toString()
+    {
+        return name + ": Is an eagle required? " + isEagle + ", and has " + numReqs + " requirements. It's ID is: " + id;
+    }
 
     public String getName() {
         return name;
@@ -23,19 +45,15 @@ public class meritBadge {
         isEagle = eagle;
     }
 
-    public boolean isHasEarned() {
-        return hasEarned;
+    public int getNumReqs() {
+        return numReqs;
     }
 
-    public void setHasEarned(boolean hasEarned) {
-        this.hasEarned = hasEarned;
+    public void setNumReqs(int numReq) {
+        this.numReqs = numReq;
     }
 
-    public int getNumReq() {
-        return numReq;
-    }
+    public void setId(int i)  { id = i; }
 
-    public void setNumReq(int numReq) {
-        this.numReq = numReq;
-    }
+    public int getId() { return id; }
 }

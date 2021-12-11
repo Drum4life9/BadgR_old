@@ -231,13 +231,13 @@ public class RegisterActivity extends Activity {
             {
                 //display toast that username exists
                 toggleVis();
-                Toast.makeText(this, "Username already exists. Please try a different email.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
             }
             else
             {
                 //hopefully should never run, but error message in case of username check failure
                 toggleVis();
-                Toast.makeText(this, "There was an error checking username. Please try again.", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
             }
             return;
         }

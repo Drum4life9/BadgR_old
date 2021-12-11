@@ -1,5 +1,10 @@
 package com.badgr.scoutPagesAndClasses;
 
+import android.content.Context;
+import android.hardware.SensorManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -52,5 +57,7 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
     public static String[] getTitles() {
         return titles;
     }
+
+
 
 }

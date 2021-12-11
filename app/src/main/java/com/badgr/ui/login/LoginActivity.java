@@ -17,15 +17,22 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Intent;
 
 import com.badgr.R;
+import com.badgr.data.Result;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.databinding.ActivityLoginBinding;
 import com.badgr.scoutPagesAndClasses.scoutPage;
+import com.badgr.sql.sqlRunner;
 import com.badgr.ui.register.RegisterActivity;
 import com.badgr.ui.register.RegisterViewModel;
+
+import java.util.concurrent.CountDownLatch;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,9 +53,13 @@ public class LoginActivity extends AppCompatActivity {
         final EditText usernameEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
+        final ProgressBar spinner = findViewById(R.id.progress_loader_login);
+        final TextView loadingText = findViewById(R.id.loading_login);
+        final FrameLayout loadingFrame = findViewById(R.id.loadingScreenLogin);
 
 
         loginViewModel.getLoginResult().observe(this, loginResult -> {
+            toggleLoading(loadingFrame, spinner, loadingText);
             if (loginResult == null) {
                 return;
             }
@@ -59,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
                 updateUiWithUser(loginResult.getSuccess());
             }
             setResult(Activity.RESULT_OK);
+            toggleLoading(loadingFrame, spinner, loadingText);
         });
 
 
@@ -101,13 +113,31 @@ public class LoginActivity extends AppCompatActivity {
 
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                toggleLoading(loadingFrame, spinner, loadingText);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
             return false;
         });
 
-        loginButton.setOnClickListener(v -> loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString()));
+        loginButton.setOnClickListener(v ->
+                {
+                    toggleLoading(loadingFrame, spinner, loadingText);
+
+                    CountDownLatch loginCDL = new CountDownLatch(1);
+                    loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                    loginCDL.countDown();
+
+                    //waits until action has completed to move on
+                    try {
+                        loginCDL.await();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    toggleLoading(loadingFrame, spinner, loadingText);
+                }
+        );
     }
 
     //Changes orientation successfully
@@ -128,6 +158,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent open = new Intent(this, scoutPage.class);
         startActivity(open);
     }
+
 
     //TODO fix
     public void openSMApp() {
@@ -151,5 +182,21 @@ public class LoginActivity extends AppCompatActivity {
         EditText user = findViewById(R.id.username);
         EditText pass = findViewById(R.id.password);
         return !(user.getText().toString().equals("") || pass.getText().toString().equals(""));
+    }
+
+    public static void toggleLoading(FrameLayout f, ProgressBar p, TextView t)
+    {
+        if (f.getVisibility() == View.INVISIBLE)
+        {
+            f.setVisibility(View.VISIBLE);
+            p.setVisibility(View.VISIBLE);
+            t.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            f.setVisibility(View.INVISIBLE);
+            p.setVisibility(View.INVISIBLE);
+            t.setVisibility(View.INVISIBLE);
+        }
     }
 }

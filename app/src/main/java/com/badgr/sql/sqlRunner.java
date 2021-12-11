@@ -21,7 +21,7 @@ public class sqlRunner {
     private final static String password = "AppRunner1";
 
     //error variables
-    private static boolean authSuccess = false, registerSuccess = false, userInDB = false;
+    private static boolean authSuccess = false, registerSuccess = false, userInDB = false, meritBadgeExists = false;
 
     public static void addUser(scoutPerson p) {
         registerSuccess = false;
@@ -41,10 +41,7 @@ public class sqlRunner {
 
     }
 
-    //TODO login user and get all info for loginRepo class
-
-    public static ArrayList<String> getUserInfo(String givenU)
-    {
+    public static ArrayList<String> getUserInfo(String givenU) {
         ArrayList<String> retList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds userPassID with the given username
@@ -83,11 +80,9 @@ public class sqlRunner {
         return retList;
     }
 
-
-
     public static void authUser(String givenU, String givenP) {
         authSuccess = false;
-        
+
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds userPassID with the given username
             String ex = "SELECT userPassID FROM users WHERE username = '" + givenU + "'";
@@ -168,6 +163,43 @@ public class sqlRunner {
         return userInDB;
     }
 
+    public static ArrayList<meritBadge> getListOfBadges(String bName)
+    {
+        ArrayList<meritBadge> retList = new ArrayList<>();
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            //Finds badge names with the given name
+
+            String ex = "SELECT * FROM badgetable where badgeName LIKE '%" + bName + "%'";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+            //pauses just a second to let database do its thing
+            TimeUnit.SECONDS.sleep(1);
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+
+            while (rs.next())
+            {
+                meritBadge mb = new meritBadge();
+                mb.setName(rs.getString("badgeName"));
+                mb.setEagle(rs.getInt("isEagleReq") == 1);
+                mb.setNumReqs(rs.getInt("numReqs"));
+                mb.setId(rs.getInt("BadgeTableID"));
+                retList.add(mb);
+            }
+
+        } catch (SQLException | InterruptedException e)
+        {
+            e.printStackTrace();
+            meritBadgeExists = false;
+            return null;
+        }
+
+        meritBadgeExists = true;
+        return retList;
+    }
+
+
 
 
     public static boolean getAuthSuccess() {return authSuccess;}
@@ -175,5 +207,7 @@ public class sqlRunner {
     public static boolean getRegisterSuccess() { return registerSuccess; }
 
     public static boolean getUserInDB() { return userInDB; }
+
+    public static boolean getMeritBadgeExists() { return meritBadgeExists; }
 
 }
