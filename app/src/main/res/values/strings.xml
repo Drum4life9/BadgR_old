@@ -23,5 +23,18 @@
     <string name="welcomes">WelcomeS</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="eagleReq">Eagle Required</string>
+    <string name="NEagleReq">Not Eagle Required</string>
+    <string name="login_background">login background</string>
+    <string name="badgr">Badgr</string>
+    <string name="todos">TODOs</string>
+    <string name="added">Added to My List!</string>
+    <string name="toAdd">Add to My List</string>
+    <string name="MBsearch">Search For Merit Badges:</string>
+    <string name="enter_badge_name">Enter Badge Name</string>
+    <string name="search">Search</string>
+    <string name="no_search_results">No Search Results</string>
+    <string name="completedBadge">Fully Completed!</string>
+    <string name="my_merit_badges">My Merit Badges:</string>
 
 </resources>

@@ -18,29 +18,49 @@
             android:paddingBottom="10sp"
             android:paddingTop="10sp"
             android:background="@drawable/border"
-            android:layout_centerHorizontal="true"
+            android:layout_toStartOf="@id/badgeIsEagleReplace"
             />
 
         <TextView
             android:id="@+id/badgeIsEagleReplace"
             android:text="Is an eagle required?"
+            android:textAlignment="textEnd"
             android:background="@drawable/border"
-            android:textSize="24sp"
+            android:textSize="30sp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp"
             android:paddingStart="10sp"
-            android:layout_toEndOf="@id/badgeNameReplace"
-            android:layout_width="300dp"
-            android:layout_height="75dp"/>
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"/>
 
         <CheckBox
             android:id="@+id/badgeChecked"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
             android:layout_below="@id/badgeIsEagleReplace"
             android:layout_alignParentEnd="true"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="25dp"
             android:scaleX="3"
-            android:scaleY="3"/>
+            android:scaleY="3"
+            android:shadowColor="@color/black"
+            android:focusable="false"
+            android:focusableInTouchMode="false"/>
 
+        <TextView
+            android:id="@+id/addToListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/badgeIsEagleReplace"
+            android:layout_marginTop="14dp"
+            android:layout_toLeftOf="@id/badgeChecked"
+            android:paddingRight="40dp"
+            android:text="Add to My List"
+            android:textColor="@color/black"
+            android:textSize="30sp" />
         <ImageView
+            android:id="@+id/imageReplace"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_centerVertical="true"

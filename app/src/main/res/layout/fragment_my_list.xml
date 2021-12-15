@@ -1,17 +1,44 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.MyListFragment"
-    android:background="#DF987D">
+    tools:context="Fragments.ScoutFrags.MyListDrivers.MyListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <TextView
+        android:id="@+id/myMeritBadges"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:textSize="40sp"
         android:textColor="@color/black"
-        android:text="MyListFrag" />
+        android:text="@string/my_merit_badges" />
 
-</FrameLayout>
+    <View
+        android:id="@+id/dividerMyBadges"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/myMeritBadges"
+        android:backgroundTint="@color/primaryTextColor"
+        android:background="@color/primaryTextColor"
+        />
+
+    <ProgressBar
+        android:id="@+id/searchProgressMyList"
+        android:layout_below="@id/dividerMyBadges"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
+
+    <ExpandableListView
+        android:id="@+id/expandableListViewMyList"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:layout_below="@id/searchProgressMyList"
+        android:divider="@color/primaryTextColorDark"
+        android:dividerHeight="1dp" />
+
+</RelativeLayout>

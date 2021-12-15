@@ -1,10 +1,5 @@
 package com.badgr.scoutPagesAndClasses;
 
-import android.content.Context;
-import android.hardware.SensorManager;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -12,8 +7,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import Fragments.ScoutFrags.CompletedBadges;
 import Fragments.ScoutFrags.EmailSM;
-import Fragments.ScoutFrags.MyListFragment;
-import Fragments.ScoutFrags.SearchBadges;
+import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
+import Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges;
 import Fragments.ScoutFrags.WelcomeFragment;
 
 public class ViewPagerFragmentAdapter extends FragmentStateAdapter {

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     style="@style/loginParent"
@@ -24,12 +23,13 @@
                     style="@style/parent"
                     android:background="@drawable/login_shape_bk"
                     android:orientation="vertical"
-                    android:layout_weight="3">
+                    android:layout_weight="3"
+                    android:layout_width="0dp">
 
                     <ImageView
                         style="@style/parent"
                         android:background="@drawable/ic_login_bk"
-                        android:contentDescription="login background" />
+                        android:contentDescription="@string/login_background" />
 
                 </LinearLayout>
 
@@ -48,7 +48,7 @@
                 <TextView
                     style="@style/headerText"
                     android:layout_gravity="center"
-                    android:text="Badgr"
+                    android:text="@string/badgr"
                     android:layout_marginTop="40dp"/>
                 <include
                     layout="@layout/layout_register"/>
@@ -62,7 +62,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginStart="10dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel"
-                android:contentDescription="TODO" />
+                android:contentDescription="@string/todos" />
         </RelativeLayout>
 
     </ScrollView>

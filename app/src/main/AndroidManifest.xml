@@ -15,9 +15,17 @@
         android:theme="@style/Theme.BadgR">
         <activity
             android:name=".scoutPagesAndClasses.scoutPage"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_scout_tab"
-            android:theme="@style/Theme.BadgR.NoActionBar" />
+            android:theme="@style/Theme.BadgR.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:name=".ui.login.LoginActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -28,11 +36,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 

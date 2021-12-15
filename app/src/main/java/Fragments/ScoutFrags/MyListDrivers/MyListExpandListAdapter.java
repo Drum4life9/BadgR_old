@@ -1,61 +1,80 @@
-package com.badgr.scoutPagesAndClasses;
+package Fragments.ScoutFrags.MyListDrivers;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.HashMap;
-import java.util.List;
+
 import com.badgr.R;
+import com.badgr.data.LoginRepository;
+import com.badgr.scoutClasses.meritBadge;
+import com.badgr.scoutClasses.scoutPerson;
+import com.badgr.sql.sqlRunner;
 
-public class CustomizedExpandableListAdapter extends BaseExpandableListAdapter {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-    private Context context;
-    private List<String> expandableTitleList;
-    private HashMap<String, List<String>> expandableDetailList;
+import Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges;
+
+public class MyListExpandListAdapter extends BaseExpandableListAdapter {
+
+    private final Context context;
+    private final List<String> expandableTitleList;
+    private final ArrayList<meritBadge> badges;
+    private final scoutPerson user = LoginRepository.getUser();
+
 
     //Constructor
-    public CustomizedExpandableListAdapter(Context context, List<String> expandableListTitle,
-                                           HashMap<String, List<String>> expandableListDetail) {
+    public MyListExpandListAdapter(Context context, List<String> expandableListTitle,
+                                   ArrayList<meritBadge> b) {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
-        this.expandableDetailList = expandableListDetail;
+        badges = b;
+        //pulls the list of merit badges already added
     }
+
 
     @Override
     // Gets the data associated with the given child within the given group.
     public Object getChild(int lstPosn, int expanded_ListPosition) {
-        return this.expandableDetailList.get(this.expandableTitleList.get(lstPosn)).get(expanded_ListPosition);
+        return this.expandableTitleList.get(lstPosn);
     }
 
     @Override
     // Gets the ID for the given child within the given group.
-    // This ID must be unique across all children within the group. Hence we can pick the child uniquely
     public long getChildId(int listPosition, int expanded_ListPosition) {
         return expanded_ListPosition;
     }
 
+    //TODO return view here
+    @SuppressLint("InflateParams")
     @Override
     // Gets a View that displays the data for the given child within the given group.
     public View getChildView(int lstPosn, final int expanded_ListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
-        final String expandedListText = (String) getChild(lstPosn, expanded_ListPosition);
+        //gets the associated merit badge
+        meritBadge badge = badges.get(lstPosn);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_item, null);
+            convertView = layoutInflater.inflate(R.layout.list_group_search, null);
+
         }
-        TextView expandedListTextView = (TextView) convertView.findViewById(R.id.expandedListItem);
-        expandedListTextView.setText(expandedListText);
+
+        //TODO updateMiniViews here and loads of other stuff
         return convertView;
     }
 
     @Override
-    // Gets the number of children in a specified group.
+    // Gets the number of children in a specified group (number of reqs)
     public int getChildrenCount(int listPosition) {
-        return this.expandableDetailList.get(this.expandableTitleList.get(listPosition)).size();
+        return badges.get(listPosition).getNumReqs();
     }
 
     @Override
@@ -65,29 +84,29 @@ public class CustomizedExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    // Gets the number of groups.
+    // Gets the number of groups
     public int getGroupCount() {
         return this.expandableTitleList.size();
     }
 
     @Override
-    // Gets the ID for the group at the given position. This group ID must be unique across groups.
+    // Gets the ID for the group at the given position
     public long getGroupId(int listPosition) {
         return listPosition;
     }
 
+
+    @SuppressLint("InflateParams")
     @Override
     // Gets a View that displays the given group.
-    // This View is only for the group--the Views for the group's children
-    // will be fetched using getChildView()
     public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         String listTitle = (String) getGroup(listPosition);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_group, null);
+            convertView = layoutInflater.inflate(R.layout.list_group_search, null);
         }
-        TextView listTitleTextView = (TextView) convertView.findViewById(R.id.listTitle);
+        TextView listTitleTextView = convertView.findViewById(R.id.listTitle);
         listTitleTextView.setText(listTitle);
         return convertView;
     }
@@ -103,4 +122,6 @@ public class CustomizedExpandableListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
+
 }
+

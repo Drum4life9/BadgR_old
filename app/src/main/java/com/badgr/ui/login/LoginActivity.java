@@ -70,7 +70,6 @@ public class LoginActivity extends AppCompatActivity {
                 updateUiWithUser(loginResult.getSuccess());
             }
             setResult(Activity.RESULT_OK);
-            toggleLoading(loadingFrame, spinner, loadingText);
         });
 
 

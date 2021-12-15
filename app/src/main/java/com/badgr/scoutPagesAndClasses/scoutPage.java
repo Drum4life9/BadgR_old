@@ -16,7 +16,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
+
+import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
 
 
 public class scoutPage extends AppCompatActivity {
@@ -26,12 +29,13 @@ public class scoutPage extends AppCompatActivity {
     ViewPager2 viewPager2;
     private final String[] titles = ViewPagerFragmentAdapter.getTitles();
 
-    private scoutPerson p;
+    private scoutPerson p = LoginRepository.getUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scout_tab);
+
 
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
         viewPager2 = findViewById(R.id.view_pager);
@@ -50,6 +54,7 @@ public class scoutPage extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+
                 hideKeyboard(a);
             }
 
@@ -60,6 +65,7 @@ public class scoutPage extends AppCompatActivity {
 
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
+
                 hideKeyboard(a);
             }
         });
@@ -71,7 +77,7 @@ public class scoutPage extends AppCompatActivity {
 
     //sets welcome message to user's name
     public void setUserText() {
-        p = LoginRepository.getUser();
+        p = new scoutPerson(); //CHANGE TO LoginRepository.getUser();!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         TextView welcome = findViewById(R.id.welcomeScout);
         String welcomeS = "Welcome " + p.getFName() + " " + p.getLName() + "!";
         welcome.setText(welcomeS);
@@ -88,5 +94,6 @@ public class scoutPage extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
+
 
 }

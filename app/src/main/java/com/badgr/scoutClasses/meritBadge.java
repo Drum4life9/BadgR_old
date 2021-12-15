@@ -2,7 +2,7 @@ package com.badgr.scoutClasses;
 
 import androidx.annotation.NonNull;
 
-public class meritBadge {
+public class meritBadge implements Comparable<meritBadge>{
 
     private String name;
     private boolean isEagle;
@@ -56,4 +56,9 @@ public class meritBadge {
     public void setId(int i)  { id = i; }
 
     public int getId() { return id; }
+
+    @Override
+    public int compareTo(meritBadge o) {
+        return this.name.compareToIgnoreCase(o.name);
+    }
 }

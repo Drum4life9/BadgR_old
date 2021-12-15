@@ -1,63 +1,67 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.SearchBadges">
+    tools:context="Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges">
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/searchTitle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="70dp"
+        android:gravity="center_horizontal"
+        android:paddingTop="20dp"
+        android:paddingBottom="10dp"
+        android:text="@string/MBsearch"
+        android:textColor="@color/black"
+        android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/searchTitle"
-            android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:gravity="center_horizontal"
-            android:paddingTop="20dp"
-            android:paddingBottom="10dp"
-            android:text="Search For Merit Badges:"
-            android:textColor="@color/black"
-            android:textSize="30sp" />
+    <EditText
+        android:id="@+id/badgeSearchText"
+        android:layout_width="650dp"
+        android:layout_height="60dp"
+        android:hint="@string/enter_badge_name"
+        android:inputType="text"
+        android:autofillHints="name"
+        android:layout_below="@id/searchTitle"
+        android:paddingEnd="20dp"
+        tools:ignore="RtlSymmetry" />
 
-        <EditText
-            android:id="@+id/badgeSearchText"
-            android:layout_width="650dp"
-            android:layout_height="60dp"
-            android:hint="Enter Badge Name"
-            android:inputType="text"
-            android:autofillHints="name"
-            android:layout_below="@id/searchTitle"
-            android:paddingEnd="20dp"/>
+    <Button
+        android:id="@+id/searchBadgesButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/searchTitle"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/badgeSearchText"
+        android:padding="10dp"
+        android:text="@string/search" />
 
-        <Button
-            android:id="@+id/searchBadgesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/searchTitle"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="4dp"
-            android:layout_toEndOf="@+id/badgeSearchText"
-            android:padding="10dp"
-            android:text="Search" />
+    <ProgressBar
+        android:id="@+id/searchProgress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/badgeSearchText"
+        android:visibility="gone"/>
 
-        <ProgressBar
-            android:id="@+id/searchProgress"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_centerInParent="true"
-            android:layout_below="@id/badgeSearchText"
-            android:visibility="gone"/>
+    <TextView
+        android:id="@+id/noSearchResults"
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:text="@string/no_search_results"
+        android:textSize="30sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/badgeSearchText"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
-        <ExpandableListView
-            android:id="@+id/expandableListViewSample"
-            android:layout_width="match_parent"
-            android:layout_height="1000dp"
-            android:layout_below="@id/searchProgress"
-            android:divider="@color/primaryTextColorDark"
-            android:dividerHeight="1dp"/>
+    <ExpandableListView
+        android:id="@+id/expandableListViewSearch"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:layout_below="@id/searchProgress"
+        android:divider="@color/primaryTextColorDark"
+        android:dividerHeight="1dp" />
 
-
-    </RelativeLayout>
-
-
-</FrameLayout>
+</RelativeLayout>
