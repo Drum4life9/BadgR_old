@@ -25,11 +25,9 @@ import com.badgr.sql.sqlRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchExpandListAdapter;
 import Fragments.ScoutFrags.SearchFragmentDrivers.SearchListTitles;
 
 
@@ -59,10 +57,8 @@ public class MyListFragment extends Fragment {
         //toggles spinner
         spinner = view.findViewById(R.id.searchProgressMyList);
 
-
-
-
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
+
             badgesAdded = badgesAddedLive.getValue();
             if (badgesAdded == null)
             {
@@ -78,36 +74,42 @@ public class MyListFragment extends Fragment {
             expandableListAdapter = new MyListExpandListAdapter(getContext(), badgeTitles, badgesAdded);
             //sets adapter to the accordion list
             accordionList.setAdapter(expandableListAdapter);
+
+
         };
 
         badgesAddedLive.observe(getViewLifecycleOwner(), badgeChanged);
+
     }
 
     public void onPause() {
         super.onPause();
         getBadgesAdded();
+        MyListExpandListAdapter.pullFinishedReqs(user);
 
     }
 
     public void onResume() {
         super.onResume();
         getBadgesAdded();
-
+        MyListExpandListAdapter.pullFinishedReqs(user);
     }
 
     public static void toggleSpinner(ProgressBar spinner) {
         //switches spinner
-        if (spinner.getVisibility() == View.VISIBLE) spinner.setVisibility(View.GONE);
-        else spinner.setVisibility(View.VISIBLE);
+
+        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+        singleThreadExecutor.execute(() -> {
+            if (spinner.getVisibility() == View.VISIBLE) spinner.setVisibility(View.GONE);
+            else spinner.setVisibility(View.VISIBLE);
+        });
     }
 
     public static void getBadgesAdded()
     {
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(() ->
-        {
-            badgesAddedLive.postValue(sqlRunner.getListOfBadges(user));
-        });
+                badgesAddedLive.postValue(sqlRunner.getListOfBadges(user)));
     }
 
 }

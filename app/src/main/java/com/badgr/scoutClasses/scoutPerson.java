@@ -31,7 +31,7 @@ public class scoutPerson {
 
     public scoutPerson(ArrayList<String> list) {
         String uID = list.get(0);
-        age = Integer.parseInt(uID);
+        userID = Integer.parseInt(uID);
 
         fName = String.valueOf(list.get(1));
         lName = String.valueOf(list.get(2));

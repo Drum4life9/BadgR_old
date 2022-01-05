@@ -120,6 +120,7 @@ public class SearchBadges extends Fragment {
 
     public void onPause() {
         super.onPause();
+        MyListFragment.getBadgesAdded();
         accordionList = null;
     }
 

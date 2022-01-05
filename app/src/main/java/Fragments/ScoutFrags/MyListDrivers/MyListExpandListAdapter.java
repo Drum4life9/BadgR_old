@@ -7,27 +7,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.badgr.R;
 import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
+import com.badgr.sql.AllBadgeReqs;
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges;
+
 
 public class MyListExpandListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
+    private static HashMap<Integer, ArrayList<Integer>> finishedReq;
     private final scoutPerson user = LoginRepository.getUser();
 
 
@@ -37,19 +40,21 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         badges = b;
-        //pulls the list of merit badges already added
+        pullFinishedReqs(user);
     }
 
 
     @Override
     // Gets the data associated with the given child within the given group.
     public Object getChild(int lstPosn, int expanded_ListPosition) {
+        pullFinishedReqs(user);
         return this.expandableTitleList.get(lstPosn);
     }
 
     @Override
     // Gets the ID for the given child within the given group.
     public long getChildId(int listPosition, int expanded_ListPosition) {
+        pullFinishedReqs(user);
         return expanded_ListPosition;
     }
 
@@ -61,13 +66,38 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
                              boolean isLastChild, View convertView, ViewGroup parent) {
         //gets the associated merit badge
         meritBadge badge = badges.get(lstPosn);
+        ArrayList<Integer> pulledReqs = finishedReq.get(badge.getId());
+
+
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.list_group_search, null);
+            convertView = layoutInflater.inflate(R.layout.requirement_template, null);
 
         }
 
-        //TODO updateMiniViews here and loads of other stuff
+        TextView description = convertView.findViewById(R.id.requirementReplace);
+        CheckBox checkBox = convertView.findViewById(R.id.reqChecked);
+
+        checkBox.setChecked(pulledReqs != null && pulledReqs.contains(expanded_ListPosition + 1));
+
+        //pulls requirement number
+        int reqNum = expanded_ListPosition + 1;
+        //gets the requirement string
+        String desc = AllBadgeReqs.getBadgeReq(badge.getId(), reqNum);
+        //sets the \n's in the string to whatever is needed
+        if (desc != null) desc = desc.replace("\\n", Objects.requireNonNull(System.getProperty("line.separator")));
+        description.setText(desc);
+
+
+
+        checkBox.setOnClickListener(v -> {
+            boolean isChecked = checkBox.isChecked();
+            //adds to list if checked, remove if unchecked
+            ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+            singleThreadExecutor.execute(() -> sqlRunner.toggleAddToReqList(user, badge.getId(), reqNum, isChecked));
+
+        });
+
         return convertView;
     }
 
@@ -121,6 +151,13 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
     // Whether the child at the specified position is selectable.
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
+    }
+
+    public static void pullFinishedReqs(scoutPerson p) {
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        //gets which badges have been completed
+        sTE.execute(() ->
+                finishedReq = sqlRunner.finishedReqs(p));
     }
 
 }

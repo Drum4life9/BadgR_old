@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.badgr.R;
 import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.scoutPerson;
+import com.badgr.sql.AllBadgeReqs;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -16,10 +17,12 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ExpandableListView;
 import android.widget.TextView;
 
-import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
 
 
 public class scoutPage extends AppCompatActivity {
@@ -29,13 +32,18 @@ public class scoutPage extends AppCompatActivity {
     ViewPager2 viewPager2;
     private final String[] titles = ViewPagerFragmentAdapter.getTitles();
 
-    private scoutPerson p = LoginRepository.getUser();
+    private final scoutPerson user = LoginRepository.getUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scout_tab);
 
+        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+        //ADD TO MAINACTIVITY
+        singleThreadExecutor.execute(AllBadgeReqs::new);
+
+        MyListExpandListAdapter.pullFinishedReqs(user);
 
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
         viewPager2 = findViewById(R.id.view_pager);
@@ -77,9 +85,8 @@ public class scoutPage extends AppCompatActivity {
 
     //sets welcome message to user's name
     public void setUserText() {
-        p = new scoutPerson(); //CHANGE TO LoginRepository.getUser();!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         TextView welcome = findViewById(R.id.welcomeScout);
-        String welcomeS = "Welcome " + p.getFName() + " " + p.getLName() + "!";
+        String welcomeS = "Welcome " + user.getFName() + " " + user.getLName() + "!";
         welcome.setText(welcomeS);
     }
 

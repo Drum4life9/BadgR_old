@@ -105,7 +105,6 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
             {
                 addToList.setText(R.string.toAdd);
             }
-            System.out.println("----------------------------------------" + isChecked);
             //adds to list if checked, remove if unchecked
             SearchBadges.toggleAddToList(user, badge.getId(), isChecked);
         });
@@ -192,4 +191,5 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         sTE.execute(() ->
                 finishedBadges = sqlRunner.finishedBadges(p));
     }
+
 }

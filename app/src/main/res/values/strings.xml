@@ -36,5 +36,6 @@
     <string name="no_search_results">No Search Results</string>
     <string name="completedBadge">Fully Completed!</string>
     <string name="my_merit_badges">My Merit Badges:</string>
+    <string name="textreplace">TextReplace</string>
 
 </resources>

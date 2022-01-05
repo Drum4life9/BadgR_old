@@ -1,5 +1,6 @@
 package com.badgr.sql;
 
+import java.security.SecureRandom;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,9 +8,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.concurrent.TimeUnit;
 
+import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.*;
+
+import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
 import Fragments.ScoutFrags.SearchFragmentDrivers.SearchExpandListAdapter;
 
 public class sqlRunner {
@@ -18,7 +24,7 @@ public class sqlRunner {
     private final static String intDivider = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.25:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
+    private final static String url = "jdbc:mysql://10.60.12.124:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -28,7 +34,6 @@ public class sqlRunner {
 
 
     public static void addUser(scoutPerson p) {
-        registerSuccess = false;
 
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             Statement stmt = c.createStatement();
@@ -194,6 +199,35 @@ public class sqlRunner {
         return retList;
     }
 
+    public static meritBadge getBadge(int badgeID) {
+        meritBadge mb = new meritBadge();
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            //Finds badge names with the given name
+
+            String ex = "SELECT * FROM badgetable where BadgeTableID = " + badgeID + ";";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+
+            while (rs.next())
+            {
+                mb.setName(rs.getString("badgeName"));
+                mb.setEagle(rs.getInt("isEagleReq") == 1);
+                mb.setNumReqs(rs.getInt("numReqs"));
+                mb.setId(rs.getInt("BadgeTableID"));
+            }
+
+        } catch (SQLException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+
+        return mb;
+    }
+
     public static ArrayList<meritBadge> getListOfBadges(scoutPerson p) {
         ArrayList<meritBadge> retList = new ArrayList<>();
         ArrayList<Integer> addedBadges = addedBadges(p);
@@ -228,7 +262,7 @@ public class sqlRunner {
 
     public static void toggleAddToList(scoutPerson p, int badgeID, boolean add) {
         ArrayList<Integer> addedBadges = new ArrayList<>();
-
+        meritBadge badge = getBadge(badgeID);
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             String addOrRemoveBadge;
             Statement stmtAddOrRemove = c.createStatement();
@@ -254,6 +288,13 @@ public class sqlRunner {
                     //add to table
                     addOrRemoveBadge = "INSERT INTO userbadges VALUES (" + badgeID + ", " + p.getUserID() + ", 0);";
                     stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
+
+                    //add requirements to list
+                    for (int i = 1; i <= badge.getNumReqs(); i++)
+                    {
+                        String addReq = "INSERT INTO userreq VALUES (" + p.getUserID() + ", " + badgeID + ", " + i + ", 0);";
+                        stmtAddOrRemove.executeUpdate(addReq);
+                    }
                 }
 
             }
@@ -266,6 +307,9 @@ public class sqlRunner {
                     //remove the merit badge
                     addOrRemoveBadge = "DELETE FROM userbadges WHERE BadgeTableID = " + badgeID + ";";
                     stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
+
+                    String addReq = "DELETE FROM userreq WHERE BadgeTableID = " + badgeID + " AND userID = " + p.getUserID() + ";";
+                    stmtAddOrRemove.executeUpdate(addReq);
                 }
             }
 
@@ -275,6 +319,56 @@ public class sqlRunner {
 
         //update checked boxes for when the children of the expandable list are created
         SearchExpandListAdapter.pullAddedBadges(p);
+    }
+
+    public static void toggleAddToReqList(scoutPerson p, int badgeID, int reqNum, boolean add) {
+        ArrayList<Integer> addedReq = new ArrayList<>();
+
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            String updateReq;
+            Statement stmtAddOrRemove = c.createStatement();
+
+            //Finds badge names with the given ID
+            String ex = "SELECT * FROM userreq WHERE BadgeTableID = " + badgeID + ";";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+            while (rs.next())
+            {
+                int badgeReqNum = rs.getInt("reqNum");
+                int isCompleted = rs.getInt("isCompleted");
+                if (isCompleted == 1) addedReq.add(badgeReqNum);
+            }
+
+
+            //if we should check requirement completed...
+            if (add)
+            {
+                //and it isnt checked
+                if (!addedReq.contains(reqNum)) {
+                    //add to table
+                    updateReq = "UPDATE userreq SET isCompleted = 1 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeID + " AND reqNum = " + reqNum + ";";
+                    stmtAddOrRemove.executeUpdate(updateReq);
+                }
+
+            }
+            //if we shouldn't check requirement
+            else
+            {
+                //and it is checked
+                if (addedReq.contains(reqNum))
+                {
+                    //remove the merit badge
+                    updateReq = "UPDATE userreq SET isCompleted = 0 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeID + " AND reqNum = " + reqNum + ";";
+                    stmtAddOrRemove.executeUpdate(updateReq);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static ArrayList<Integer> addedBadges(scoutPerson p) {
@@ -327,8 +421,103 @@ public class sqlRunner {
         return completed;
     }
 
+    public static HashMap<Integer, HashMap<Integer, String>> getReqs()
+    {
+        HashMap<Integer, HashMap<Integer, String>> retList = new HashMap<>();
 
-        public static boolean getAuthSuccess() {return authSuccess;}
+
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            //Finds badge names with the given name
+
+            String ex = "SELECT * FROM badgereqs;";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+            while (rs.next())
+            {
+                int badgeNum = rs.getInt("BadgeTableID");
+                int reqNum = rs.getInt("reqNum");
+                String requirement = rs.getString("reqDesc");
+                if (retList.get(badgeNum) == null)
+                    retList.put(badgeNum, new HashMap<Integer, String>(){{put(reqNum, requirement);}});
+                else
+                {
+                    HashMap<Integer, String> badgeMap = retList.get(badgeNum);
+                    if (badgeMap == null) retList.put(badgeNum, new HashMap<Integer, String>(){{put(reqNum, requirement);}});
+                    else badgeMap.put(reqNum, requirement);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return retList;
+    }
+
+    public static HashMap<Integer, ArrayList<Integer>> finishedReqs(scoutPerson p)
+    {
+        HashMap<Integer, ArrayList<Integer>> compReqs = new HashMap<>();
+        ArrayList<Integer> reqsPerBadge = new ArrayList<>();
+        int badgeID = 0;
+        int reqNum;
+        int lastReqNum = 0;
+        int lastBadgeID = -1;
+        int iteration = 0;
+
+
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            //Finds badge names with the given name and completed
+
+            String ex = "SELECT * FROM userReq WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY BadgeTableID;";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+            while (rs.next())
+            {
+                badgeID = rs.getInt("BadgeTableID");
+                reqNum = rs.getInt("reqNum");
+
+                if (badgeID != lastBadgeID && iteration != 0)
+                {
+
+                    compReqs.put(lastBadgeID, new ArrayList<>(reqsPerBadge));
+                    reqsPerBadge.clear();
+
+                    lastBadgeID = badgeID;
+                    lastReqNum = reqNum;
+                }
+                else
+                {
+                    reqsPerBadge.add(reqNum);
+                    lastBadgeID = badgeID;
+                    iteration++;
+                }
+            }
+
+            if (badgeID != 0)
+            {
+                reqsPerBadge.add(lastReqNum);
+                compReqs.put(badgeID, new ArrayList<>(reqsPerBadge));
+            }
+
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        MyListExpandListAdapter.pullFinishedReqs(p);
+        return compReqs;
+    }
+
+
+    public static boolean getAuthSuccess() {return authSuccess;}
 
     public static boolean getRegisterSuccess() { return registerSuccess; }
 

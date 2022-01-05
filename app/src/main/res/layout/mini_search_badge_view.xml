@@ -37,7 +37,7 @@
         <CheckBox
             android:id="@+id/badgeChecked"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/badgeIsEagleReplace"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="10dp"
@@ -46,7 +46,8 @@
             android:scaleY="3"
             android:shadowColor="@color/black"
             android:focusable="false"
-            android:focusableInTouchMode="false"/>
+            android:focusableInTouchMode="false"
+            android:saveEnabled="true"/>
 
         <TextView
             android:id="@+id/addToListText"
