@@ -13,6 +13,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.View;
@@ -39,11 +40,12 @@ public class scoutPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scout_tab);
 
+
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         //ADD TO MAINACTIVITY
         singleThreadExecutor.execute(AllBadgeReqs::new);
 
-        MyListExpandListAdapter.pullFinishedReqs(user);
+        //MyListExpandListAdapter.pullFinishedReqs(user);
 
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
         viewPager2 = findViewById(R.id.view_pager);
@@ -80,6 +82,8 @@ public class scoutPage extends AppCompatActivity {
 
         //sets welcome message
         setUserText();
+
+
 
     }
 

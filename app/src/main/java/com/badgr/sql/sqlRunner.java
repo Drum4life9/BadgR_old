@@ -1,7 +1,5 @@
 package com.badgr.sql;
 
-import java.security.SecureRandom;
-import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,10 +7,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
+
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import com.badgr.data.LoginRepository;
+
 import com.badgr.scoutClasses.*;
 
 import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
@@ -24,7 +24,7 @@ public class sqlRunner {
     private final static String intDivider = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://10.60.12.124:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
+    private final static String url = "jdbc:mysql://192.168.1.25:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -283,14 +283,14 @@ public class sqlRunner {
             //if we should add merit badge...
             if (add)
             {
-                //and it doesnt exist
+                //and it doesn't exist
                 if (!addedBadges.contains(badgeID)) {
                     //add to table
                     addOrRemoveBadge = "INSERT INTO userbadges VALUES (" + badgeID + ", " + p.getUserID() + ", 0);";
                     stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
 
                     //add requirements to list
-                    for (int i = 1; i <= badge.getNumReqs(); i++)
+                    for (int i = 1; i <= Objects.requireNonNull(badge).getNumReqs(); i++)
                     {
                         String addReq = "INSERT INTO userreq VALUES (" + p.getUserID() + ", " + badgeID + ", " + i + ", 0);";
                         stmtAddOrRemove.executeUpdate(addReq);
@@ -321,48 +321,70 @@ public class sqlRunner {
         SearchExpandListAdapter.pullAddedBadges(p);
     }
 
-    public static void toggleAddToReqList(scoutPerson p, int badgeID, int reqNum, boolean add) {
-        ArrayList<Integer> addedReq = new ArrayList<>();
+    public static void toggleAddToReqList(scoutPerson p, HashMap<Integer, ArrayList<Integer>> addReqsMap, HashMap<Integer, ArrayList<Integer>> delReqsMap) {
+        ArrayList<Integer> addedReqList = new ArrayList<>();
+        ArrayList<Integer> delReqList = new ArrayList<>();
 
         try (Connection c = DriverManager.getConnection(url, username, password)) {
-            String updateReq;
-            Statement stmtAddOrRemove = c.createStatement();
+            for (Map.Entry<Integer, ArrayList<Integer>> entry : addReqsMap.entrySet()) {
+                //Finds badge names with the given ID
 
-            //Finds badge names with the given ID
-            String ex = "SELECT * FROM userreq WHERE BadgeTableID = " + badgeID + ";";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+                int badgeID = entry.getKey();
+                ArrayList<Integer> requirements = entry.getValue();
+                for (int reqNum : requirements) {
+                    String updateReq;
+                    Statement stmtAddOrRemove = c.createStatement();
+                    String ex = "SELECT * FROM userreq WHERE BadgeTableID = " + badgeID + ";";
+                    Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
-            while (rs.next())
-            {
-                int badgeReqNum = rs.getInt("reqNum");
-                int isCompleted = rs.getInt("isCompleted");
-                if (isCompleted == 1) addedReq.add(badgeReqNum);
+                    //gets results from database
+                    ResultSet rs = stmt.executeQuery(ex);
+                    while (rs.next()) {
+                        int badgeReqNum = rs.getInt("reqNum");
+                        int isCompleted = rs.getInt("isCompleted");
+                        if (isCompleted == 1) addedReqList.add(badgeReqNum);
+                    }
+
+
+                    //if the requirement we are adding isn't already in the database
+                    if (!addedReqList.contains(reqNum)) {
+                        //add to table
+                        updateReq = "UPDATE userreq SET isCompleted = 1 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeID + " AND reqNum = " + reqNum + ";";
+                        stmtAddOrRemove.executeUpdate(updateReq);
+                    }
+                    addedReqList.clear();
+                }
             }
 
+            for (Map.Entry<Integer, ArrayList<Integer>> entryDel : delReqsMap.entrySet()) {
+                //Finds badge names with the given ID
 
-            //if we should check requirement completed...
-            if (add)
-            {
-                //and it isnt checked
-                if (!addedReq.contains(reqNum)) {
-                    //add to table
-                    updateReq = "UPDATE userreq SET isCompleted = 1 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeID + " AND reqNum = " + reqNum + ";";
-                    stmtAddOrRemove.executeUpdate(updateReq);
+                int badgeIDDel = entryDel.getKey();
+                ArrayList<Integer> requirementsDel = entryDel.getValue();
+                for (int reqNum : requirementsDel) {
+                    String updateReq;
+                    Statement stmtAddOrRemove = c.createStatement();
+                    String ex = "SELECT * FROM userreq WHERE BadgeTableID = " + badgeIDDel + ";";
+                    Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+                    //gets results from database
+                    ResultSet rs = stmt.executeQuery(ex);
+                    while (rs.next()) {
+                        int badgeReqNum = rs.getInt("reqNum");
+                        int isCompleted = rs.getInt("isCompleted");
+                        if (isCompleted == 1) delReqList.add(badgeReqNum);
+                    }
+
+
+                    if (delReqList.contains(reqNum)) {
+                        //remove the merit badge
+                        updateReq = "UPDATE userreq SET isCompleted = 0 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeIDDel + " AND reqNum = " + reqNum + ";";
+                        stmtAddOrRemove.executeUpdate(updateReq);
+                    }
                 }
 
-            }
-            //if we shouldn't check requirement
-            else
-            {
-                //and it is checked
-                if (addedReq.contains(reqNum))
-                {
-                    //remove the merit badge
-                    updateReq = "UPDATE userreq SET isCompleted = 0 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + badgeID + " AND reqNum = " + reqNum + ";";
-                    stmtAddOrRemove.executeUpdate(updateReq);
-                }
+                delReqList.clear();
+
             }
 
         } catch (SQLException e) {
