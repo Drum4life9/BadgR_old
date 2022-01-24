@@ -16,26 +16,28 @@ import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.AllBadgeReqs;
 import com.badgr.sql.sqlRunner;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+
+import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
 
 
 public class MyListExpandListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableTitleList;
-    private final ArrayList<meritBadge> badges;
+    private static ArrayList<meritBadge> badges;
     private static HashMap<Integer, ArrayList<Integer>> finishedReq, changedReqs, deletedReqs;
     private static final scoutPerson user = LoginRepository.getUser();
-    private static final CountDownLatch cdl = new CountDownLatch(1);
+    private static CountDownLatch cdl = new CountDownLatch(1);
 
 
     //Constructor
@@ -68,7 +70,6 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
         return expanded_ListPosition;
     }
 
-    //TODO return view here
     @SuppressLint("InflateParams")
     @Override
     // Gets a View that displays the data for the given child within the given group.
@@ -198,25 +199,24 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
     }
 
     public static void pullFinishedReqs(scoutPerson p) {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
-        Thread t = new Thread(() ->
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        sTE.execute(() ->
         {
             finishedReq = sqlRunner.finishedReqs(p);
             cdl.countDown();
         });
-        t.start();
     }
 
     public static void updateRequirements()
     {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
-        sTE.execute(() -> {
-            sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
-            cdl.countDown();
-        });
+        sTE.execute(() -> sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs));
+
+
     }
 
+    //clears all of the checked reqs since submit button was clicked
     public static void resetCheckedReqs()
     {
         changedReqs.clear();
@@ -234,5 +234,88 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
             }
         return copy;
     }
+
+    public static ArrayList<Integer> checkCompletedBadges()
+    {
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Integer> completedBadges = new ArrayList<>();
+        Set<Integer> set = changedReqs.keySet();
+        for (int i : set)
+        {
+
+            boolean comp = true;
+            ArrayList<Integer> completedReqs = changedReqs.get(i);
+
+            cdl = new CountDownLatch(1);
+            final int[] reqNumber = new int[1];
+            ExecutorService sTE = Executors.newSingleThreadExecutor();
+            sTE.execute(() ->
+            {
+                reqNumber[0] = sqlRunner.getBadge(i).getNumReqs();
+                cdl.countDown();
+            });
+
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (completedReqs == null || completedReqs.size() != reqNumber[0]) continue;
+            for (int req = 0; req < completedReqs.size(); req++)
+            {
+                if (completedReqs.get(req) == 0) comp = false;
+            }
+
+            if (comp) {
+                completedBadges.add(i);
+            }
+        }
+
+        for (Iterator<Integer> it = completedBadges.iterator(); it.hasNext();)
+        {
+            int i = it.next();
+            MyListFragment.removeLiveAdded(i);
+            ExecutorService STE = Executors.newSingleThreadExecutor();
+            cdl = new CountDownLatch(1);
+            STE.execute(() ->
+                    {
+                        sqlRunner.setBadgeCompleted(user, i);
+                        cdl.countDown();
+                    });
+
+            finishedReq.remove(i);
+            changedReqs.remove(i);
+
+            try {
+                cdl.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        cdl = new CountDownLatch(1);
+        CompletedBadges.getFinishedBadges();
+        pullFinishedReqs(user);
+        copyFinished();
+
+        try {
+            cdl.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        finishedReq.clear();
+        changedReqs.clear();
+
+
+        return completedBadges;
+    }
+
 }
 

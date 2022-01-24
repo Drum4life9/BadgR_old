@@ -23,8 +23,6 @@ public class scoutPerson {
 
     }
 
-    //CHANGE BACK TO 0000000000 TODO
-
     public scoutPerson() {
         this("defaultf", "defaultl", "user", "pass", 0, 0, 1149, false);
     }

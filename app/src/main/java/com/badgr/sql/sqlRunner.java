@@ -15,16 +15,18 @@ import java.util.concurrent.TimeUnit;
 
 import com.badgr.scoutClasses.*;
 
+import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
 import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
+import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
 import Fragments.ScoutFrags.SearchFragmentDrivers.SearchExpandListAdapter;
 
 public class sqlRunner {
     //divider strings are easier to call than type out
-    private final static String strDivider = "', '";
-    private final static String intDivider = ", ";
+    private final static String strDiv = "', '";
+    private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.25:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
+    private final static String url = "jdbc:mysql://10.60.12.124:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -38,8 +40,8 @@ public class sqlRunner {
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             Statement stmt = c.createStatement();
             String addStmt = "INSERT INTO userpass VALUES (userPassID, '" + p.getPass() + "'); " +
-                    "INSERT INTO users VALUES (userID, '" + p.getFName() + strDivider + p.getLName() + strDivider + p.getUser() + "', last_insert_id(), " +
-                    p.getAge() + intDivider + p.isSM() + intDivider + p.getTroop() + "); " +
+                    "INSERT INTO users VALUES (userID, '" + p.getFName() + strDiv + p.getLName() + strDiv + p.getUser() + "', last_insert_id(), " +
+                    p.getAge() + intDiv + p.isSM() + intDiv + p.getTroop() + "); " +
                     "INSERT INTO troop VALUES (" + p.getTroop() + ", last_insert_id(), " + p.isSM() + ");";
             stmt.executeUpdate(addStmt);
             registerSuccess = true;
@@ -307,9 +309,6 @@ public class sqlRunner {
                     //remove the merit badge
                     addOrRemoveBadge = "DELETE FROM userbadges WHERE BadgeTableID = " + badgeID + ";";
                     stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
-
-                    String addReq = "DELETE FROM userreq WHERE BadgeTableID = " + badgeID + " AND userID = " + p.getUserID() + ";";
-                    stmtAddOrRemove.executeUpdate(addReq);
                 }
             }
 
@@ -399,7 +398,7 @@ public class sqlRunner {
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds badge names with the given name
 
-            String ex = "SELECT * FROM userbadges WHERE userID = " + p.getUserID() + " ORDER BY BadgeTableID;";
+            String ex = "SELECT * FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = 0 ORDER BY BadgeTableID;";
             Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
             //gets results from database
@@ -418,7 +417,23 @@ public class sqlRunner {
         return added;
     }
 
-    public static ArrayList<Integer> finishedBadges(scoutPerson p) {
+    public static void setBadgeCompleted(scoutPerson p, int i) {
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            String updateCompletion;
+            Statement stmt = c.createStatement();
+
+            updateCompletion = "UPDATE userbadges SET isCompleted = 1 WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + i + ";";
+            stmt.executeUpdate(updateCompletion);
+
+            updateCompletion = "DELETE FROM userreq where userID = " + p.getUserID() + " AND BadgeTableID = " + i + ";";
+            stmt.executeUpdate(updateCompletion);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Integer> finishedBadgesInt(scoutPerson p) {
         ArrayList<Integer> completed = new ArrayList<>();
 
         try (Connection c = DriverManager.getConnection(url, username, password)) {
@@ -440,11 +455,37 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
+        CompletedBadges.getFinishedBadges();
+
         return completed;
     }
 
-    public static HashMap<Integer, HashMap<Integer, String>> getReqs()
-    {
+    public static ArrayList<meritBadge> getFinishedBadges(scoutPerson p) {
+        ArrayList<meritBadge> badges = new ArrayList<>();
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+            //Finds badge names with the given name and completed
+
+            String ex = "SELECT BadgeTableID FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY BadgeTableID;";
+            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+
+            //gets results from database
+            ResultSet rs = stmt.executeQuery(ex);
+            while (rs.next())
+            {
+                int badgeIDAdded = rs.getInt("BadgeTableID");
+                meritBadge mb = getBadge(badgeIDAdded);
+                badges.add(mb);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return badges;
+    }
+
+    public static HashMap<Integer, HashMap<Integer, String>> getReqs() {
         HashMap<Integer, HashMap<Integer, String>> retList = new HashMap<>();
 
 
@@ -480,13 +521,11 @@ public class sqlRunner {
         return retList;
     }
 
-    public static HashMap<Integer, ArrayList<Integer>> finishedReqs(scoutPerson p)
-    {
+    public static HashMap<Integer, ArrayList<Integer>> finishedReqs(scoutPerson p) {
         HashMap<Integer, ArrayList<Integer>> compReqs = new HashMap<>();
         ArrayList<Integer> reqsPerBadge = new ArrayList<>();
-        int badgeID = 0;
+        int badgeID = -1;
         int reqNum;
-        int lastReqNum = 0;
         int lastBadgeID = -1;
         int iteration = 0;
 
@@ -511,7 +550,6 @@ public class sqlRunner {
                     reqsPerBadge.clear();
 
                     lastBadgeID = badgeID;
-                    lastReqNum = reqNum;
                 }
                 else
                 {
@@ -521,9 +559,8 @@ public class sqlRunner {
                 }
             }
 
-            if (badgeID != 0)
+            if (badgeID != -1)
             {
-                reqsPerBadge.add(lastReqNum);
                 compReqs.put(badgeID, new ArrayList<>(reqsPerBadge));
             }
 
@@ -534,8 +571,37 @@ public class sqlRunner {
         }
 
 
-        MyListExpandListAdapter.pullFinishedReqs(p);
         return compReqs;
+    }
+
+    public static void removeCompleted(ArrayList<Integer> badgeList, scoutPerson p)
+    {
+        try (Connection c = DriverManager.getConnection(url, username, password)) {
+
+            for (int i : badgeList) {
+                String remove = "UPDATE userbadges SET isCompleted = false WHERE userID = " + p.getUserID() + " AND BadgeTableID = " + i + ";";
+                Statement stmt = c.createStatement();
+
+                stmt.executeUpdate(remove);
+
+                meritBadge b = getBadge(i);
+                if (b == null) continue;
+                for (int bi = 1; bi <= b.getNumReqs(); bi++)
+                {
+                    String addReq = "INSERT INTO userreq VALUES (" + p.getUserID() + intDiv + i + intDiv + bi + intDiv + "1);";
+                    stmt.executeUpdate(addReq);
+                }
+
+            }
+
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        MyListFragment.getBadgesAdded();
+        CompletedBadges.getFinishedBadges();
+        MyListExpandListAdapter.pullFinishedReqs(p);
     }
 
 

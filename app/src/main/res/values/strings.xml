@@ -37,5 +37,7 @@
     <string name="completedBadge">Fully Completed!</string>
     <string name="my_merit_badges">My Merit Badges:</string>
     <string name="textreplace">TextReplace</string>
+    <string name="my_completed_badges">My Completed Badges</string>
+    <string name="no_badges_completed">No Merit Badges Completed! Head over to \"My Badge List\" to complete some!</string>
 
 </resources>

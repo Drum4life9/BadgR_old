@@ -21,8 +21,6 @@ import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
-import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
-
 public class SearchExpandListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
@@ -82,16 +80,20 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         {
             checkBox.setChecked(true);
             addToList.setText(R.string.completedBadge);
+            checkBox.setEnabled(false);
+
         }
         else if (addedBadges.contains(badge.getId()))
         {
             checkBox.setChecked(true);
             addToList.setText(R.string.added);
+            checkBox.setEnabled(true);
         }
         else
         {
             checkBox.setChecked(false);
             addToList.setText(R.string.toAdd);
+            checkBox.setEnabled(true);
         }
 
         //sets a checkbox listener and updates the table if box is checked
@@ -189,7 +191,7 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                finishedBadges = sqlRunner.finishedBadges(p));
+                finishedBadges = sqlRunner.finishedBadgesInt(p));
     }
 
 }

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.content.Intent;
 
+import com.badgr.sql.AllBadgeReqs;
 import com.badgr.ui.login.LoginActivity;
 import com.badgr.ui.register.RegisterActivity;
 
@@ -14,6 +15,8 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle SIS) {
         super.onCreate(SIS);
         setContentView(R.layout.home_page);
+
+        AllBadgeReqs ABR = new AllBadgeReqs();
     }
 
 

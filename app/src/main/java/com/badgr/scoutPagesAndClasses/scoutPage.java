@@ -13,7 +13,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.view.View;
@@ -23,7 +22,8 @@ import android.widget.TextView;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
+import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
+import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
 
 
 public class scoutPage extends AppCompatActivity {
@@ -83,7 +83,8 @@ public class scoutPage extends AppCompatActivity {
         //sets welcome message
         setUserText();
 
-
+        MyListFragment.getBadgesAdded();
+        CompletedBadges.getFinishedBadges();
 
     }
 

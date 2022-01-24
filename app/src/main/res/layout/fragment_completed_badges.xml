@@ -1,17 +1,82 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.CompletedBadges"
-    android:background="#D7AFD5">
+    tools:context="Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges"
+    android:background="@color/white">
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="40sp"
+        android:id="@+id/completedTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="80dp"
+        android:text="@string/my_completed_badges"
         android:textColor="@color/black"
-        android:text="Completed" />
+        android:textSize="30sp" />
 
-</FrameLayout>
+    <View
+        android:id="@+id/completedSpacer"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/completedTitle"
+        android:backgroundTint="@color/primaryTextColor"
+        android:background="@color/primaryTextColor"/>
+
+    <ProgressBar
+        android:id="@+id/searchProgress"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/completedSpacer"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/CompletedTextNone"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/completedSpacer"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="100dp"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        android:text="@string/no_badges_completed"
+        android:textSize="40sp"
+        android:textAlignment="center"/>
+
+
+    <ListView
+        android:id="@+id/completedListView"
+        android:layout_width="match_parent"
+        android:layout_height="1000dp"
+        android:layout_below="@id/searchProgress"
+        android:layout_marginTop="10dp"
+        android:divider="@color/primaryTextColorDark"
+        android:dividerHeight="1dp" />
+
+    <Button
+        android:id="@+id/CompletedEdit"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        android:text="Edit"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@id/completedTitle"/>
+
+    <Button
+        android:id="@+id/CompletedRemoveButton"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:text="Remove"
+        android:textStyle="normal"
+        android:textSize="20sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:visibility="gone"/>
+
+</RelativeLayout>

@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,27 +24,26 @@ import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
 import Fragments.ScoutFrags.SearchFragmentDrivers.SearchListTitles;
 
 
 public class MyListFragment extends Fragment {
 
-    ExpandableListView accordionList;
-    ExpandableListAdapter expandableListAdapter;
-    ArrayList<String> badgeTitles;
-    static MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
-    static ArrayList<meritBadge> badgesAdded;
-    static scoutPerson user = LoginRepository.getUser();
-    ProgressBar spinner;
+    private ExpandableListView accordionList;
+    private static MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
+    private static ArrayList<meritBadge> badgesAdded;
+    private static final scoutPerson user = LoginRepository.getUser();
+    private ProgressBar spinner;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,26 +63,21 @@ public class MyListFragment extends Fragment {
         AppCompatButton submit = view.findViewById(R.id.MyListSubmitButton);
         Button clear = view.findViewById(R.id.clearButton);
         Button collapse = view.findViewById(R.id.collapseButton);
-        
+        toggleSpinner(spinner, true);
+
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
 
             badgesAdded = badgesAddedLive.getValue();
             if (badgesAdded == null)
             {
+                toggleSpinner(spinner, false);
                 //TODO text thing here
                 return;
             }
             Collections.sort(badgesAdded, Comparator.comparing(meritBadge::getName));
 
-            accordionList = view.findViewById(R.id.expandableListViewMyList);
-            //Sets the badge titles for the accordion list
-            badgeTitles = SearchListTitles.getData(badgesAdded);
-            //Creates an adapter to show the accordion titles
-            expandableListAdapter = new MyListExpandListAdapter(getContext(), badgeTitles, badgesAdded);
-            //sets adapter to the accordion list
-            accordionList.setAdapter(expandableListAdapter);
-
-
+            resetList(view);
+            toggleSpinner(spinner, false);
         };
 
         badgesAddedLive.observe(getViewLifecycleOwner(), badgeChanged);
@@ -97,7 +89,37 @@ public class MyListFragment extends Fragment {
         {
             MyListExpandListAdapter.updateRequirements();
             MyListExpandListAdapter.copyFinished();
-            Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
+
+            if (badgesAdded.size() == 0)
+            {
+                Toast.makeText(getContext(), "No Badges Added! Go to \"Search Badges\"", Toast.LENGTH_LONG).show();
+                return;
+            }
+            ArrayList<Integer> completedBadges = MyListExpandListAdapter.checkCompletedBadges();
+            if (completedBadges.size() != 0)
+            {
+                //resets the accordionList
+                resetList(view);
+
+                Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
+                CompletedBadges.getFinishedBadges();
+            }
+            else {
+                ArrayList<Integer> expanded = new ArrayList<>();
+                for (int i = 0; i < Objects.requireNonNull(badgesAddedLive.getValue()).size(); i++)
+                {
+                    if (accordionList.isGroupExpanded(i)) expanded.add(i);
+                }
+                for (int i = 0; i < expanded.size(); i++)
+                {
+                    accordionList.expandGroup(expanded.get(i));
+                }
+                Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
+
+
+            }
+            getBadgesAdded();
+            MyListExpandListAdapter.pullFinishedReqs(user);
         });
 
         clear.setOnClickListener(v ->
@@ -112,14 +134,9 @@ public class MyListFragment extends Fragment {
             MyListExpandListAdapter.resetCheckedReqs();
 
             //resets the accordionList
-            accordionList = null;
-            accordionList = view.findViewById(R.id.expandableListViewMyList);
-            //Sets the badge titles for the accordion list
-            badgeTitles = SearchListTitles.getData(badgesAdded);
-            //Creates an adapter to show the accordion titles
-            expandableListAdapter = new MyListExpandListAdapter(getContext(), badgeTitles, badgesAdded);
-            //sets adapter to the accordion list
-            accordionList.setAdapter(expandableListAdapter);
+            badgesAdded = badgesAddedLive.getValue();
+
+            resetList(view);
 
             for (int i = 0; i < expanded.size(); i++)
             {
@@ -135,7 +152,11 @@ public class MyListFragment extends Fragment {
             {
                 accordionList.collapseGroup(i);
             }
+
+            Toast.makeText(getContext(), "All Boxes Collapsed!", Toast.LENGTH_LONG).show();
         });
+
+        toggleSpinner(spinner, false);
     }
 
     public void onPause() {
@@ -151,9 +172,10 @@ public class MyListFragment extends Fragment {
         MyListExpandListAdapter.pullFinishedReqs(user);
     }
 
-    public static void toggleSpinner(ProgressBar spinner) {
+
+    public static void toggleSpinner(ProgressBar spinner, boolean set) {
         //switches spinner
-        if (spinner.getVisibility() == View.VISIBLE) spinner.setVisibility(View.GONE);
+        if (!set) spinner.setVisibility(View.GONE);
         else spinner.setVisibility(View.VISIBLE);
     }
 
@@ -161,7 +183,36 @@ public class MyListFragment extends Fragment {
     {
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(() ->
-                badgesAddedLive.postValue(sqlRunner.getListOfBadges(user)));
+                {
+                badgesAddedLive.postValue(sqlRunner.getListOfBadges(user));
+                sqlRunner.getFinishedBadges(user);
+                });
+    }
+
+
+    private void resetList(View view)
+    {
+        //resets the accordionList
+        this.accordionList = null;
+        accordionList = view.findViewById(R.id.expandableListViewMyList);
+        //Sets the badge titles for the accordion list
+        ArrayList<String> badgeTitles = SearchListTitles.getData(badgesAdded);
+        //Creates an adapter to show the accordion titles
+        ExpandableListAdapter expandableListAdapter = new MyListExpandListAdapter(getContext(), badgeTitles, badgesAdded);
+        //sets adapter to the accordion list
+        accordionList.setAdapter(expandableListAdapter);
+    }
+
+    public static void removeLiveAdded(int bID)
+    {
+        ArrayList<meritBadge> badges = badgesAddedLive.getValue();
+        if (badges != null)
+            for (Iterator<meritBadge> it = badges.iterator(); it.hasNext();) {
+                meritBadge b = it.next();
+                if (b.getId() == bID) it.remove();
+            }
+
+        badgesAddedLive.postValue(badges);
     }
 
 }

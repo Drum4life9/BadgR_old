@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import Fragments.ScoutFrags.CompletedBadges;
+import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
 import Fragments.ScoutFrags.EmailSM;
 import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
 import Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges;
