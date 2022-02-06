@@ -18,11 +18,7 @@
             android:exported="true"
             android:label="@string/title_activity_scout_tab"
             android:theme="@style/Theme.BadgR.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
 
         </activity>
 
@@ -30,13 +26,18 @@
             android:name=".ui.login.LoginActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
-            android:label="@string/app_name" />
-        <activity android:name=".appPages.scoutmasterPage" />
+            android:label="@string/app_name">
+
+        </activity>
         <activity android:name=".ui.register.RegisterActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

@@ -2,7 +2,6 @@ package com.badgr.sql;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class AllBadgeReqs {
     public static HashMap<Integer, HashMap<Integer, String>> badgeRequirements = new HashMap<>();

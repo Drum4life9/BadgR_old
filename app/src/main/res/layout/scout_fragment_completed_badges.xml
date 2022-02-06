@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges"
+    tools:context="Fragments.ScoutFrags.SCompletedBadges"
     android:background="@color/white">
 
 
@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginEnd="80dp"
         android:text="@string/my_completed_badges"
-        android:textColor="@color/black"
+        android:textColor="@color/light_grey"
         android:textSize="30sp" />
 
     <View
@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_below="@id/completedTitle"
-        android:backgroundTint="@color/primaryTextColor"
-        android:background="@color/primaryTextColor"/>
+        android:backgroundTint="@color/light_grey"
+        android:background="@color/light_grey"/>
 
     <ProgressBar
         android:id="@+id/searchProgress"
@@ -42,7 +42,7 @@
         android:layout_centerInParent="true"
         android:layout_marginTop="100dp"
         android:visibility="gone"
-        android:textColor="@color/black"
+        android:textColor="@color/light_grey"
         android:text="@string/no_badges_completed"
         android:textSize="40sp"
         android:textAlignment="center"/>
@@ -53,9 +53,9 @@
         android:layout_width="match_parent"
         android:layout_height="1000dp"
         android:layout_below="@id/searchProgress"
-        android:layout_marginTop="10dp"
-        android:divider="@color/primaryTextColorDark"
-        android:dividerHeight="1dp" />
+        android:layout_marginTop="5dp"
+        android:divider="@color/primaryColorDark"
+        android:dividerHeight="3dp" />
 
     <Button
         android:id="@+id/CompletedEdit"

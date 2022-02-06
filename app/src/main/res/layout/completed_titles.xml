@@ -4,8 +4,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/label"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="10dp"
-    android:textSize="20sp"
-    android:textColor="@color/black" >
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_margin="20sp"
+    android:paddingStart="5dp"
+    android:paddingBottom="5dp"
+    android:includeFontPadding="true"
+    android:textSize="30sp"
+    android:textColor="@color/light_grey" >
 </TextView>

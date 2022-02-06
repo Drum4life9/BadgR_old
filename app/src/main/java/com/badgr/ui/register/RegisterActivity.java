@@ -50,7 +50,7 @@ public class RegisterActivity extends Activity {
     @Override
     public void onCreate(Bundle SIS) {
         super.onCreate(SIS);
-        setContentView(R.layout.layout_register);
+        setContentView(R.layout.register_page);
 
         //sets texts and buttons from layout
         {
@@ -142,17 +142,17 @@ public class RegisterActivity extends Activity {
                     if (RegisterViewModel.passUpperValid(passEdit.getText().toString())) {
                         passCapital.setTextColor(Color.rgb(106, 196, 79));
                     } else {
-                        passCapital.setTextColor(Color.rgb(255, 0, 0));
+                        passCapital.setTextColor(Color.rgb(205, 63, 62));
                     }
                     if (RegisterViewModel.passNumberValid(passEdit.getText().toString())) {
                         passNumber.setTextColor(Color.rgb(106, 196, 79));
                     } else {
-                        passNumber.setTextColor(Color.rgb(255, 0, 0));
+                        passNumber.setTextColor(Color.rgb(205, 63, 62));
                     }
                     if (RegisterViewModel.passLengthValid(passEdit.getText().toString())) {
                         passLength.setTextColor(Color.rgb(106, 196, 79));
                     } else {
-                        passLength.setTextColor(Color.rgb(255, 0, 0));
+                        passLength.setTextColor(Color.rgb(205, 63, 62));
                     }
 
                 }
@@ -196,6 +196,8 @@ public class RegisterActivity extends Activity {
                 }
             });
         }
+
+        regButton.setOnClickListener(this::attemptRegister);
     }
 
 
@@ -204,11 +206,11 @@ public class RegisterActivity extends Activity {
      *
      * @param v needed for android:onClick
      */
-    public void attemptRegister(View v) {
+    private void attemptRegister(View v) {
 
         //-------------------------------------------------Toggles Loading Screen Layout Over Register Page-----------------------------//
 
-        toggleVis();
+        toggleVis(true);
 
         //creates a new scoutPerson with the given info
         scoutPerson p = new scoutPerson();
@@ -230,13 +232,13 @@ public class RegisterActivity extends Activity {
             if (usernameCheckSuccess)
             {
                 //display toast that username exists
-                toggleVis();
+                toggleVis(false);
                 Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
             }
             else
             {
                 //hopefully should never run, but error message in case of username check failure
-                toggleVis();
+                toggleVis(false);
                 Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
             }
             return;
@@ -249,20 +251,19 @@ public class RegisterActivity extends Activity {
         CountDownLatch cDL = new CountDownLatch(1);
 
         //creates add user to database thread
-        Thread addUser = new Thread(() -> {
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> {
             sqlRunner.addUser(p);
             cDL.countDown();
 
         });
 
-        //runs the add user thread
-        addUser.start();
 
         //waits until previous thread has completed to move on
         try {
             cDL.await();
         } catch (InterruptedException e) {
-            toggleVis();
+            toggleVis(false);
             Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -270,7 +271,7 @@ public class RegisterActivity extends Activity {
 
         //if error, kill method and tell user to try again
         if (!sqlRunner.getRegisterSuccess()) {
-            toggleVis();
+            toggleVis(false);
             Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -278,7 +279,7 @@ public class RegisterActivity extends Activity {
 
         //---------------------------------------------Open Login page-------------------------------------//
 
-        toggleVis();
+        toggleVis(false);
 
         Toast.makeText(this, "Register Successful. Please Log In.", Toast.LENGTH_LONG).show();
         Intent oLogin = new Intent(this, LoginActivity.class);
@@ -295,13 +296,11 @@ public class RegisterActivity extends Activity {
         CountDownLatch cDL = new CountDownLatch(1);
 
         //creates check thread
-        Thread isUserInDB = new Thread(() -> {
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> {
             userInDB = sqlRunner.isUserInDatabase(userEdit.getText().toString());
             cDL.countDown();
         });
-
-        //runs the check username thread
-        isUserInDB.start();
 
         //waits until previous thread has completed to move on
         try {
@@ -325,19 +324,13 @@ public class RegisterActivity extends Activity {
         startActivity(oLogin);
     }
 
-
-    //TODO FIX THIS!!!!!!!
-    private void toggleVis()
+    private void toggleVis(boolean status)
     {
         loading = findViewById(R.id.loadingScreen);
         ProgressBar spinner = findViewById(R.id.progress_loader);
         TextView loadingText = findViewById(R.id.loading);
 
-        loading.clearAnimation();
-        spinner.clearAnimation();
-        loadingText.clearAnimation();
-
-        if (loading.getVisibility() == View.INVISIBLE)
+        if (status)
         {
             loading.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.VISIBLE);
@@ -345,9 +338,9 @@ public class RegisterActivity extends Activity {
         }
         else
         {
-            loading.setVisibility(View.INVISIBLE);
-            spinner.setVisibility(View.INVISIBLE);
-            loadingText.setVisibility(View.INVISIBLE);
+            loading.setVisibility(View.GONE);
+            spinner.setVisibility(View.GONE);
+            loadingText.setVisibility(View.GONE);
         }
 
     }

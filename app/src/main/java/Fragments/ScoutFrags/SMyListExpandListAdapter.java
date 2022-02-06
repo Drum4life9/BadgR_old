@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.MyListDrivers;
+package Fragments.ScoutFrags;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,7 +10,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.AllBadgeReqs;
@@ -27,25 +26,24 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
 
-
-public class MyListExpandListAdapter extends BaseExpandableListAdapter {
+public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
     private final List<String> expandableTitleList;
     private static ArrayList<meritBadge> badges;
     private static HashMap<Integer, ArrayList<Integer>> finishedReq, changedReqs, deletedReqs;
-    private static final scoutPerson user = LoginRepository.getUser();
+    private static scoutPerson user;
     private static CountDownLatch cdl = new CountDownLatch(1);
 
 
     //Constructor
     @SuppressWarnings("unchecked")
-    public MyListExpandListAdapter(Context context, List<String> expandableListTitle,
-                                   ArrayList<meritBadge> b) {
+    public SMyListExpandListAdapter(Context context, List<String> expandableListTitle,
+                                    ArrayList<meritBadge> b, scoutPerson u) {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
+        user = u;
         badges = b;
         pullFinishedReqs(user);
         try {
@@ -55,6 +53,7 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
         }
         changedReqs = (HashMap<Integer, ArrayList<Integer>>) finishedReq.clone();
         deletedReqs = new HashMap<>();
+
     }
 
 
@@ -280,7 +279,7 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
         for (Iterator<Integer> it = completedBadges.iterator(); it.hasNext();)
         {
             int i = it.next();
-            MyListFragment.removeLiveAdded(i);
+            SMyListFragment.removeLiveAdded(i);
             ExecutorService STE = Executors.newSingleThreadExecutor();
             cdl = new CountDownLatch(1);
             STE.execute(() ->
@@ -300,7 +299,7 @@ public class MyListExpandListAdapter extends BaseExpandableListAdapter {
         }
 
         cdl = new CountDownLatch(1);
-        CompletedBadges.getFinishedBadges();
+        SCompletedBadges.getFinishedBadges();
         pullFinishedReqs(user);
         copyFinished();
 

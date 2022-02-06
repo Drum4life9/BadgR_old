@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.CompletedListDrivers;
+package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -24,23 +24,23 @@ import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.MyListDrivers.MyListExpandListAdapter;
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchListTitles;
 
-
-public class CompletedBadges extends Fragment {
+public class SCompletedBadges extends Fragment {
 
     private ListView list;
     private static String[] compTitles;
     private static final MutableLiveData<ArrayList<meritBadge>> completedBadgesLive = new MutableLiveData<>();
     private static ArrayList<meritBadge> completedBadges = new ArrayList<>();
     private static final scoutPerson user = LoginRepository.getUser();
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,7 +49,7 @@ public class CompletedBadges extends Fragment {
         getFinishedBadges();
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_completed_badges, container, false);
+        return inflater.inflate(R.layout.scout_fragment_completed_badges, container, false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -82,19 +82,7 @@ public class CompletedBadges extends Fragment {
             //creates a new list for the badge titles
             compTitles = new String[completedBadges.size()];
 
-            //sets titles
-            setTitles();
-
-            //resets list
-            list = null;
-
-            list = view.findViewById(R.id.completedListView);
-            //Sets the badge titles for the accordion list
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                    R.layout.completed_titles, compTitles);
-
-            list.setAdapter(adapter);
-            list.setVisibility(View.VISIBLE);
+            resetList(view);
         };
 
         completedBadgesLive.observe(getViewLifecycleOwner(), badgeChanged);
@@ -110,7 +98,7 @@ public class CompletedBadges extends Fragment {
 
             list = view.findViewById(R.id.completedListView);
 
-            CompletedListAdapter adapter = new CompletedListAdapter(getActivity(), compTitles);
+            SCompletedListAdapter adapter = new SCompletedListAdapter(getActivity(), compTitles, user);
             list.setAdapter(adapter);
 
             remove.setVisibility(View.VISIBLE);
@@ -118,22 +106,23 @@ public class CompletedBadges extends Fragment {
         });
 
         remove.setOnClickListener(v -> {
-            //connects to SQL and updates badges
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            STE.execute(() ->
-                    sqlRunner.removeCompleted(CompletedListAdapter.getCheckedBoxes(), user));
-
+            ArrayList<Integer> badges = SCompletedListAdapter.getCheckedBoxes();
             //hides the remove button
             remove.setVisibility(View.GONE);
 
+            if (badges != null && badges.size() != 0){
+                //connects to SQL and updates badges
+                ExecutorService STE = Executors.newSingleThreadExecutor();
+                STE.execute(() ->
+                        sqlRunner.removeCompleted(badges, user));
+                SMyListExpandListAdapter.pullFinishedReqs(user);
+                Toast.makeText(getContext(), "Badges Removed", Toast.LENGTH_LONG).show();
+            }
             if (completedBadges == null || completedBadges.size() == 0)
             {
                 list.setVisibility(View.GONE);
-                return;
             }
-            MyListExpandListAdapter.pullFinishedReqs(user);
-
-            Toast.makeText(getContext(), "Badges Removed", Toast.LENGTH_LONG).show();
+            resetList(view);
         });
 
     }
@@ -153,4 +142,19 @@ public class CompletedBadges extends Fragment {
             compTitles[i] = completedBadges.get(i).getName();
     }
 
+    private void resetList(View view) {
+        //sets titles
+        setTitles();
+
+        //resets list
+        list = null;
+
+        list = view.findViewById(R.id.completedListView);
+        //Sets the badge titles for the accordion list
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                R.layout.completed_titles, compTitles);
+
+        list.setAdapter(adapter);
+        list.setVisibility(View.VISIBLE);
+    }
 }

@@ -4,7 +4,10 @@ package com.badgr.data;
 import java.util.ArrayList;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
@@ -26,13 +29,14 @@ public class LoginDataSource {
             CountDownLatch userInDBCDL = new CountDownLatch(1);
 
             //thread to check username in database
-            Thread userInDB = new Thread(() -> {
+            ExecutorService STE = Executors.newSingleThreadExecutor();
+            STE.execute(() -> {
                 sqlRunner.isUserInDatabase(username);
                 userInDBCDL.countDown();
 
             });
 
-            userInDB.start();
+
 
             //waits until thread has completed to move on
             try {
@@ -53,13 +57,13 @@ public class LoginDataSource {
             CountDownLatch authCDL = new CountDownLatch(1);
 
             //thread to authenticate the user
-            Thread authUser = new Thread(() -> {
+            STE = Executors.newSingleThreadExecutor();
+            STE.execute(() -> {
                 sqlRunner.authUser(username, password);
                 authCDL.countDown();
 
             });
 
-            authUser.start();
 
             //waits until thread has completed to move on
             try {
@@ -79,13 +83,12 @@ public class LoginDataSource {
             CountDownLatch loginCDL = new CountDownLatch(1);
 
             //thread to pull user info
-            Thread loginT = new Thread(() -> {
+            STE = Executors.newSingleThreadExecutor();
+            STE.execute(() -> {
                 returned = sqlRunner.getUserInfo(username);
                 loginCDL.countDown();
 
             });
-
-            loginT.start();
 
             //waits until thread has completed to move on
             try {
@@ -101,8 +104,11 @@ public class LoginDataSource {
                 return new Result.Error("Error logging in");
             }
 
+
             scoutPerson user = new scoutPerson(returned);
 
+            if (user.isSM())
+                user = new scoutMaster(returned);
 
             return new Result.Success<>(user);
         } catch (Exception e) {

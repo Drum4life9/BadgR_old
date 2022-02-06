@@ -21,7 +21,6 @@
     <string name="Loading">LOADING, PLEASE WAIT</string>
     <string name="title_activity_scout_tab">scoutTab</string>
     <string name="welcomes">WelcomeS</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="eagleReq">Eagle Required</string>
     <string name="NEagleReq">Not Eagle Required</string>
@@ -30,14 +29,23 @@
     <string name="todos">TODOs</string>
     <string name="added">Added to My List!</string>
     <string name="toAdd">Add to My List</string>
-    <string name="MBsearch">Search For Merit Badges:</string>
+    <string name="MBSearch">Search For Merit Badges:</string>
     <string name="enter_badge_name">Enter Badge Name</string>
     <string name="search">Search</string>
     <string name="no_search_results">No Search Results</string>
     <string name="completedBadge">Fully Completed!</string>
     <string name="my_merit_badges">My Merit Badges:</string>
-    <string name="textreplace">TextReplace</string>
+    <string name="textReplace">TextReplace</string>
     <string name="my_completed_badges">My Completed Badges</string>
     <string name="no_badges_completed">No Merit Badges Completed! Head over to \"My Badge List\" to complete some!</string>
+    <string name="clear_changed_boxes">Clear Changed Boxes</string>
+    <string name="collapse_all_boxes">Collapse All Boxes</string>
+    <string name="scouts_bsa_resources">Scouts BSA Resources</string>
+    <string name="demo_page">Merit Badge Demo Page</string>
+    <string name="demo_pic_desc">This is a demo picture for the Scouts BSA merit badge webpage. In a future version, the website will be linked here and scouts will be able to access the resources from online</string>
+    <string name="demo_pic_desc_short">Demo picture. Full webpage to come</string>
+    <string name="email">Email</string>
+    <string name="user_login">User Login</string>
+    <string name="last_name">Last Name</string>
 
 </resources>

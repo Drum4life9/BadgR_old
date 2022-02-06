@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.MyListDrivers;
+package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -33,14 +33,11 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchListTitles;
 
-
-public class MyListFragment extends Fragment {
+public class SMyListFragment extends Fragment {
 
     private ExpandableListView accordionList;
-    private static MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
+    private static final MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
     private static ArrayList<meritBadge> badgesAdded;
     private static final scoutPerson user = LoginRepository.getUser();
     private ProgressBar spinner;
@@ -52,7 +49,7 @@ public class MyListFragment extends Fragment {
         getBadgesAdded();
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_list, container, false);
+        return inflater.inflate(R.layout.scout_fragment_my_list, container, false);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -87,22 +84,22 @@ public class MyListFragment extends Fragment {
         
         submit.setOnClickListener(v ->
         {
-            MyListExpandListAdapter.updateRequirements();
-            MyListExpandListAdapter.copyFinished();
+            SMyListExpandListAdapter.updateRequirements();
+            SMyListExpandListAdapter.copyFinished();
 
             if (badgesAdded.size() == 0)
             {
                 Toast.makeText(getContext(), "No Badges Added! Go to \"Search Badges\"", Toast.LENGTH_LONG).show();
                 return;
             }
-            ArrayList<Integer> completedBadges = MyListExpandListAdapter.checkCompletedBadges();
+            ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
             if (completedBadges.size() != 0)
             {
                 //resets the accordionList
                 resetList(view);
 
                 Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
-                CompletedBadges.getFinishedBadges();
+                SCompletedBadges.getFinishedBadges();
             }
             else {
                 ArrayList<Integer> expanded = new ArrayList<>();
@@ -119,7 +116,7 @@ public class MyListFragment extends Fragment {
 
             }
             getBadgesAdded();
-            MyListExpandListAdapter.pullFinishedReqs(user);
+            SMyListExpandListAdapter.pullFinishedReqs(user);
         });
 
         clear.setOnClickListener(v ->
@@ -131,7 +128,7 @@ public class MyListFragment extends Fragment {
             }
 
             //clears the previously checked boxes
-            MyListExpandListAdapter.resetCheckedReqs();
+            SMyListExpandListAdapter.resetCheckedReqs();
 
             //resets the accordionList
             badgesAdded = badgesAddedLive.getValue();
@@ -162,14 +159,14 @@ public class MyListFragment extends Fragment {
     public void onPause() {
         super.onPause();
         getBadgesAdded();
-        MyListExpandListAdapter.pullFinishedReqs(user);
+        SMyListExpandListAdapter.pullFinishedReqs(user);
 
     }
 
     public void onResume() {
         super.onResume();
         getBadgesAdded();
-        MyListExpandListAdapter.pullFinishedReqs(user);
+        SMyListExpandListAdapter.pullFinishedReqs(user);
     }
 
 
@@ -196,9 +193,9 @@ public class MyListFragment extends Fragment {
         this.accordionList = null;
         accordionList = view.findViewById(R.id.expandableListViewMyList);
         //Sets the badge titles for the accordion list
-        ArrayList<String> badgeTitles = SearchListTitles.getData(badgesAdded);
+        ArrayList<String> badgeTitles = SSearchListTitles.getData(badgesAdded);
         //Creates an adapter to show the accordion titles
-        ExpandableListAdapter expandableListAdapter = new MyListExpandListAdapter(getContext(), badgeTitles, badgesAdded);
+        ExpandableListAdapter expandableListAdapter = new SMyListExpandListAdapter(getContext(), badgeTitles, badgesAdded, user);
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);
     }

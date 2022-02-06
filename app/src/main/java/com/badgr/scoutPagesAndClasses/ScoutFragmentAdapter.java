@@ -5,19 +5,19 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import Fragments.ScoutFrags.CompletedListDrivers.CompletedBadges;
-import Fragments.ScoutFrags.EmailSM;
-import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchBadges;
-import Fragments.ScoutFrags.WelcomeFragment;
+import Fragments.ScoutFrags.SCompletedBadges;
+import Fragments.ScoutFrags.SResource;
+import Fragments.ScoutFrags.SMyListFragment;
+import Fragments.ScoutFrags.SSearchBadges;
+import Fragments.ScoutFrags.SWelcomeFragment;
 
-public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
+public class ScoutFragmentAdapter extends FragmentStateAdapter {
 
     //List of titles for tabs
-    private static final String[] titles = new String[]{"Welcome", "My Badge List", "Completed Badges", "Search for Badge", "Email Scoutmaster"};
+    private static final String[] titles = new String[]{"Welcome", "Search", "My Badge List", "Completed Badges", "Scouts BSA Resources"};
 
     //creates the viewPager, which allows the fragments to be created and destroyed when swiping
-    public ViewPagerFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ScoutFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
 
@@ -29,17 +29,17 @@ public class ViewPagerFragmentAdapter extends FragmentStateAdapter {
         switch (position)
         {
             case 0:
-                return new WelcomeFragment();
+                return new SWelcomeFragment();
             case 1:
-                return new MyListFragment();
+                return new SSearchBadges();
             case 2:
-                return new CompletedBadges();
+                return new SMyListFragment();
             case 3:
-                return new SearchBadges();
+                return new SCompletedBadges();
             case 4:
-                return new EmailSM();
+                return new SResource();
         }
-        return new WelcomeFragment();
+        return new SWelcomeFragment();
     }
 
     //returns total number of available tabs

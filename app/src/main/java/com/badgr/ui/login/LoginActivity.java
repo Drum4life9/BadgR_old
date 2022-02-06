@@ -24,28 +24,21 @@ import android.widget.Toast;
 import android.content.Intent;
 
 import com.badgr.R;
-import com.badgr.data.Result;
 import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.databinding.ActivityLoginBinding;
+import com.badgr.scoutPagesAndClasses.scoutMasterPage;
 import com.badgr.scoutPagesAndClasses.scoutPage;
-import com.badgr.sql.sqlRunner;
 import com.badgr.ui.register.RegisterActivity;
 import com.badgr.ui.register.RegisterViewModel;
 
-import java.util.concurrent.CountDownLatch;
 
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_login);
-
-        com.badgr.databinding.ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        setContentView(R.layout.login_page);
 
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
@@ -56,10 +49,11 @@ public class LoginActivity extends AppCompatActivity {
         final ProgressBar spinner = findViewById(R.id.progress_loader_login);
         final TextView loadingText = findViewById(R.id.loading_login);
         final FrameLayout loadingFrame = findViewById(R.id.loadingScreenLogin);
+        final TextView noAccount = findViewById(R.id.noAccount);
 
 
         loginViewModel.getLoginResult().observe(this, loginResult -> {
-            toggleLoading(loadingFrame, spinner, loadingText);
+            toggleLoading(loadingFrame, spinner, loadingText, true);
             if (loginResult == null) {
                 return;
             }
@@ -70,9 +64,8 @@ public class LoginActivity extends AppCompatActivity {
                 updateUiWithUser(loginResult.getSuccess());
             }
             setResult(Activity.RESULT_OK);
-            toggleLoading(loadingFrame, spinner, loadingText);
+            toggleLoading(loadingFrame, spinner, loadingText, false);
         });
-
 
         usernameEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,8 +81,11 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString()))
+                if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString())) {
                     usernameEditText.setError("Invalid email");
+                    loginButton.setEnabled(false);
+                    return;
+                }
                 loginButton.setEnabled(updateBut());
             }
         });
@@ -109,60 +105,46 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-
-
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                toggleLoading(loadingFrame, spinner, loadingText);
                 loginViewModel.login(usernameEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
             return false;
         });
+        loginButton.setOnClickListener(v -> {
+                    toggleLoading(loadingFrame, spinner, loadingText, true);
 
-        loginButton.setOnClickListener(v ->
-                {
-                    toggleLoading(loadingFrame, spinner, loadingText);
-
-                    CountDownLatch loginCDL = new CountDownLatch(1);
                     loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
-                    loginCDL.countDown();
 
-                    //waits until action has completed to move on
-                    try {
-                        loginCDL.await();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                });
 
-                    toggleLoading(loadingFrame, spinner, loadingText);
-                }
-        );
+        noAccount.setOnClickListener(v -> {
+            Intent openRegister = new Intent(this, RegisterActivity.class);
+            startActivity(openRegister);
+        });
     }
 
-    //Changes orientation successfully
+    //Changes orientation
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
     private void updateUiWithUser(@NonNull scoutPerson p) {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + " "+ p.getLName() + "!");
-        // TODO : initiate successful logged in experience
-
-        if (p.isSM()) openSMApp();
+                if (p.isSM()) openSMApp();
         else openApp();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
-    public void openApp() {
+    private void openApp() {
         Intent open = new Intent(this, scoutPage.class);
         startActivity(open);
     }
 
 
-    //TODO fix
-    public void openSMApp() {
-        Intent open = new Intent(this, scoutPage.class);
+    private void openSMApp() {
+        Intent open = new Intent(this, scoutMasterPage.class);
         startActivity(open);
     }
 
@@ -173,20 +155,15 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    public void viewRegisterClicked(View view) {
-        Intent openRegister = new Intent(this, RegisterActivity.class);
-        startActivity(openRegister);
-    }
-
-    public boolean updateBut() {
+    private boolean updateBut() {
         EditText user = findViewById(R.id.username);
         EditText pass = findViewById(R.id.password);
         return !(user.getText().toString().equals("") || pass.getText().toString().equals(""));
     }
 
-    public static void toggleLoading(FrameLayout f, ProgressBar p, TextView t)
+    private static void toggleLoading(FrameLayout f, ProgressBar p, TextView t, boolean tog)
     {
-        if (f.getVisibility() == View.INVISIBLE)
+        if (tog)
         {
             f.setVisibility(View.VISIBLE);
             p.setVisibility(View.VISIBLE);
@@ -194,7 +171,7 @@ public class LoginActivity extends AppCompatActivity {
         }
         else
         {
-            f.setVisibility(View.INVISIBLE);
+            f.setVisibility(View.GONE);
             p.setVisibility(View.INVISIBLE);
             t.setVisibility(View.INVISIBLE);
         }

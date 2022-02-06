@@ -9,6 +9,7 @@
         android:layout_height="match_parent"
         android:layout_marginStart="80dp"
         android:textSize="18sp"
+        android:padding="15dp"
         android:textColor="@color/black"
         android:layout_centerVertical="true"/>
 
@@ -19,6 +20,9 @@
         android:scaleX="2"
         android:scaleY="2"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="3dp"/>
+
+
 
 </RelativeLayout>

@@ -10,12 +10,13 @@
     <color name="colorAccent">#00A5FF</color>
 
     <!--colors for modern ui-->
-    <color name="whiteTextColor">#fff</color>
-    <color name="primaryTextColor">#00a5ff</color>
-    <color name="primaryTextColorDark">#055480</color>
-    <color name="loginBkColor">#f0f0f0</color>
+    <color name="whiteTextColor">#F4F6F6</color>
+    <color name="primaryColor">#FF9C91</color>
+    <color name="primaryColorDark">#CD3F3E</color>
+    <color name="loginBkColor">#1C2938</color>
 
     <!--colors for card-->
     <color name="whiteCardColor">#fff</color>
     <color name="grey">#242121</color>
+    <color name="light_grey">#4E5761</color>
 </resources>

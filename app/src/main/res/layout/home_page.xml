@@ -14,12 +14,14 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:srcCompat="@drawable/ic_launcher_background"
-        android:contentDescription="TODO" />
+        android:contentDescription="App Icon" />
 
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="270dp"
+        android:layout_marginBottom="20dp"
         android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textColor="@color/black"
         android:text="Sign in"
@@ -29,6 +31,7 @@
         android:id="@+id/btnNewUser"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
+        android:background="@color/primaryColor"
         android:layout_gravity="center_vertical|center_horizontal"
         android:textColor="@color/black"
         android:text="Register New User"

@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.SearchFragmentDrivers;
+package Fragments.ScoutFrags;
 
 
 import android.os.Build;
@@ -11,6 +11,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,14 +21,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.badgr.R;
+import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 
-import Fragments.ScoutFrags.MyListDrivers.MyListFragment;
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchExpandListAdapter;
-import Fragments.ScoutFrags.SearchFragmentDrivers.SearchListTitles;
-
-import com.badgr.scoutPagesAndClasses.scoutPage;
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
@@ -37,20 +34,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-public class SearchBadges extends Fragment {
+public class SSearchBadges extends Fragment {
 
     ExpandableListView accordionList;
     ExpandableListAdapter expandableListAdapter;
     ArrayList<String> badgeTitles;
     ArrayList<meritBadge> badges;
     MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
+    scoutPerson user = LoginRepository.getUser();
 
     //runs first
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search_badges, container, false);
+        return inflater.inflate(R.layout.scout_fragment_search_badges, container, false);
 
     }
 
@@ -61,6 +59,7 @@ public class SearchBadges extends Fragment {
         //Finds and stores actionable pieces, such as the search button and the text search box
         TextView searchBar = view.findViewById(R.id.badgeSearchText);
         Button searchBut = view.findViewById(R.id.searchBadgesButton);
+        Button submitBut = view.findViewById(R.id.searchSubmit);
         ProgressBar spinner = view.findViewById(R.id.searchProgress);
         TextView noSearchResults = view.findViewById(R.id.noSearchResults);
 
@@ -85,15 +84,7 @@ public class SearchBadges extends Fragment {
             //sorts badges in name order
             Collections.sort(badges, Comparator.comparing(meritBadge::getName));
 
-            //sets expandableList by view from XML
-            accordionList = view.findViewById(R.id.expandableListViewSearch);
-            //Sets the badge titles for the accordion list
-            badgeTitles = SearchListTitles.getData(badges);
-            //Creates an adapter to show the accordion titles
-            expandableListAdapter = new SearchExpandListAdapter(getContext(), badgeTitles, badges);
-            //sets adapter to the accordion list
-            accordionList.setAdapter(expandableListAdapter);
-
+            resetList(view);
         };
 
         searchBut.setOnClickListener(v ->
@@ -101,26 +92,40 @@ public class SearchBadges extends Fragment {
             //toggles the spinner
             toggleSpinner(spinner);
             //gets the badge results and sets it as the returned badges
-            setBadges(searchBar.getText().toString());
+            setBadges(searchBar.getText().toString(), view);
 
         });
 
         badgesLiveData.observe(getViewLifecycleOwner(), badgeChanged);
+
+        submitBut.setOnClickListener(v -> {
+            ArrayList<Integer> addedBoxes = SSearchExpandListAdapter.getAddedBoxes();
+            ArrayList<Integer> removedBoxes = SSearchExpandListAdapter.getRemovedBoxes();
+
+            ExecutorService STE = Executors.newSingleThreadExecutor();
+            STE.execute(() ->
+                    sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes));
+            Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
+            resetList(view);
+        });
+
     }
 
 
-    public void setBadges(String badgeName) {
+    public void setBadges(String badgeName, View view) {
         //ASYNC thread
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(() -> {
             //gets the searched merit badges
             setLiveBadges(sqlRunner.getListOfBadges(badgeName));
         });
+
+        resetList(view);
     }
 
     public void onPause() {
         super.onPause();
-        MyListFragment.getBadgesAdded();
+        SMyListFragment.getBadgesAdded();
         accordionList = null;
     }
 
@@ -130,9 +135,9 @@ public class SearchBadges extends Fragment {
         if (getView() == null) return;
         accordionList = getView().findViewById(R.id.expandableListViewSearch);
         //Sets the badge titles for the accordion list
-        badgeTitles = SearchListTitles.getData(badges);
+        badgeTitles = SSearchListTitles.getData(badges);
         //Creates an adapter to show the accordion titles
-        expandableListAdapter = new SearchExpandListAdapter(getContext(), badgeTitles, badges);
+        expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);
     }
@@ -145,12 +150,17 @@ public class SearchBadges extends Fragment {
         else spinner.setVisibility(View.VISIBLE);
     }
 
-    public static void toggleAddToList(scoutPerson p, int badgeID, boolean add)
-    {
-        //ASYNC task, adds or removes the merit badge based on whether the box was checked
-        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        singleThreadExecutor.execute(() -> sqlRunner.toggleAddToList(p, badgeID, add));
-    }
 
+    public void resetList(View view)
+    {
+        //sets expandableList by view from XML
+        accordionList = view.findViewById(R.id.expandableListViewSearch);
+        //Sets the badge titles for the accordion list
+        badgeTitles = SSearchListTitles.getData(badges);
+        //Creates an adapter to show the accordion titles
+        expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
+        //sets adapter to the accordion list
+        accordionList.setAdapter(expandableListAdapter);
+    }
 
 }

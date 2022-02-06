@@ -9,6 +9,9 @@ import com.badgr.sql.AllBadgeReqs;
 import com.badgr.ui.login.LoginActivity;
 import com.badgr.ui.register.RegisterActivity;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class MainActivity extends Activity {
 
     @Override
@@ -16,7 +19,8 @@ public class MainActivity extends Activity {
         super.onCreate(SIS);
         setContentView(R.layout.home_page);
 
-        AllBadgeReqs ABR = new AllBadgeReqs();
+        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
+        singleThreadExecutor.execute(AllBadgeReqs::new);
     }
 
 

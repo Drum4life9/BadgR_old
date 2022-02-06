@@ -6,7 +6,9 @@ public class scoutPerson {
 
     private String fName, lName;
     private String user, pass;
-    private int age, troop, userID;
+    private int age;
+    private int troop;
+    private final int userID;
     private boolean isSM;
 
 
@@ -62,7 +64,7 @@ public class scoutPerson {
         this.fName = name;
     }
 
-    public int getTroop() {
+    public int getTroopNum() {
         return troop;
     }
 
@@ -97,6 +99,4 @@ public class scoutPerson {
     }
 
     public int getUserID() { return userID; }
-
-    public void setUserID(int userID) { this.userID = userID; }
 }

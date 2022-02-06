@@ -3,57 +3,42 @@ package com.badgr.scoutPagesAndClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-
-
-import com.badgr.R;
-import com.badgr.data.LoginRepository;
-import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.sql.AllBadgeReqs;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
-
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
-import Fragments.ScoutFrags.SCompletedBadges;
-import Fragments.ScoutFrags.SMyListExpandListAdapter;
-import Fragments.ScoutFrags.SMyListFragment;
+import com.badgr.R;
+import com.badgr.data.LoginRepository;
+import com.badgr.scoutClasses.scoutPerson;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 
+public class scoutMasterPage extends AppCompatActivity {
 
-public class scoutPage extends AppCompatActivity {
-
-    ScoutFragmentAdapter viewPagerFragmentAdapter;
+    ScoutMasterFragmentAdapter viewPagerFragmentAdapter;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
-    private final String[] titles = ScoutFragmentAdapter.getTitles();
+    private final String[] titles = ScoutMasterFragmentAdapter.getTitles();
 
     private final scoutPerson user = LoginRepository.getUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scout_tab);
+        setContentView(R.layout.activity_scoutmaster_tab);
 
 
-        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        singleThreadExecutor.execute(AllBadgeReqs::new);
-
-        SMyListExpandListAdapter.pullFinishedReqs(user);
 
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
-        viewPager2 = findViewById(R.id.view_pager);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPagerFragmentAdapter = new ScoutFragmentAdapter(this);
+        viewPager2 = findViewById(R.id.SMview_pager);
+        tabLayout = findViewById(R.id.SMtab_layout);
+        viewPagerFragmentAdapter = new ScoutMasterFragmentAdapter(this);
         Activity a = this;
 
-        //sets the bottom part of the screen to whatever fragment is active
+        //sets the bottom part of the screen to whichever fragment is active
         viewPager2.setAdapter(viewPagerFragmentAdapter);
 
         //sync the ViewPager2 position with the selected tab when a tab is selected
@@ -83,14 +68,13 @@ public class scoutPage extends AppCompatActivity {
         //sets welcome message
         setUserText();
 
-        SMyListFragment.getBadgesAdded();
-        SCompletedBadges.getFinishedBadges();
+        //TODO GET TROOP
 
     }
 
     //sets welcome message to user's name
     public void setUserText() {
-        TextView welcome = findViewById(R.id.welcomeScout);
+        TextView welcome = findViewById(R.id.SMwelcomeScout);
         String welcomeS = "Welcome " + user.getFName() + " " + user.getLName() + "!";
         welcome.setText(welcomeS);
     }
@@ -106,6 +90,4 @@ public class scoutPage extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
-
-
 }

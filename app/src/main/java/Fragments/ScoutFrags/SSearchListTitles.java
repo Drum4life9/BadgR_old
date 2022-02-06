@@ -1,10 +1,10 @@
-package Fragments.ScoutFrags.SearchFragmentDrivers;
+package Fragments.ScoutFrags;
 
 import java.util.ArrayList;
 
 import com.badgr.scoutClasses.meritBadge;
 
-public class SearchListTitles {
+public class SSearchListTitles {
     public static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
         ArrayList<String> titles = new ArrayList<>();
 
@@ -13,7 +13,6 @@ public class SearchListTitles {
         {
             titles.add(b.getName());
         }
-
 
         return titles;
     }

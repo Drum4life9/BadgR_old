@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.CompletedListDrivers;
+package Fragments.ScoutFrags;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -20,16 +20,17 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CompletedListAdapter extends ArrayAdapter {
+public class SCompletedListAdapter extends ArrayAdapter {
     private final String[] badgeNames;
     private Activity context;
     private static ArrayList<Integer> checkedBoxes;
     private static ArrayList<meritBadge> compBadges;
-    private static final scoutPerson user = LoginRepository.getUser();
+    private static scoutPerson user;
     private final CountDownLatch cdl = new CountDownLatch(1);
 
-    public CompletedListAdapter(Activity context, String[] bList) {
+    public SCompletedListAdapter(Activity context, String[] bList, scoutPerson u) {
         super(context, R.layout.completed_check_titles, bList);
+        user = u;
         badgeNames = bList;
         this.context = context;
         checkedBoxes = new ArrayList<>();

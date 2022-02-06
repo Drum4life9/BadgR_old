@@ -1,4 +1,4 @@
-package Fragments.ScoutFrags.SearchFragmentDrivers;
+package Fragments.SMFrags;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,36 +10,37 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
-public class SearchExpandListAdapter extends BaseExpandableListAdapter {
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import Fragments.ScoutFrags.SSearchBadges;
+
+public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
-    private static ArrayList<Integer> addedBadges;
-    private static ArrayList<Integer> finishedBadges;
-    private final scoutPerson user = LoginRepository.getUser();
+    private static ArrayList<Integer> checked;
+    private final scoutPerson user;
 
 
     //Constructor
-    public SearchExpandListAdapter(Context context, List<String> expandableListTitle,
-                                   ArrayList<meritBadge> b) {
+    public SMSearchExpandListAdapter(Context context, List<String> expandableListTitle,
+                                    ArrayList<meritBadge> b, scoutPerson u) {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         badges = b;
+        user = u;
         //pulls the list of merit badges already added
-        pullAddedBadges(user);
-        pullFinishedBadges(user);
+        //pullAddedBadges(user);
+        //pullFinishedBadges(user);
     }
 
 
@@ -71,44 +72,16 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         //changes the mini_badge_view fields to match the respective merit badge
         TextView name = convertView.findViewById(R.id.badgeNameReplace);
         TextView eagleReq = convertView.findViewById(R.id.badgeIsEagleReplace);
-        TextView addToList = convertView.findViewById(R.id.addToListText);
         CheckBox checkBox = convertView.findViewById(R.id.badgeChecked);
 
-        //if the badge was already added before, check the box and change text, else set it to be available to be checked
+        checkBox.setChecked(checked.contains(badge.getId()));
 
-        if (finishedBadges.contains(badge.getId()))
-        {
-            checkBox.setChecked(true);
-            addToList.setText(R.string.completedBadge);
-            checkBox.setEnabled(false);
-
-        }
-        else if (addedBadges.contains(badge.getId()))
-        {
-            checkBox.setChecked(true);
-            addToList.setText(R.string.added);
-            checkBox.setEnabled(true);
-        }
-        else
-        {
-            checkBox.setChecked(false);
-            addToList.setText(R.string.toAdd);
-            checkBox.setEnabled(true);
-        }
 
         //sets a checkbox listener and updates the table if box is checked
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
-            if (isChecked)
-            {
-                addToList.setText(R.string.added);
-            }
-            else
-            {
-                addToList.setText(R.string.toAdd);
-            }
-            //adds to list if checked, remove if unchecked
-            SearchBadges.toggleAddToList(user, badge.getId(), isChecked);
+            if (isChecked) checked.add(badge.getId());
+            else checked.remove((Integer) badge.getId());
         });
 
 
@@ -178,6 +151,7 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
+    /*
     public static void pullAddedBadges(scoutPerson p)
     {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
@@ -193,5 +167,5 @@ public class SearchExpandListAdapter extends BaseExpandableListAdapter {
         sTE.execute(() ->
                 finishedBadges = sqlRunner.finishedBadgesInt(p));
     }
-
+     */
 }

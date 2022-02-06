@@ -25,7 +25,7 @@ public class Result {
 
     // Success sub-class
     public final static class Success<scoutPerson> extends Result {
-        private scoutPerson data;
+        private final scoutPerson data;
 
         public Success(scoutPerson data) {
             this.data = data;
@@ -38,7 +38,7 @@ public class Result {
 
     // Error sub-class
     public final static class Error extends Result {
-        private String error;
+        private final String error;
 
         public Error(String error) {
             this.error = error;
