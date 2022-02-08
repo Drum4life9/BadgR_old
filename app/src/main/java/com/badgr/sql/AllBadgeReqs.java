@@ -6,21 +6,18 @@ import java.util.HashMap;
 public class AllBadgeReqs {
     public static HashMap<Integer, HashMap<Integer, String>> badgeRequirements = new HashMap<>();
 
-    public AllBadgeReqs()
-    {
+    public AllBadgeReqs() {
         badgeRequirements = sqlRunner.getReqs();
     }
 
-    public static String getBadgeReq(int bID, int req)
-    {
+    public static String getBadgeReq(int bID, int req) {
         HashMap<Integer, String> badge = badgeRequirements.get(bID);
         if (badge != null)
             return badge.get(req);
         return "No Req Found";
     }
 
-    public static ArrayList<String> getBadgeReqs(int bID)
-    {
+    public static ArrayList<String> getBadgeReqs(int bID) {
         ArrayList<String> reqs = new ArrayList<>();
         HashMap<Integer, String> badge = badgeRequirements.get(bID);
         if (badge != null)

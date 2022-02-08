@@ -24,7 +24,6 @@ import com.badgr.R;
 import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
-
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
@@ -64,7 +63,6 @@ public class SSearchBadges extends Fragment {
         TextView noSearchResults = view.findViewById(R.id.noSearchResults);
 
 
-
         //When merit badges are added to the search results update list
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
             //sets loading spinner to true
@@ -73,12 +71,10 @@ public class SSearchBadges extends Fragment {
             //sets the returned badges to the livedata that was changed
             badges = badgesLiveData.getValue();
             if (badges == null) return;
-            if (badges.size() == 0)
-            {
+            if (badges.size() == 0) {
                 //displays "No Search Results"
                 noSearchResults.setVisibility(View.VISIBLE);
-            }
-            else noSearchResults.setVisibility(View.GONE);
+            } else noSearchResults.setVisibility(View.GONE);
 
 
             //sorts badges in name order
@@ -107,6 +103,7 @@ public class SSearchBadges extends Fragment {
                     sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes));
             Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
             resetList(view);
+            SWelcomeFragment.getFinishedBadges();
         });
 
     }
@@ -142,7 +139,9 @@ public class SSearchBadges extends Fragment {
         accordionList.setAdapter(expandableListAdapter);
     }
 
-    public void setLiveBadges(ArrayList<meritBadge> b) { badgesLiveData.postValue(b); }
+    public void setLiveBadges(ArrayList<meritBadge> b) {
+        badgesLiveData.postValue(b);
+    }
 
     public void toggleSpinner(ProgressBar spinner) {
         //switches spinner
@@ -151,8 +150,7 @@ public class SSearchBadges extends Fragment {
     }
 
 
-    public void resetList(View view)
-    {
+    public void resetList(View view) {
         //sets expandableList by view from XML
         accordionList = view.findViewById(R.id.expandableListViewSearch);
         //Sets the badge titles for the accordion list

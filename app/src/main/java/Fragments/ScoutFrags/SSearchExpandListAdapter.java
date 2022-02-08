@@ -10,15 +10,15 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
 
@@ -26,7 +26,6 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
     private static ArrayList<Integer> addedBadges, finishedBadges, addedBoxes, removedBoxes;
-    private final scoutPerson user;
 
 
     //Constructor
@@ -35,12 +34,11 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         badges = b;
-        user = u;
         addedBoxes = new ArrayList<>();
         removedBoxes = new ArrayList<>();
         //pulls the list of merit badges already added
-        pullAddedBadges(user);
-        pullFinishedBadges(user);
+        pullAddedBadges(u);
+        pullFinishedBadges(u);
     }
 
 
@@ -63,6 +61,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
                              boolean isLastChild, View convertView, ViewGroup parent) {
         //gets the associated merit badge
         meritBadge badge = badges.get(lstPosn);
+
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.mini_search_badge_view, null);
@@ -74,40 +73,38 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         TextView eagleReq = convertView.findViewById(R.id.badgeIsEagleReplace);
         TextView addToList = convertView.findViewById(R.id.addToListText);
         CheckBox checkBox = convertView.findViewById(R.id.badgeChecked);
+        ImageView image = convertView.findViewById(R.id.imageReplace);
+
         int id = badge.getId();
+        String badgeImageName = "merit_badge_" + badge.getStrippedName();
+
 
         //if the badge was already added before, check the box and change text, else set it to be available to be checked
 
-        if (finishedBadges.contains(id))
-        {
+        if (finishedBadges.contains(id)) {
             checkBox.setChecked(true);
             addToList.setText(R.string.completedBadge);
             checkBox.setEnabled(false);
 
-        }
-        else if (addedBadges.contains(id))
-        {
+        } else if (addedBadges.contains(id)) {
             checkBox.setChecked(true);
             addToList.setText(R.string.added);
             checkBox.setEnabled(true);
-        }
-        else
-        {
+        } else {
             checkBox.setChecked(false);
             addToList.setText(R.string.toAdd);
             checkBox.setEnabled(true);
         }
 
-        if (addedBoxes.contains(id))
-        {
+        if (addedBoxes.contains(id)) {
             checkBox.setChecked(true);
             checkBox.setEnabled(true);
         }
-        if (removedBoxes.contains(id))
-        {
+        if (removedBoxes.contains(id)) {
             checkBox.setChecked(false);
             checkBox.setEnabled(true);
         }
+
         //sets a checkbox listener and updates the table if box is checked
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
@@ -121,10 +118,10 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
                 removedBoxes.remove((Integer) id);
         });
 
-
-
-        //TODO image stuff
-        ImageView image = convertView.findViewById(R.id.imageReplace);
+        //set image to respective badge name
+        Context context = convertView.getContext();
+        int imageId = context.getResources().getIdentifier(badgeImageName, "drawable", context.getPackageName());
+        image.setImageResource(imageId);
 
         //sets mini_badge_view to the badge name
         name.setText(badge.getName());
@@ -188,8 +185,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public static void pullAddedBadges(scoutPerson p)
-    {
+    public static void pullAddedBadges(scoutPerson p) {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been already added to their list
         sTE.execute(() ->
@@ -201,16 +197,14 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                finishedBadges = sqlRunner.finishedBadgesInt(p));
+                finishedBadges = sqlRunner.getFinishedBadgesInt(p));
     }
 
-    public static ArrayList<Integer> getAddedBoxes()
-    {
-        return addedBoxes;
-    }
+    public static ArrayList<Integer> getAddedBoxes() { return addedBoxes; }
 
-    public static ArrayList<Integer> getRemovedBoxes(){
-        return removedBoxes;
-    }
+    public static ArrayList<Integer> getRemovedBoxes() { return removedBoxes; }
 
+    public static ArrayList<Integer> getFinishedBadges() { return finishedBadges; }
+
+    public static ArrayList<Integer> getAddedBadges() { return addedBadges; }
 }

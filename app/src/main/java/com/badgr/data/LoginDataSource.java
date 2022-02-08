@@ -1,15 +1,14 @@
 package com.badgr.data;
 
 
-import java.util.ArrayList;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
+
+import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -37,7 +36,6 @@ public class LoginDataSource {
             });
 
 
-
             //waits until thread has completed to move on
             try {
                 userInDBCDL.await();
@@ -46,8 +44,7 @@ public class LoginDataSource {
             }
 
             //if the user is not in the database, return error message
-            if (!sqlRunner.getUserInDB())
-            {
+            if (!sqlRunner.getUserInDB()) {
                 return new Result.Error("User does not exist. Please Register a new user");
             }
 
@@ -74,8 +71,7 @@ public class LoginDataSource {
 
 
             //if authentication was not successful, return error
-            if (!sqlRunner.getAuthSuccess())
-            {
+            if (!sqlRunner.getAuthSuccess()) {
                 return new Result.Error("Password Incorrect. Please try again.");
             }
 
@@ -98,9 +94,7 @@ public class LoginDataSource {
             }
 
 
-
-            if (returned == null || returned.size() == 0)
-            {
+            if (returned == null || returned.size() == 0) {
                 return new Result.Error("Error logging in");
             }
 

@@ -2,20 +2,20 @@ package com.badgr.scoutClasses;
 
 import androidx.annotation.NonNull;
 
-public class meritBadge implements Comparable<meritBadge>{
+import java.util.Locale;
+
+public class meritBadge implements Comparable<meritBadge> {
 
     private String name;
     private boolean isEagle;
     private int numReqs, id;
 
 
-    public meritBadge()
-    {
+    public meritBadge() {
         this("defaultName", false, 0, 0);
     }
 
-    public meritBadge(String n, boolean iE, int nR, int i)
-    {
+    public meritBadge(String n, boolean iE, int nR, int i) {
         name = n;
         isEagle = iE;
         numReqs = nR;
@@ -24,14 +24,15 @@ public class meritBadge implements Comparable<meritBadge>{
 
 
     @NonNull
-    public String toString()
-    {
+    public String toString() {
         return name + ": Is an eagle required? " + isEagle + ", and has " + numReqs + " requirements. It's ID is: " + id;
     }
 
     public String getName() {
         return name;
     }
+
+    public String getStrippedName() {return name.toLowerCase(Locale.ROOT).replaceAll(" ", "");}
 
     public void setName(String name) {
         this.name = name;
@@ -53,9 +54,13 @@ public class meritBadge implements Comparable<meritBadge>{
         this.numReqs = numReq;
     }
 
-    public void setId(int i)  { id = i; }
+    public void setId(int i) {
+        id = i;
+    }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
     @Override
     public int compareTo(meritBadge o) {

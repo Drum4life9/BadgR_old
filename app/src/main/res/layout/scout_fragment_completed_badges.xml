@@ -2,18 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="Fragments.ScoutFrags.SCompletedBadges"
-    android:background="@color/white">
+    android:background="@color/white"
+    tools:context="Fragments.ScoutFrags.SCompletedBadges">
 
 
     <TextView
         android:id="@+id/completedTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="80dp"
+        android:layout_marginBottom="20dp"
         android:text="@string/my_completed_badges"
         android:textColor="@color/light_grey"
         android:textSize="30sp" />
@@ -23,16 +23,16 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_below="@id/completedTitle"
-        android:backgroundTint="@color/light_grey"
-        android:background="@color/light_grey"/>
+        android:background="@color/light_grey"
+        android:backgroundTint="@color/light_grey" />
 
     <ProgressBar
         android:id="@+id/searchProgress"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_centerInParent="true"
         android:layout_below="@id/completedSpacer"
-        android:visibility="gone"/>
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/CompletedTextNone"
@@ -41,11 +41,11 @@
         android:layout_below="@id/completedSpacer"
         android:layout_centerInParent="true"
         android:layout_marginTop="100dp"
-        android:visibility="gone"
-        android:textColor="@color/light_grey"
         android:text="@string/no_badges_completed"
+        android:textAlignment="center"
+        android:textColor="@color/light_grey"
         android:textSize="40sp"
-        android:textAlignment="center"/>
+        android:visibility="gone" />
 
 
     <ListView
@@ -61,22 +61,22 @@
         android:id="@+id/CompletedEdit"
         android:layout_width="100dp"
         android:layout_height="60dp"
-        android:text="Edit"
-        android:textSize="20sp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@id/completedTitle"/>
+        android:layout_toEndOf="@id/completedTitle"
+        android:text="Edit"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/CompletedRemoveButton"
         android:layout_width="150dp"
         android:layout_height="60dp"
-        android:text="Remove"
-        android:textStyle="normal"
-        android:textSize="20sp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:visibility="gone"/>
+        android:text="Remove"
+        android:textSize="20sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
 
 </RelativeLayout>

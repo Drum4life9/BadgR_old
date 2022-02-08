@@ -31,7 +31,6 @@ public class scoutMasterPage extends AppCompatActivity {
         setContentView(R.layout.activity_scoutmaster_tab);
 
 
-
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
         viewPager2 = findViewById(R.id.SMview_pager);
         tabLayout = findViewById(R.id.SMtab_layout);

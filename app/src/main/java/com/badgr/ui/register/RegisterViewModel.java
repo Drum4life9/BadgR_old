@@ -1,9 +1,9 @@
 package com.badgr.ui.register;
 
 
-import androidx.lifecycle.ViewModel;
-
 import android.util.Patterns;
+
+import androidx.lifecycle.ViewModel;
 
 
 public class RegisterViewModel extends ViewModel {
@@ -26,7 +26,9 @@ public class RegisterViewModel extends ViewModel {
     //checks if there is an uppercase letter in the password
     public static boolean passUpperValid(String p) {
         for (int i = 0; i < p.length(); i++) {
-            if (Character.isUpperCase(p.charAt(i))) {return true;}
+            if (Character.isUpperCase(p.charAt(i))) {
+                return true;
+            }
         }
         return false;
     }
@@ -34,7 +36,9 @@ public class RegisterViewModel extends ViewModel {
     //checks if there is a number in the password
     public static boolean passNumberValid(String p) {
         for (int i = 0; i < p.length(); i++) {
-            if (Character.isDigit(p.charAt(i))) {return true;}
+            if (Character.isDigit(p.charAt(i))) {
+                return true;
+            }
         }
         return false;
     }
@@ -49,9 +53,7 @@ public class RegisterViewModel extends ViewModel {
         int age;
         try {
             age = Integer.parseInt(a);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             age = -1;
         }
         return age > 0 && age <= 120;
@@ -62,9 +64,7 @@ public class RegisterViewModel extends ViewModel {
         int troop;
         try {
             troop = Integer.parseInt(t);
-        }
-        catch (NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             troop = -1;
         }
         return troop > 0 && troop <= 9999;
@@ -72,20 +72,26 @@ public class RegisterViewModel extends ViewModel {
 
     //checks name has no numbers and exists
     public static boolean isFNameValid(String fn) {
-        if (fn.equals("")) {return false;}
-        for (int i = 0; i < fn.length(); i++)
-        {
-            if (Character.isDigit(fn.charAt(i))) {return false;}
+        if (fn.equals("")) {
+            return false;
+        }
+        for (int i = 0; i < fn.length(); i++) {
+            if (Character.isDigit(fn.charAt(i))) {
+                return false;
+            }
         }
         return true;
     }
 
     //checks name has no numbers and exists
     public static boolean isLNameValid(String ln) {
-        if (ln.equals("")) {return false;}
-        for (int i = 0; i < ln.length(); i++)
-        {
-            if (Character.isDigit(ln.charAt(i))) {return false;}
+        if (ln.equals("")) {
+            return false;
+        }
+        for (int i = 0; i < ln.length(); i++) {
+            if (Character.isDigit(ln.charAt(i))) {
+                return false;
+            }
         }
         return true;
     }

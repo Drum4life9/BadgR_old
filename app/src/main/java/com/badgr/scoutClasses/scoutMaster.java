@@ -11,12 +11,12 @@ public class scoutMaster extends scoutPerson {
 
     private ArrayList<scoutPerson> troop;
 
-    public scoutMaster(){
-        this("defaultf", "defaultl","user", "pass", 0, 0, 0);
+    public scoutMaster() {
+        this("defaultf", "defaultl", "user", "pass", 0, 0, 0);
     }
 
     public scoutMaster(String fn, String ln, String u, String p, int a, int t, int uID) {
-        super(fn, ln, u, p,  a, t, uID, true);
+        super(fn, ln, u, p, a, t, uID, true);
         getTroopMembers();
     }
 
@@ -26,14 +26,12 @@ public class scoutMaster extends scoutPerson {
         getTroopMembers();
     }
 
-    private void getTroopMembers()
-    {
+    private void getTroopMembers() {
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() -> troop = sqlRunner.getTroop(this));
     }
 
-    public ArrayList<scoutPerson> getTroop()
-    {
+    public ArrayList<scoutPerson> getTroop() {
         return troop;
     }
 

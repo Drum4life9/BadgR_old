@@ -7,34 +7,34 @@
     tools:context=".scoutPagesAndClasses.scoutPage">
 
     <TextView
-        android:paddingStart="10dp"
+        android:id="@+id/welcomeScout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textStyle="italic"
-        android:id="@+id/welcomeScout"
-        android:textColor="@color/whiteCardColor"
         android:background="@color/light_grey"
+        android:paddingStart="10dp"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
+        android:textColor="@color/whiteCardColor"
+        android:textSize="30sp"
+        android:textStyle="italic"
         tools:ignore="RtlSymmetry" />
 
     <View
         android:id="@+id/spacer"
-        android:layout_below="@id/welcomeScout"
         android:layout_width="match_parent"
         android:layout_height="11dp"
-        android:background="@color/primaryColor"/>
+        android:layout_below="@id/welcomeScout"
+        android:background="@color/primaryColor" />
 
     <com.google.android.material.tabs.TabLayout
-        android:layout_below="@id/spacer"
+        android:id="@+id/tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/primaryColor"
+        android:layout_below="@id/spacer"
         android:background="@color/light_grey"
-        android:id="@+id/tab_layout"
-        app:tabIndicatorHeight="5dp"
         app:tabIndicator="@color/primaryColor"
+        app:tabIndicatorColor="@color/primaryColor"
+        app:tabIndicatorHeight="5dp"
         app:tabSelectedTextColor="@color/whiteCardColor"
         app:tabTextColor="#FFFFFF">
 
@@ -42,9 +42,9 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager"
         android:layout_below="@id/tab_layout">
 
 

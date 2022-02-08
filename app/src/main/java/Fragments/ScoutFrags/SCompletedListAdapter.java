@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
@@ -22,7 +21,7 @@ import java.util.concurrent.Executors;
 
 public class SCompletedListAdapter extends ArrayAdapter {
     private final String[] badgeNames;
-    private Activity context;
+    private final Activity context;
     private static ArrayList<Integer> checkedBoxes;
     private static ArrayList<meritBadge> compBadges;
     private static scoutPerson user;
@@ -48,9 +47,9 @@ public class SCompletedListAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
         LayoutInflater inflater = context.getLayoutInflater();
-        if(convertView == null)
+        if (convertView == null)
             row = inflater.inflate(R.layout.completed_check_titles, null, true);
-        TextView badgeName =  row.findViewById(R.id.CompletedLabel);
+        TextView badgeName = row.findViewById(R.id.CompletedLabel);
         CheckBox checkBox = row.findViewById(R.id.CompletedCheckBox);
 
         badgeName.setText(badgeNames[position]);
@@ -71,13 +70,8 @@ public class SCompletedListAdapter extends ArrayAdapter {
     }
 
 
-    public static ArrayList<Integer> getCheckedBoxes()
-    {
+    public static ArrayList<Integer> getCheckedBoxes() {
         return checkedBoxes;
     }
 
-    public static ArrayList<meritBadge> getCompBadges()
-    {
-        return compBadges;
-    }
 }

@@ -6,8 +6,8 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import Fragments.ScoutFrags.SCompletedBadges;
-import Fragments.ScoutFrags.SResource;
 import Fragments.ScoutFrags.SMyListFragment;
+import Fragments.ScoutFrags.SResource;
 import Fragments.ScoutFrags.SSearchBadges;
 import Fragments.ScoutFrags.SWelcomeFragment;
 
@@ -26,8 +26,7 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        switch (position)
-        {
+        switch (position) {
             case 0:
                 return new SWelcomeFragment();
             case 1:
@@ -52,7 +51,6 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
     public static String[] getTitles() {
         return titles;
     }
-
 
 
 }

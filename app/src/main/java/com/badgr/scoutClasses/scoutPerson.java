@@ -12,7 +12,6 @@ public class scoutPerson {
     private boolean isSM;
 
 
-
     public scoutPerson(String fn, String ln, String u, String p, int a, int t, int id, boolean iSM) {
         fName = fn;
         lName = ln;
@@ -68,15 +67,21 @@ public class scoutPerson {
         return troop;
     }
 
-    public void setTroop(String troop) { this.troop = Integer.parseInt(troop);}
+    public void setTroop(String troop) {
+        this.troop = Integer.parseInt(troop);
+    }
 
-    public void setUser(String user) {this.user = user;}
+    public void setUser(String user) {
+        this.user = user;
+    }
 
     public String getUser() {
         return user;
     }
 
-    public void setPass(String pass) {this.pass = pass;}
+    public void setPass(String pass) {
+        this.pass = pass;
+    }
 
     public String getPass() {
         return pass;
@@ -98,5 +103,7 @@ public class scoutPerson {
         isSM = SM;
     }
 
-    public int getUserID() { return userID; }
+    public int getUserID() {
+        return userID;
+    }
 }

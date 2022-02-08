@@ -10,7 +10,7 @@ import com.badgr.data.Result;
 public class LoginViewModel extends ViewModel {
 
     public MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
-    private LoginRepository loginRepository;
+    private final LoginRepository loginRepository;
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
@@ -27,8 +27,7 @@ public class LoginViewModel extends ViewModel {
         //if the result is a not a success, set error message with the return from result, that will display to screen
         if (!(result instanceof Result.Success)) {
             loginResult.setValue(new LoginResult(result.toString()));
-        }
-        else loginResult.setValue(new LoginResult(LoginRepository.getUser()));
+        } else loginResult.setValue(new LoginResult(LoginRepository.getUser()));
 
     }
 }

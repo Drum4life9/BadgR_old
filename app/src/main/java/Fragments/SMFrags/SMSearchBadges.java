@@ -30,8 +30,6 @@ import java.util.Comparator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.SMyListFragment;
-import Fragments.ScoutFrags.SSearchExpandListAdapter;
 import Fragments.ScoutFrags.SSearchListTitles;
 
 public class SMSearchBadges extends Fragment {
@@ -64,7 +62,6 @@ public class SMSearchBadges extends Fragment {
         TextView noSearchResults = view.findViewById(R.id.SMnoSearchResults);
 
 
-
         //When merit badges are added to the search results update list
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
             //sets loading spinner to true
@@ -73,12 +70,10 @@ public class SMSearchBadges extends Fragment {
             //sets the returned badges to the livedata that was changed
             badges = badgesLiveData.getValue();
             if (badges == null) return;
-            if (badges.size() == 0)
-            {
+            if (badges.size() == 0) {
                 //displays "No Search Results"
                 noSearchResults.setVisibility(View.VISIBLE);
-            }
-            else noSearchResults.setVisibility(View.GONE);
+            } else noSearchResults.setVisibility(View.GONE);
 
 
             //sorts badges in name order
@@ -122,7 +117,9 @@ public class SMSearchBadges extends Fragment {
         resetList();
     }
 
-    public void setLiveBadges(ArrayList<meritBadge> b) { badgesLiveData.postValue(b); }
+    public void setLiveBadges(ArrayList<meritBadge> b) {
+        badgesLiveData.postValue(b);
+    }
 
     public void toggleSpinner(ProgressBar spinner) {
         //switches spinner
@@ -130,8 +127,7 @@ public class SMSearchBadges extends Fragment {
         else spinner.setVisibility(View.VISIBLE);
     }
 
-    private void resetList()
-    {
+    private void resetList() {
         if (getView() == null) return;
         accordionList = getView().findViewById(R.id.SMexpandableListViewSearch);
         //Sets the badge titles for the accordion list

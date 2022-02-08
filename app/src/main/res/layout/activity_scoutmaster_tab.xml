@@ -7,32 +7,30 @@
     tools:context=".scoutPagesAndClasses.scoutMasterPage">
 
     <TextView
+        android:id="@+id/SMwelcomeScout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textStyle="italic"
-        android:id="@+id/SMwelcomeScout"
-        android:textColor="@color/black"
         android:background="@color/primaryColor"
-        android:text="WelcomeChange"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
-        />
+        android:textColor="@color/black"
+        android:textSize="30sp"
+        android:textStyle="italic" />
 
     <View
         android:id="@+id/SMspacer"
-        android:layout_below="@id/SMwelcomeScout"
         android:layout_width="match_parent"
-        android:layout_height="11px"
-        android:background="@color/black"/>
+        android:layout_height="11dp"
+        android:layout_below="@id/SMwelcomeScout"
+        android:background="@color/black" />
 
     <com.google.android.material.tabs.TabLayout
-        android:layout_below="@id/SMspacer"
+        android:id="@+id/SMtab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabIndicatorColor="@color/black"
+        android:layout_below="@id/SMspacer"
         android:background="@color/colorAccent"
-        android:id="@+id/SMtab_layout"
+        app:tabIndicatorColor="@color/black"
         app:tabSelectedTextColor="@color/black"
         app:tabTextColor="#FFFFFF">
 
@@ -40,9 +38,9 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/SMview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/SMview_pager"
         android:layout_below="@id/SMtab_layout">
 
 

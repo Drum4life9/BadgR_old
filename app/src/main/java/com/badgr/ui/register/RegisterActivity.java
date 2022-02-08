@@ -14,16 +14,17 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.concurrent.*;
 
 import androidx.annotation.NonNull;
 
+import com.badgr.R;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
-
-
-import com.badgr.R;
 import com.badgr.ui.login.LoginActivity;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 public class RegisterActivity extends Activity {
@@ -219,24 +220,19 @@ public class RegisterActivity extends Activity {
         p.setUser(userEdit.getText().toString());
         p.setPass(passEdit.getText().toString().trim());
         p.setAge(ageEdit.getText().toString());
-        p.setSM(p.getAge()>=18);
+        p.setSM(p.getAge() >= 18);
         p.setTroop(troopEdit.getText().toString());
-
 
 
         //-------------------------------------------Username check----------------------------------------//
 
         //if username exists
-        if (checkUsernameExists())
-        {
-            if (usernameCheckSuccess)
-            {
+        if (checkUsernameExists()) {
+            if (usernameCheckSuccess) {
                 //display toast that username exists
                 toggleVis(false);
                 Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 //hopefully should never run, but error message in case of username check failure
                 toggleVis(false);
                 Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
@@ -316,7 +312,9 @@ public class RegisterActivity extends Activity {
 
 
     //orientation change handler
-    public void onConfigurationChanged(@NonNull Configuration newConfig) { super.onConfigurationChanged(newConfig); }
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
     //opens the login screen
     public void openLoginApp(View view) {
@@ -324,20 +322,16 @@ public class RegisterActivity extends Activity {
         startActivity(oLogin);
     }
 
-    private void toggleVis(boolean status)
-    {
+    private void toggleVis(boolean status) {
         loading = findViewById(R.id.loadingScreen);
         ProgressBar spinner = findViewById(R.id.progress_loader);
         TextView loadingText = findViewById(R.id.loading);
 
-        if (status)
-        {
+        if (status) {
             loading.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.VISIBLE);
             loadingText.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             loading.setVisibility(View.GONE);
             spinner.setVisibility(View.GONE);
             loadingText.setVisibility(View.GONE);

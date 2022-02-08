@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/loginCard"
-    app:cardCornerRadius="@dimen/loginCardRadius"
-    android:elevation="20dp"
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/whiteCardColor">
+    android:background="@color/whiteCardColor"
+    android:elevation="20dp"
+    app:cardCornerRadius="@dimen/loginCardRadius">
 
     <LinearLayout
         style="@style/linearParent"
@@ -19,13 +18,13 @@
         android:padding="@dimen/loginViewsMargin">
 
         <TextView
-            android:textSize="40sp"
-            android:textAlignment="center"
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:textColor="@color/primaryColorDark"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/loginViewsMargin"
             android:text="@string/register"
-            android:layout_marginTop="@dimen/loginViewsMargin"/>
+            android:textAlignment="center"
+            android:textColor="@color/primaryColorDark"
+            android:textSize="40sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,31 +35,31 @@
                 android:id="@+id/registerFName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="1"
+                android:autofillHints="First name"
+                android:hint="@string/first_name"
+                android:inputType="text"
+                android:maxLines="1"
+                android:nextFocusForward="@id/registerLName"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"
-                android:layout_weight="1"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:hint="@string/first_name"
-                android:nextFocusForward="@id/registerLName"
-                android:inputType="text"
-                android:textSize="@dimen/newsMoreTextSize"
-                android:maxLines="1"
-                android:autofillHints="First name"
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
                 android:id="@+id/registerLName"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:nextFocusForward="@id/registerUser"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:textSize="@dimen/newsMoreTextSize"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:hint="@string/last_name"
                 android:inputType="text"
                 android:maxLines="1"
-                android:hint="@string/last_name"
-                android:autofillHints=""
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:nextFocusForward="@id/registerUser"
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
         </LinearLayout>
 
         <LinearLayout
@@ -71,30 +70,30 @@
             <EditText
                 android:id="@+id/registerUser"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/signup_text_margin_top"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/signup_text_margin_top"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:hint="@string/email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:layout_weight="1"
-                android:textSize="@dimen/newsMoreTextSize"
-                android:hint="@string/email"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"
-                android:autofillHints=""
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
                 android:id="@+id/registerPass"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"
-                android:textSize="@dimen/newsMoreTextSize"
-                android:hint="@string/login_password_hint"
-                android:maxLines="1"
                 android:layout_weight="1"
-                android:inputType="textPassword"
                 android:autofillHints=""
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:hint="@string/login_password_hint"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
 
         </LinearLayout>
 
@@ -108,22 +107,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/newsMoreTextSize"
+                android:autofillHints=""
                 android:hint="@string/age"
                 android:inputType="number"
-                android:autofillHints=""
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
                 android:id="@+id/registerTroop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textSize="@dimen/newsMoreTextSize"
+                android:autofillHints=""
                 android:hint="@string/troop"
                 android:inputType="number"
-                android:autofillHints=""
-                android:textColorHighlight="@color/primaryColorDark"/>
+                android:textColorHighlight="@color/primaryColorDark"
+                android:textSize="@dimen/newsMoreTextSize" />
         </LinearLayout>
 
         <RelativeLayout
@@ -134,65 +133,62 @@
                 android:id="@+id/blank"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
-                android:layout_centerHorizontal="true"
-                />
+                android:layout_centerHorizontal="true" />
 
 
             <TextView
                 android:id="@+id/lengthCheck"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textColor="@color/primaryColorDark"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/blank"
                 android:text="@string/passwordChars"
-                android:layout_toEndOf="@id/blank"/>
+                android:textColor="@color/primaryColorDark" />
 
             <TextView
                 android:id="@+id/numberCheck"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textColor="@color/primaryColorDark"
-                android:text="@string/numberString"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lengthCheck"
                 android:layout_toEndOf="@id/blank"
-                android:layout_below="@id/lengthCheck"/>
+                android:text="@string/numberString"
+                android:textColor="@color/primaryColorDark" />
 
 
             <TextView
                 android:id="@+id/capitalCheck"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:textColor="@color/primaryColorDark"
-                android:text="@string/password_must_contain_a_capital_letter"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/numberCheck"
                 android:layout_toEndOf="@id/blank"
-                android:layout_below="@id/numberCheck"/>
+                android:text="@string/password_must_contain_a_capital_letter"
+                android:textColor="@color/primaryColorDark" />
         </RelativeLayout>
-
-
 
 
         <Button
             android:id="@+id/registerButton"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
             android:layout_width="200dp"
-            android:enabled="false"
-            android:drawable="@drawable/change_color"
-            android:textSize="@dimen/newsMoreTextSize"
-            android:drawableTint="@drawable/change_back_color"
-            android:text="@string/submit"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/loginViewsMargin"
-            tools:targetApi="m"
-            tools:ignore="InefficientWeight" />
+            android:layout_weight="1"
+            android:drawable="@drawable/change_color"
+            android:drawableTint="@drawable/change_back_color"
+            android:enabled="false"
+            android:text="@string/submit"
+            android:textSize="@dimen/newsMoreTextSize"
+            tools:ignore="InefficientWeight"
+            tools:targetApi="m" />
 
         <TextView
             style="@style/parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:textColor="@color/primaryColor"
-            android:text="@string/signup_login_hint"
-            android:onClick="openLoginApp"
             android:layout_marginTop="@dimen/loginViewsMargin"
+            android:onClick="openLoginApp"
+            android:text="@string/signup_login_hint"
+            android:textAlignment="center"
+            android:textColor="@color/primaryColor"
+            android:textStyle="bold"
             tools:ignore="UsingOnClickInXml" />
 
     </LinearLayout>
@@ -202,8 +198,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".9"
-        android:visibility="invisible"
-        android:background="@color/grey">
+        android:background="@color/grey"
+        android:visibility="invisible">
 
         <ProgressBar
             android:id="@+id/progress_loader"
@@ -212,16 +208,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleX="4"
-            android:scaleY="4"/>
+            android:scaleY="4" />
+
         <TextView
             android:id="@+id/loading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Loading"
-            android:textColor="@color/white"
-            android:scaleY="2"
+            android:layout_gravity="center"
             android:scaleX="2"
-            android:layout_gravity="center"/>
+            android:scaleY="2"
+            android:text="@string/Loading"
+            android:textColor="@color/white" />
     </FrameLayout>
 
 </androidx.cardview.widget.CardView>

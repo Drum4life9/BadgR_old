@@ -25,8 +25,7 @@ public class LoginRepository {
         return instance;
     }
 
-    public static scoutPerson getUser()
-    {
+    public static scoutPerson getUser() {
         return user;
     }
 

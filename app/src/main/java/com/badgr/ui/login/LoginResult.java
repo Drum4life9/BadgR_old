@@ -1,6 +1,7 @@
 package com.badgr.ui.login;
 
 import androidx.annotation.Nullable;
+
 import com.badgr.scoutClasses.scoutPerson;
 
 /**

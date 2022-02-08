@@ -3,38 +3,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
 
     <ImageView
-        android:id="@+id/imageView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/app_icon"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        app:srcCompat="@drawable/ic_launcher_background"
-        android:contentDescription="App Icon" />
+        app:srcCompat="@drawable/ic_launcher_background" />
 
     <Button
         android:id="@+id/btnSignIn"
         android:layout_width="270dp"
-        android:layout_marginBottom="20dp"
         android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:textColor="@color/black"
-        android:text="Sign in"
-        android:onClick="loginClick"/>
+        android:layout_marginBottom="20dp"
+        android:background="@color/primaryColor"
+        android:text="@string/sign_in"
+        android:textColor="@color/black" />
 
     <Button
         android:id="@+id/btnNewUser"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:background="@color/primaryColor"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:textColor="@color/black"
-        android:text="Register New User"
-        android:onClick="registerClick"/>
+        android:background="@color/primaryColor"
+        android:text="@string/register_new_user"
+        android:textColor="@color/black" />
 
 </LinearLayout>

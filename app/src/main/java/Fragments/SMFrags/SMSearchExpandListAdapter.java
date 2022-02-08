@@ -13,15 +13,9 @@ import android.widget.TextView;
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import Fragments.ScoutFrags.SSearchBadges;
 
 public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
     private final Context context;
@@ -33,7 +27,7 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
 
     //Constructor
     public SMSearchExpandListAdapter(Context context, List<String> expandableListTitle,
-                                    ArrayList<meritBadge> b, scoutPerson u) {
+                                     ArrayList<meritBadge> b, scoutPerson u) {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         badges = b;
@@ -83,7 +77,6 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
             if (isChecked) checked.add(badge.getId());
             else checked.remove((Integer) badge.getId());
         });
-
 
 
         //TODO image stuff

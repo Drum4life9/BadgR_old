@@ -7,22 +7,21 @@
         android:id="@+id/requirementReplace"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerVertical="true"
         android:layout_marginStart="80dp"
-        android:textSize="18sp"
         android:padding="15dp"
         android:textColor="@color/black"
-        android:layout_centerVertical="true"/>
+        android:textSize="18sp" />
 
     <CheckBox
         android:id="@+id/reqChecked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleX="2"
-        android:scaleY="2"
         android:layout_marginStart="20dp"
         android:layout_marginTop="7dp"
-        android:layout_marginBottom="3dp"/>
-
+        android:layout_marginBottom="3dp"
+        android:scaleX="2"
+        android:scaleY="2" />
 
 
 </RelativeLayout>

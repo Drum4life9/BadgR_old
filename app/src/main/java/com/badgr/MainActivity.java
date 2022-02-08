@@ -1,9 +1,10 @@
 package com.badgr;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.content.Intent;
+import android.widget.Button;
 
 import com.badgr.sql.AllBadgeReqs;
 import com.badgr.ui.login.LoginActivity;
@@ -21,17 +22,23 @@ public class MainActivity extends Activity {
 
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(AllBadgeReqs::new);
+
+        Button login = findViewById(R.id.btnSignIn);
+        Button register = findViewById(R.id.btnNewUser);
+
+
+        login.setOnClickListener(v -> loginClick());
+        register.setOnClickListener(v -> registerClick());
     }
 
 
-
-    public void loginClick(View view) {
+    public void loginClick() {
         Intent login = new Intent(this, LoginActivity.class);
         startActivity(login);
     }
 
 
-    public void registerClick(View view) {
+    public void registerClick() {
         Intent register = new Intent(this, RegisterActivity.class);
         startActivity(register);
     }

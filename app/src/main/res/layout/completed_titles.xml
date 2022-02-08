@@ -1,15 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--  Single List Item Design -->
+<?xml version="1.0" encoding="utf-8"?><!--  Single List Item Design -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/label"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
     android:layout_margin="20sp"
+    android:layout_marginStart="10dp"
+    android:includeFontPadding="true"
     android:paddingStart="5dp"
     android:paddingBottom="5dp"
-    android:includeFontPadding="true"
-    android:textSize="30sp"
-    android:textColor="@color/light_grey" >
-</TextView>
+    android:textColor="@color/light_grey"
+    android:textSize="30sp" />

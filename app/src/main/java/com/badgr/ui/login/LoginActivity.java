@@ -1,16 +1,9 @@
 package com.badgr.ui.login;
 
 import android.app.Activity;
-
-import androidx.annotation.NonNull;
-
-import androidx.lifecycle.ViewModelProvider;
-
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -21,7 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Intent;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.badgr.R;
 import com.badgr.scoutClasses.scoutPerson;
@@ -113,11 +109,11 @@ public class LoginActivity extends AppCompatActivity {
             return false;
         });
         loginButton.setOnClickListener(v -> {
-                    toggleLoading(loadingFrame, spinner, loadingText, true);
+            toggleLoading(loadingFrame, spinner, loadingText, true);
 
-                    loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+            loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
 
-                });
+        });
 
         noAccount.setOnClickListener(v -> {
             Intent openRegister = new Intent(this, RegisterActivity.class);
@@ -131,8 +127,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUiWithUser(@NonNull scoutPerson p) {
-        String welcome = (getString(R.string.welcome) + " " + p.getFName() + " "+ p.getLName() + "!");
-                if (p.isSM()) openSMApp();
+        String welcome = (getString(R.string.welcome) + " " + p.getFName() + " " + p.getLName() + "!");
+        if (p.isSM()) openSMApp();
         else openApp();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
@@ -161,16 +157,12 @@ public class LoginActivity extends AppCompatActivity {
         return !(user.getText().toString().equals("") || pass.getText().toString().equals(""));
     }
 
-    private static void toggleLoading(FrameLayout f, ProgressBar p, TextView t, boolean tog)
-    {
-        if (tog)
-        {
+    private static void toggleLoading(FrameLayout f, ProgressBar p, TextView t, boolean tog) {
+        if (tog) {
             f.setVisibility(View.VISIBLE);
             p.setVisibility(View.VISIBLE);
             t.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             f.setVisibility(View.GONE);
             p.setVisibility(View.INVISIBLE);
             t.setVisibility(View.INVISIBLE);

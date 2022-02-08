@@ -3,7 +3,12 @@ package com.badgr.scoutPagesAndClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.badgr.R;
 import com.badgr.data.LoginRepository;
@@ -12,19 +17,13 @@ import com.badgr.sql.AllBadgeReqs;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager2.widget.ViewPager2;
-
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import Fragments.ScoutFrags.SCompletedBadges;
 import Fragments.ScoutFrags.SMyListExpandListAdapter;
 import Fragments.ScoutFrags.SMyListFragment;
+import Fragments.ScoutFrags.SSearchExpandListAdapter;
 
 
 public class scoutPage extends AppCompatActivity {
@@ -85,6 +84,8 @@ public class scoutPage extends AppCompatActivity {
 
         SMyListFragment.getBadgesAdded();
         SCompletedBadges.getFinishedBadges();
+        SSearchExpandListAdapter.pullAddedBadges(user);
+        SSearchExpandListAdapter.pullFinishedBadges(user);
 
     }
 

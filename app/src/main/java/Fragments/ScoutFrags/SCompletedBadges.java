@@ -24,7 +24,6 @@ import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -39,7 +38,6 @@ public class SCompletedBadges extends Fragment {
     private static final MutableLiveData<ArrayList<meritBadge>> completedBadgesLive = new MutableLiveData<>();
     private static ArrayList<meritBadge> completedBadges = new ArrayList<>();
     private static final scoutPerson user = LoginRepository.getUser();
-
 
 
     @Override
@@ -63,15 +61,12 @@ public class SCompletedBadges extends Fragment {
 
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
             completedBadges = completedBadgesLive.getValue();
-            if (completedBadges == null || completedBadges.size() == 0)
-            {
+            if (completedBadges == null || completedBadges.size() == 0) {
                 edit.setVisibility(View.GONE);
                 none.setVisibility(View.VISIBLE);
                 list.setVisibility(View.GONE);
                 return;
-            }
-            else
-            {
+            } else {
                 none.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
                 list.setVisibility(View.VISIBLE);
@@ -88,8 +83,7 @@ public class SCompletedBadges extends Fragment {
         completedBadgesLive.observe(getViewLifecycleOwner(), badgeChanged);
 
         edit.setOnClickListener(v -> {
-            if (completedBadgesLive.getValue() == null || completedBadgesLive.getValue().size() == 0)
-            {
+            if (completedBadgesLive.getValue() == null || completedBadgesLive.getValue().size() == 0) {
                 Toast.makeText(getContext(), "No badges completed!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -110,7 +104,7 @@ public class SCompletedBadges extends Fragment {
             //hides the remove button
             remove.setVisibility(View.GONE);
 
-            if (badges != null && badges.size() != 0){
+            if (badges != null && badges.size() != 0) {
                 //connects to SQL and updates badges
                 ExecutorService STE = Executors.newSingleThreadExecutor();
                 STE.execute(() ->
@@ -118,8 +112,7 @@ public class SCompletedBadges extends Fragment {
                 SMyListExpandListAdapter.pullFinishedReqs(user);
                 Toast.makeText(getContext(), "Badges Removed", Toast.LENGTH_LONG).show();
             }
-            if (completedBadges == null || completedBadges.size() == 0)
-            {
+            if (completedBadges == null || completedBadges.size() == 0) {
                 list.setVisibility(View.GONE);
             }
             resetList(view);
@@ -128,16 +121,14 @@ public class SCompletedBadges extends Fragment {
     }
 
 
-    public static void getFinishedBadges()
-    {
+    public static void getFinishedBadges() {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
                 completedBadgesLive.postValue(sqlRunner.getFinishedBadges(user)));
     }
 
-    private void setTitles()
-    {
+    private void setTitles() {
         for (int i = 0; i < completedBadges.size(); i++)
             compTitles[i] = completedBadges.get(i).getName();
     }
