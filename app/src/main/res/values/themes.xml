@@ -54,16 +54,31 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name = "gridStyle">
-        <item name="android:background">@color/primaryColorDark</item>
+
+    <style name="gridLight">
+        <item name="android:background">@color/primaryColorExtraLight</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:layout_margin">5dp</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">7dp</item>
         <item name="android:layout_height">40dp</item>
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
 
+    <style name="gridDark">
+        <item name="android:background">@color/primaryColorLight</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/light_grey</item>
+        <item name="android:layout_margin">10dp</item>
+        <item name="android:padding">7dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="linearLayStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
     <style name="modifiedEditText">
         <item name="android:textSize">@dimen/newsMoreTextSize</item>
     </style>

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.36770833333333336" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/badgr_full_image.xml" value="0.278" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/border.xml" value="0.36279296875" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/change_back_color.xml" value="0.23125" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/drawable/change_button.xml" value="0.15625" />
@@ -34,7 +35,7 @@
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/fragment_scout_tab.xml" value="0.22" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/fragment_search_badges.xml" value="0.17852564102564103" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/fragment_welcome.xml" value="0.37083333333333335" />
-        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/home_page.xml" value="0.4528302049755674" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/home_page.xml" value="0.22" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/layout_login.xml" value="0.2988679352838745" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/layout_register.xml" value="0.33727810650887574" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/list_group.xml" value="0.28173076923076923" />
@@ -61,6 +62,8 @@
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/snackbar_basic_text.xml" value="0.2564102564102564" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/title_page.xml" value="0.30364583333333334" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/welcome_list.xml" value="0.16936251189343482" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/mipmap-anydpi-v26/BadgrIcon.xml" value="0.278" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/mipmap-anydpi-v26/badgrIcon.xml" value="0.219" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.36770833333333336" />
       </map>
     </option>

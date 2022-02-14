@@ -12,7 +12,9 @@
     <!--colors for modern ui-->
     <color name="whiteTextColor">#F4F6F6</color>
     <color name="primaryColor">#FF9C91</color>
-    <color name="primaryColorDark">#CD3F3E</color>
+    <color name="primaryColorDark">#D44F4E</color>
+    <color name="primaryColorLight">#FFD9D5</color>
+    <color name="primaryColorExtraLight">#FFECEA</color>
 
     <!--colors for card-->
     <color name="whiteCardColor">#fff</color>

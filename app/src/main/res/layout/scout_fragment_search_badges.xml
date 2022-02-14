@@ -31,7 +31,7 @@
         android:layout_below="@id/dividerSearch"
         android:layout_marginStart="10dp"
         android:autofillHints="name"
-        android:hint="@string/enter_badge_name"
+        android:hint="@string/enter_B_name"
         android:inputType="text"
         android:paddingEnd="20dp"
         tools:ignore="RtlSymmetry" />
