@@ -21,7 +21,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.badgr.R;
 import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.scoutPagesAndClasses.scoutMasterPage;
 import com.badgr.scoutPagesAndClasses.scoutPage;
 import com.badgr.ui.register.RegisterActivity;
 import com.badgr.ui.register.RegisterViewModel;
@@ -128,21 +127,29 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUiWithUser(@NonNull scoutPerson p) {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + " " + p.getLName() + "!");
+        //future versions
+        /*
         if (p.isSM()) openSMApp();
         else openApp();
+         */
+        openSApp();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
-    private void openApp() {
+    private void openSApp() {
         Intent open = new Intent(this, scoutPage.class);
         startActivity(open);
     }
 
 
+    //future versions
+    /*
     private void openSMApp() {
         Intent open = new Intent(this, scoutMasterPage.class);
         startActivity(open);
     }
+
+     */
 
     private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_LONG).show();

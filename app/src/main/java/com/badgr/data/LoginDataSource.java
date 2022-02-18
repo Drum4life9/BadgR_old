@@ -1,7 +1,6 @@
 package com.badgr.data;
 
 
-import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
@@ -101,8 +100,11 @@ public class LoginDataSource {
 
             scoutPerson user = new scoutPerson(returned);
 
+            //Add for future versions
+            /*
             if (user.isSM())
                 user = new scoutMaster(returned);
+             */
 
             return new Result.Success<>(user);
         } catch (Exception e) {

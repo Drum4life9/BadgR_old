@@ -1,7 +1,6 @@
 package com.badgr.sql;
 
 import com.badgr.scoutClasses.meritBadge;
-import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 
 import java.sql.Connection;
@@ -666,6 +665,8 @@ public class sqlRunner {
         SMyListExpandListAdapter.pullFinishedReqs(p);
     }
 
+    //Add for future versions
+    /*
     public static ArrayList<scoutPerson> getTroop(scoutMaster p) {
         ArrayList<scoutPerson> retList = new ArrayList<>();
 
@@ -692,6 +693,7 @@ public class sqlRunner {
 
         return retList;
     }
+     */
 
     public static void setBadges(Hashtable<scoutPerson, ArrayList<Integer>> table) {
         try (Connection c = DriverManager.getConnection(url, username, password)) {
