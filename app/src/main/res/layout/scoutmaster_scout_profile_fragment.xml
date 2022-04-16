@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <GridLayout
+        android:id="@+id/linLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:id="@+id/backButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_column="1"
+            android:textSize="20sp"
+            android:text="@string/go_back"
+            />
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:textColor="@color/grey"
+            android:layout_column="2"
+            android:id="@+id/nameReplace"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/invis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:layout_gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_column="3"
+            android:textSize="20sp"
+            android:text="@string/go_back"
+            android:visibility="invisible"
+            />
+
+    </GridLayout>
+
+
+    <View
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/linLayout"
+        android:background="@color/primaryColor"
+        android:backgroundTint="@color/primaryColor" />
+
+
+    <TextView
+        android:id="@+id/mbReplaceText"
+        android:layout_below="@id/spacer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/grey"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        />
+
+    <View
+        android:id="@+id/spacer2"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/mbReplaceText"
+        android:layout_marginBottom="10dp"
+        android:background="@color/primaryColor"
+        android:backgroundTint="@color/primaryColor" />
+
+    <ListView
+        android:id="@+id/mbList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer2"/>
+
+
+</RelativeLayout>

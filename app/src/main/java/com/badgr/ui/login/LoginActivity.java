@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -16,11 +18,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.badgr.R;
+import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.scoutPerson;
+import com.badgr.scoutPagesAndClasses.scoutMasterPage;
 import com.badgr.scoutPagesAndClasses.scoutPage;
 import com.badgr.ui.register.RegisterActivity;
 import com.badgr.ui.register.RegisterViewModel;
@@ -38,17 +43,15 @@ public class LoginActivity extends AppCompatActivity {
         loginViewModel = new ViewModelProvider(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
 
-        final EditText usernameEditText = findViewById(R.id.username);
+        final EditText emailEditText = findViewById(R.id.username);
         final EditText passwordEditText = findViewById(R.id.password);
         final Button loginButton = findViewById(R.id.login);
-        final ProgressBar spinner = findViewById(R.id.progress_loader_login);
-        final TextView loadingText = findViewById(R.id.loading_login);
         final FrameLayout loadingFrame = findViewById(R.id.loadingScreenLogin);
         final TextView noAccount = findViewById(R.id.noAccount);
 
 
         loginViewModel.getLoginResult().observe(this, loginResult -> {
-            toggleLoading(loadingFrame, spinner, loadingText, true);
+            toggleLoading(loadingFrame, true);
             if (loginResult == null) {
                 return;
             }
@@ -59,14 +62,14 @@ public class LoginActivity extends AppCompatActivity {
                 updateUiWithUser(loginResult.getSuccess());
             }
             setResult(Activity.RESULT_OK);
-            toggleLoading(loadingFrame, spinner, loadingText, false);
+            toggleLoading(loadingFrame, false);
         });
 
-        usernameEditText.addTextChangedListener(new TextWatcher() {
+        emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString()))
-                    usernameEditText.setError("Invalid email");
+                if (!RegisterViewModel.isUserNameValid(emailEditText.getText().toString()))
+                    emailEditText.setError("Invalid email");
                 loginButton.setEnabled(updateBut());
             }
 
@@ -76,8 +79,8 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!RegisterViewModel.isUserNameValid(usernameEditText.getText().toString())) {
-                    usernameEditText.setError("Invalid email");
+                if (!RegisterViewModel.isUserNameValid(emailEditText.getText().toString())) {
+                    emailEditText.setError("Invalid email");
                     loginButton.setEnabled(false);
                     return;
                 }
@@ -102,15 +105,17 @@ public class LoginActivity extends AppCompatActivity {
 
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                loginViewModel.login(usernameEditText.getText().toString(),
+                loginViewModel.login(emailEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
             return false;
         });
         loginButton.setOnClickListener(v -> {
-            toggleLoading(loadingFrame, spinner, loadingText, true);
+            toggleLoading(loadingFrame, true);
 
-            loginViewModel.login(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+            loginViewModel.login(emailEditText.getText().toString(), passwordEditText.getText().toString());
+
+            passwordEditText.setText("");
 
         });
 
@@ -125,14 +130,30 @@ public class LoginActivity extends AppCompatActivity {
         super.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onRestoreInstanceState(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onRestoreInstanceState(savedInstanceState, persistentState);
+        LoginRepository.logout();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        LoginRepository.logout();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LoginRepository.logout();
+    }
+
     private void updateUiWithUser(@NonNull scoutPerson p) {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + " " + p.getLName() + "!");
         //future versions
-        /*
+
         if (p.isSM()) openSMApp();
-        else openApp();
-         */
-        openSApp();
+        else openSApp();
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 
@@ -142,14 +163,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    //future versions
-    /*
     private void openSMApp() {
         Intent open = new Intent(this, scoutMasterPage.class);
         startActivity(open);
     }
-
-     */
 
     private void showLoginFailed(String errorString) {
         Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_LONG).show();
@@ -164,15 +181,11 @@ public class LoginActivity extends AppCompatActivity {
         return !(user.getText().toString().equals("") || pass.getText().toString().equals(""));
     }
 
-    private static void toggleLoading(FrameLayout f, ProgressBar p, TextView t, boolean tog) {
+    private static void toggleLoading(FrameLayout f, boolean tog) {
         if (tog) {
             f.setVisibility(View.VISIBLE);
-            p.setVisibility(View.VISIBLE);
-            t.setVisibility(View.VISIBLE);
         } else {
             f.setVisibility(View.GONE);
-            p.setVisibility(View.INVISIBLE);
-            t.setVisibility(View.INVISIBLE);
         }
     }
 }

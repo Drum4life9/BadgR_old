@@ -1,0 +1,169 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="Fragments.SMFrags.SMSearchBadgesFragment">
+
+
+    <FrameLayout
+        android:id="@+id/scoutPanel"
+        android:visibility="invisible"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".9"
+        android:background="@color/grey">
+
+        <RelativeLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="100dp"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="200dp"
+            android:layout_marginBottom="400dp">
+
+
+            <TextView
+                android:id="@+id/textReplace"
+                android:textSize="25sp"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="@string/assign_badge_text"/>
+
+            <ListView
+                android:id="@+id/scoutList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textReplace"
+                android:background="@color/white"/>
+
+
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fabSM"
+                android:text="@string/add_to_scouts"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="50dp"
+                android:layout_marginEnd="50dp"
+                android:padding="10dp"
+                android:contentDescription="@string/add_to_scouts" />
+
+        </RelativeLayout>
+
+
+
+    </FrameLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/relLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <TextView
+            android:id="@+id/SMsearchTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="80dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/MBSearch"
+            android:textColor="@color/light_grey"
+            android:textSize="30sp" />
+
+        <View
+            android:id="@+id/spacer"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/SMsearchTitle"
+            android:layout_marginBottom="10dp"
+            android:background="@color/light_grey"
+            android:backgroundTint="@color/light_grey" />
+
+        <LinearLayout
+            android:id="@+id/linLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spacer"
+            android:layout_marginTop="5dp">
+
+            <EditText
+                android:id="@+id/SMbadgeSearchText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:autofillHints="name"
+                android:hint="@string/enter_badge_name"
+                android:inputType="text"
+                android:layout_marginStart="10dp"
+                android:padding="10dp"
+                android:layout_weight="6"
+                />
+
+            <Button
+                android:id="@+id/SMsearchBadgesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:padding="10dp"
+                android:layout_weight="1"
+                android:text="@string/search"
+                android:textSize="20sp"/>
+
+        </LinearLayout>
+
+
+        <ProgressBar
+            android:id="@+id/SMsearchProgress"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@id/linLayout"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/SMnoSearchResults"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_below="@id/linLayout"
+            android:layout_centerHorizontal="true"
+            android:text="@string/no_search_results"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:visibility="gone" />
+
+        <ExpandableListView
+            android:id="@+id/SMexpandableListViewSearch"
+            android:layout_width="match_parent"
+            android:layout_height="1000dp"
+            android:layout_below="@id/SMsearchProgress"
+            android:divider="@color/primaryColorDark"
+            android:dividerHeight="1dp" />
+
+        <Button
+            android:id="@+id/SMAddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/assign_to_scout"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:padding="15dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

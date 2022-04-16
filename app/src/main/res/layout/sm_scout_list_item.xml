@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:orientation="horizontal">
+
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:id="@+id/scoutName"
+        android:textSize="30sp"
+        android:textColor="@color/grey"
+        android:padding="10dp"
+        android:layout_weight="7"
+        android:layout_gravity="center_vertical"/>
+
+    <Button
+        android:id="@+id/profileButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:text="@string/profile"
+        android:textSize="20sp"
+        android:layout_gravity="center_vertical"
+        android:padding="12dp"/>
+
+</LinearLayout>

@@ -40,4 +40,10 @@ public class LoginRepository {
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         return result;
     }
+
+    public static void logout()
+    {
+        user = null;
+    }
 }
+

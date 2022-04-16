@@ -249,9 +249,13 @@ public class RegisterActivity extends Activity {
         //creates add user to database thread
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() -> {
-            sqlRunner.addUser(p);
-            cDL.countDown();
-
+            if (!sqlRunner.addUser(p))
+            {
+                toggleVis(false);
+                Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
+            }
+            else
+                cDL.countDown();
         });
 
 
@@ -259,14 +263,6 @@ public class RegisterActivity extends Activity {
         try {
             cDL.await();
         } catch (InterruptedException e) {
-            toggleVis(false);
-            Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
-        //if error, kill method and tell user to try again
-        if (!sqlRunner.getRegisterSuccess()) {
             toggleVis(false);
             Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             return;

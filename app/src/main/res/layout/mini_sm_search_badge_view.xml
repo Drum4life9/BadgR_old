@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="150dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/badgeNameReplace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/badgeIsEagleReplace"
+            android:background="@drawable/border"
+            android:paddingStart="20sp"
+            android:paddingTop="10sp"
+            android:paddingEnd="20sp"
+            android:paddingBottom="10sp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/mb_name"
+            android:textSize="30sp"
+            tools:ignore="RelativeOverlap" />
+
+        <TextView
+            android:id="@+id/badgeIsEagleReplace"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/border"
+            android:paddingStart="10sp"
+            android:paddingTop="10dp"
+            android:paddingEnd="10dp"
+            android:text="@string/eagle_req"
+            android:textAlignment="textEnd"
+            android:textSize="30sp" />
+
+        <CheckBox
+            android:id="@+id/badgeChecked"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/badgeIsEagleReplace"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="10dp"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:saveEnabled="true"
+            android:scaleX="3"
+            android:scaleY="3"
+            android:shadowColor="@color/black" />
+
+        <TextView
+            android:id="@+id/addToListText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/badgeIsEagleReplace"
+            android:layout_marginTop="14dp"
+            android:layout_toStartOf="@id/badgeChecked"
+            android:paddingEnd="40dp"
+            android:text="@string/assign_to_scout"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/imageReplace"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/imageIcon"
+            android:src="@drawable/ic_launcher_foreground" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

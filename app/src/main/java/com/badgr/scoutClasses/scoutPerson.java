@@ -106,4 +106,6 @@ public class scoutPerson {
     public int getUserID() {
         return userID;
     }
+
+    public String getFullName() {return fName + " " + lName;}
 }

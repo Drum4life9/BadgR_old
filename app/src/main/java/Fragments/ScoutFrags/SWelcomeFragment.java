@@ -34,7 +34,7 @@ import java.util.concurrent.Executors;
 public class SWelcomeFragment extends Fragment {
 
     private static final scoutPerson user = LoginRepository.getUser();
-    private static final ArrayList<Integer> added = SSearchExpandListAdapter.getAddedBadges();
+    private static ArrayList<meritBadge> added = new ArrayList<>();
     private static final MutableLiveData<ArrayList<meritBadge>> addedBadgesLive = new MutableLiveData<>();
 
     @Override
@@ -42,6 +42,7 @@ public class SWelcomeFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         getFinishedBadges();
+        getAddedBadges();
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.scout_fragment_welcome, container, false);
@@ -105,6 +106,13 @@ public class SWelcomeFragment extends Fragment {
         //gets which badges have been completed
         sTE.execute(() ->
                 addedBadgesLive.postValue(sqlRunner.getAddedBadges(user)));
+    }
+
+    public static void getAddedBadges() {
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        //gets which badges have been completed
+        sTE.execute(() ->
+                added = sqlRunner.getAddedBadges(user));
     }
 
 }

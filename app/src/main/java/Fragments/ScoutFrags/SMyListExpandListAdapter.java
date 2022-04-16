@@ -172,7 +172,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     // Gets a View that displays the given group.
     public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         meritBadge badge = badges.get(listPosition);
-        ArrayList<Integer> pulledReqs = changedReqs.get(badge.getId());
+        ArrayList<Integer> pulledReqs = finishedReq.get(badge.getId());
         if (pulledReqs == null) pulledReqs = new ArrayList<>();
         String listTitle = (String) getGroup(listPosition);
 
@@ -188,12 +188,13 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
         int numReqs = badge.getNumReqs();
         int compReqs = pulledReqs.size();
-        double percent = compReqs * 1.0 / numReqs * 100;
-        String percentText = ((int) (percent * 10) / 10) + "%";
+        int percent = (int) (compReqs * 1.0 / numReqs * 100);
+        String percentText = percent + "%";
 
-        progress.setProgress((int) percent);
-        listTitleTextView.setText(listTitle);
+        progress.setProgress(percent);
         progressText.setText(percentText);
+
+        listTitleTextView.setText(listTitle);
 
         return convertView;
     }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear"
+            android:textSize="20sp"
+            android:layout_margin="20dp"
+            android:layout_weight="1"
+            android:visibility="invisible"
+            android:enabled="false"
+            android:clickable="false"/>
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="2"
+            android:text="@string/recent_activity_changes"
+            android:textColor="@color/light_grey"
+            android:textSize="30sp"
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/clear"
+            android:textSize="20sp"
+            android:layout_margin="20dp"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/spacer"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:layout_below="@id/lin"
+        android:background="@color/light_grey"
+        android:backgroundTint="@color/light_grey" />
+
+    <ListView
+        android:id="@+id/notList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/noNots"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_nots"
+        android:textSize="40sp"
+        android:layout_below="@id/spacer"
+        android:layout_centerInParent="true"
+        android:layout_margin="10dp"
+        android:visibility="gone"/>
+
+    <ProgressBar
+        android:id="@+id/notProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer"
+        android:layout_centerInParent="true"
+        android:layout_margin="100dp"
+        android:scaleX="3"
+        android:scaleY="3"/>
+
+
+
+</RelativeLayout>

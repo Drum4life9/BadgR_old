@@ -1,6 +1,7 @@
 package com.badgr.data;
 
 
+import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
@@ -17,43 +18,16 @@ public class LoginDataSource {
 
     private ArrayList<String> returned;
 
-    public Object login(String username, String password) {
+    public Result login(String username, String password) {
 
         try {
-
-            //---------------------------------------------------------Check username-------------------------------------------------//
-
-            //creates a countDownLatch so that this thread is completed before anything else happens
-            CountDownLatch userInDBCDL = new CountDownLatch(1);
-
-            //thread to check username in database
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            STE.execute(() -> {
-                sqlRunner.isUserInDatabase(username);
-                userInDBCDL.countDown();
-
-            });
-
-
-            //waits until thread has completed to move on
-            try {
-                userInDBCDL.await();
-            } catch (InterruptedException e) {
-                return new Result.Error("Error logging in");
-            }
-
-            //if the user is not in the database, return error message
-            if (!sqlRunner.getUserInDB()) {
-                return new Result.Error("User does not exist. Please Register a new user");
-            }
-
             //---------------------------------------------------------Check authentication-------------------------------------------------//
 
             //creates a countDownLatch so that this thread is completed before anything else happens
             CountDownLatch authCDL = new CountDownLatch(1);
 
             //thread to authenticate the user
-            STE = Executors.newSingleThreadExecutor();
+            ExecutorService STE = Executors.newSingleThreadExecutor();
             STE.execute(() -> {
                 sqlRunner.authUser(username, password);
                 authCDL.countDown();
@@ -71,7 +45,7 @@ public class LoginDataSource {
 
             //if authentication was not successful, return error
             if (!sqlRunner.getAuthSuccess()) {
-                return new Result.Error("Password Incorrect. Please try again.");
+                return new Result.Error("Email or Password Incorrect. Please try again.");
             }
 
             //---------------------------------------------------------Pulls user info from database-------------------------------------------------//
@@ -100,20 +74,14 @@ public class LoginDataSource {
 
             scoutPerson user = new scoutPerson(returned);
 
-            //Add for future versions
-            /*
-            if (user.isSM())
+            if (user.isSM()) {
                 user = new scoutMaster(returned);
-             */
+            }
 
             return new Result.Success<>(user);
         } catch (Exception e) {
             return new Result.Error("Error logging in");
         }
-    }
-
-    public void logout() {
-        // TODO: revoke authentication
     }
 
 }

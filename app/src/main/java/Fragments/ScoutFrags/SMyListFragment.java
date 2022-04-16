@@ -67,7 +67,6 @@ public class SMyListFragment extends Fragment {
             badgesAdded = badgesAddedLive.getValue();
             if (badgesAdded == null) {
                 toggleSpinner(spinner, false);
-                //TODO text thing here
                 return;
             }
             Collections.sort(badgesAdded, Comparator.comparing(meritBadge::getName));
@@ -92,24 +91,22 @@ public class SMyListFragment extends Fragment {
             ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
             if (completedBadges.size() != 0) {
                 //resets the accordionList
-                resetList(view);
-
+                for (int i : completedBadges)
+                {
+                    ExecutorService ste = Executors.newSingleThreadExecutor();
+                    ste.execute(() -> sqlRunner.addNewNot(user, i));
+                }
                 Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
                 SCompletedBadges.getFinishedBadges();
             } else {
-                ArrayList<Integer> expanded = new ArrayList<>();
-                for (int i = 0; i < Objects.requireNonNull(badgesAddedLive.getValue()).size(); i++) {
-                    if (accordionList.isGroupExpanded(i)) expanded.add(i);
-                }
-                for (int i = 0; i < expanded.size(); i++) {
-                    accordionList.expandGroup(expanded.get(i));
-                }
                 Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
 
 
             }
             getBadgesAdded();
             SMyListExpandListAdapter.pullFinishedReqs(user);
+
+            resetList(view);
         });
 
         clear.setOnClickListener(v ->

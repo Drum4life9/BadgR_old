@@ -2,37 +2,35 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".scoutPagesAndClasses.scoutPage">
+    tools:context=".scoutPagesAndClasses.scoutMasterPage">
 
     <TextView
-        android:id="@+id/welcomeScout"
+        android:id="@+id/SMwelcomeScout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/light_grey"
-        android:paddingStart="10dp"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
-        android:textColor="@color/whiteCardColor"
+        android:textColor="@color/white"
         android:textSize="30sp"
-        android:textStyle="italic"
-        tools:ignore="RtlSymmetry" />
+        android:textStyle="italic" />
 
     <View
-        android:id="@+id/spacer"
+        android:id="@+id/SMspacer"
         android:layout_width="match_parent"
         android:layout_height="11dp"
-        android:layout_below="@id/welcomeScout"
+        android:layout_below="@id/SMwelcomeScout"
         android:background="@color/primaryColor" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        android:id="@+id/SMtab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spacer"
+        android:layout_below="@id/SMspacer"
         android:background="@color/light_grey"
-        app:tabIndicator="@color/primaryColor"
         app:tabIndicatorColor="@color/primaryColor"
         app:tabIndicatorHeight="5dp"
         app:tabSelectedTextColor="@color/white"
@@ -42,10 +40,10 @@
     </com.google.android.material.tabs.TabLayout>
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+        android:id="@+id/SMview_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/tab_layout">
+        android:layout_below="@id/SMtab_layout">
 
 
     </androidx.viewpager2.widget.ViewPager2>

@@ -63,7 +63,7 @@
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@id/completedTitle"
-        android:text="Edit"
+        android:text="@string/edit"
         android:textSize="20sp" />
 
     <Button
@@ -74,7 +74,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:text="Remove"
+        android:text="@string/remove"
         android:textSize="20sp"
         android:textStyle="normal"
         android:visibility="gone" />
