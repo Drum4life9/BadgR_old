@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -226,57 +227,59 @@ public class RegisterActivity extends Activity {
 
         //-------------------------------------------Username check----------------------------------------//
 
-        //if username exists
-        if (checkUsernameExists()) {
-            if (usernameCheckSuccess) {
-                //display toast that username exists
-                toggleVis(false);
-                Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
-            } else {
-                //hopefully should never run, but error message in case of username check failure
-                toggleVis(false);
-                Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
+        new Handler().postDelayed(() ->
+        {
+            //if username exists
+            if (checkUsernameExists()) {
+                if (usernameCheckSuccess) {
+                    //display toast that username exists
+                    toggleVis(false);
+                    Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
+                } else {
+                    //hopefully should never run, but error message in case of username check failure
+                    toggleVis(false);
+                    Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
+                }
+                return;
             }
-            return;
-        }
 
 
-        //---------------------------------------------Add User Attempt------------------------------------//
+            //---------------------------------------------Add User Attempt------------------------------------//
 
-        //Sets a countDownLatch, which ensures this thread is run before anything else happens
-        CountDownLatch cDL = new CountDownLatch(1);
+            //Sets a countDownLatch, which ensures this thread is run before anything else happens
+            CountDownLatch cDL = new CountDownLatch(1);
 
-        //creates add user to database thread
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> {
-            if (!sqlRunner.addUser(p))
-            {
+            //creates add user to database thread
+            ExecutorService STE = Executors.newSingleThreadExecutor();
+            STE.execute(() -> {
+                if (!sqlRunner.addUser(p))
+                {
+                    toggleVis(false);
+                    Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
+                }
+                else
+                    cDL.countDown();
+            });
+
+
+            //waits until previous thread has completed to move on
+            try {
+                cDL.await();
+            } catch (InterruptedException e) {
                 toggleVis(false);
                 Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
             }
-            else
-                cDL.countDown();
-        });
 
 
-        //waits until previous thread has completed to move on
-        try {
-            cDL.await();
-        } catch (InterruptedException e) {
+            //---------------------------------------------Open Login page-------------------------------------//
+
+
             toggleVis(false);
-            Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-
-        //---------------------------------------------Open Login page-------------------------------------//
-
-        toggleVis(false);
-
-        Toast.makeText(this, "Register Successful. Please Log In.", Toast.LENGTH_LONG).show();
-        Intent oLogin = new Intent(this, LoginActivity.class);
-        startActivity(oLogin);
-
+            Toast.makeText(this, "Register Successful. Please Log In.", Toast.LENGTH_LONG).show();
+            Intent oLogin = new Intent(this, LoginActivity.class);
+            startActivity(oLogin);
+        }, 200);
 
     }
 

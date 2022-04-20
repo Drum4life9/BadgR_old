@@ -83,11 +83,22 @@
         android:background="@color/primaryColor"
         android:backgroundTint="@color/primaryColor" />
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleY="3"
+        android:scaleX="3"
+        android:id="@+id/loadingBar"
+        android:layout_below="@id/spacer2"
+        android:layout_centerInParent="true"
+        android:layout_margin="60dp"/>
+
     <ListView
         android:id="@+id/mbList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/spacer2"/>
+        android:layout_below="@id/spacer2"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>
