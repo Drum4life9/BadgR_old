@@ -1,22 +1,16 @@
 package Fragments.SMFrags;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LifecycleOwner;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
@@ -25,11 +19,9 @@ import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
-import java.lang.reflect.Array;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,6 +48,7 @@ public class SMScoutProfile extends AppCompatActivity {
         TextView mbRep = findViewById(R.id.mbReplaceText);
         Button back = findViewById(R.id.backButton);
         mb = findViewById(R.id.mbList);
+        ProgressBar pb = findViewById(R.id.loadingBar);
 
 
         String name = u.getFName() + " " + u.getLName();
@@ -104,6 +97,9 @@ public class SMScoutProfile extends AppCompatActivity {
 
                 SMScoutProfileAdapter adapter = new SMScoutProfileAdapter(this, getStrings(), added.getValue().size(), ids, reqs.getValue(), added.getValue());
                 mb.setAdapter(adapter);
+
+                pb.setVisibility(View.GONE);
+                mb.setVisibility(View.VISIBLE);
             }
         };
 

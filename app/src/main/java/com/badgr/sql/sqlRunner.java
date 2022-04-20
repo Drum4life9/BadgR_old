@@ -31,12 +31,9 @@ public class sqlRunner {
     private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.22:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
+    private final static String url = "jdbc:mysql://10.50.11.69:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
-
-    //error variables
-    private static boolean authSuccess = false;
 
 
     public static boolean addUser(scoutPerson p) {
@@ -133,8 +130,7 @@ public class sqlRunner {
         return retList;
     }
 
-    public static void authUser(String givenU, String givenP) {
-        authSuccess = false;
+    public static boolean authUser(String givenU, String givenP) {
 
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds userPassID with the given username
@@ -157,13 +153,13 @@ public class sqlRunner {
             } else {
                 //if not (or there's no data), success set to false
                 //kills method
-                return;
+                return false;
             }
 
 
             //just in case userPassID didn't update, kills method
             if (uPID < 0) {
-                return;
+                return false;
             }
 
 
@@ -173,23 +169,25 @@ public class sqlRunner {
             rs = stmt.executeQuery("SELECT pass FROM userpass WHERE userPassID = " + uPID + ";");
             //sets cursor at beginning, if error then success = false and kill method
             if (!rs.first()) {
-                return;
+                return false;
             } else {
                 //sets the pass string to the database password
                 pass = rs.getString(1);
             }
 
             //sets the successful login if the username in database = username given, and same for password
-            authSuccess = pass.equals(givenP); //TODO and username stuff here
+            return pass.equals(givenP);
 
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return false;
     }
 
     public static boolean isUserInDatabase(String givenU) {
-        boolean userInDB = false;
+        boolean userInDB;
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds userPassID with the given username
             String ex = "SELECT userPassID FROM users WHERE username = '" + givenU + "'";
@@ -832,9 +830,4 @@ public class sqlRunner {
             e.printStackTrace();
         }
     }
-
-    public static boolean getAuthSuccess() {
-        return authSuccess;
-    }
-
 }

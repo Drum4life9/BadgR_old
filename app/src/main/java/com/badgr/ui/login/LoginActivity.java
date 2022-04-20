@@ -3,7 +3,9 @@ package com.badgr.ui.login;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -35,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
         final FrameLayout loadingFrame = findViewById(R.id.loadingScreenLogin);
         final TextView noAccount = findViewById(R.id.noAccount);
 
+        toggleLoading(loadingFrame, false);
 
         loginViewModel.getLoginResult().observe(this, loginResult -> {
             toggleLoading(loadingFrame, true);
@@ -57,12 +62,12 @@ public class LoginActivity extends AppCompatActivity {
             }
             if (loginResult.getError() != null) {
                 showLoginFailed(loginResult.getError());
+                toggleLoading(loadingFrame, false);
             }
             if (loginResult.getSuccess() != null) {
                 updateUiWithUser(loginResult.getSuccess());
             }
             setResult(Activity.RESULT_OK);
-            toggleLoading(loadingFrame, false);
         });
 
         emailEditText.addTextChangedListener(new TextWatcher() {
@@ -102,18 +107,20 @@ public class LoginActivity extends AppCompatActivity {
                 loginButton.setEnabled(updateBut());
             }
         });
-
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
+            toggleLoading(loadingFrame, true);
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 loginViewModel.login(emailEditText.getText().toString(),
                         passwordEditText.getText().toString());
             }
             return false;
         });
+
         loginButton.setOnClickListener(v -> {
             toggleLoading(loadingFrame, true);
 
-            loginViewModel.login(emailEditText.getText().toString(), passwordEditText.getText().toString());
+            String user = emailEditText.getText().toString(), pass = passwordEditText.getText().toString();
+            new Handler().postDelayed(() -> loginViewModel.login(user, pass), 200);
 
             passwordEditText.setText("");
 
@@ -146,6 +153,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         LoginRepository.logout();
+        toggleLoading(findViewById(R.id.loadingScreenLogin), false);
     }
 
     private void updateUiWithUser(@NonNull scoutPerson p) {

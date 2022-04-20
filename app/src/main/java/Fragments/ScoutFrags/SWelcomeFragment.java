@@ -53,11 +53,7 @@ public class SWelcomeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setTextTitles(view);
-
-        final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
-            setTextTitles(view);
-        };
+        final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> setTextTitles(view);
 
         addedBadgesLive.observe(getViewLifecycleOwner(), badgeChanged);
     }

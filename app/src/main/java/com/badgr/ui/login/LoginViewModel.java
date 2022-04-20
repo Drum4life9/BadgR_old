@@ -1,5 +1,9 @@
 package com.badgr.ui.login;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,6 +24,7 @@ public class LoginViewModel extends ViewModel {
         return loginResult;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void login(String username, String password) {
         //Links to loginRepository, tries to log in user
         Result result = loginRepository.login(username, password);

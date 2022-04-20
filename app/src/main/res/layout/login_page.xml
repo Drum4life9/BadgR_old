@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/loginCard"
     android:layout_gravity="center"
-    android:layout_marginTop="@dimen/loginViewsMargin"
-    android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/whiteCardColor"
-    android:elevation="5dp"
-    app:cardCornerRadius="@dimen/loginCardRadius">
+    style="@style/loginCard">
 
 
     <LinearLayout
         style="@style/linearParent"
         android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:padding="@dimen/loginViewsMargin">
 
         <TextView
@@ -103,5 +98,5 @@
             android:text="@string/Loading"
             android:textColor="@color/white" />
     </FrameLayout>
-</androidx.cardview.widget.CardView>
+</RelativeLayout>
 

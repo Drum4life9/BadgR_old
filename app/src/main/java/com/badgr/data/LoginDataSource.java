@@ -1,14 +1,28 @@
 package com.badgr.data;
 
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
+import com.badgr.ui.login.LoginResult;
 
 import java.util.ArrayList;
-import java.util.concurrent.CountDownLatch;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -16,72 +30,46 @@ import java.util.concurrent.Executors;
  */
 public class LoginDataSource {
 
-    private ArrayList<String> returned;
-
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Result login(String username, String password) {
+        //---------------------------------------------------------Check authentication-------------------------------------------------//
+
+        //thread to authenticate the user
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<Boolean> auth = STE.submit(() -> sqlRunner.authUser(username, password));
+
+        ExecutorService STE2 = Executors.newSingleThreadExecutor();
+        Future<ArrayList<String>> info = STE2.submit(() -> sqlRunner.getUserInfo(username));
+
+        //---------------------------------------------------------Pulls user info from database-------------------------------------------------//
+
+        //thread to pull user info
+
 
         try {
-            //---------------------------------------------------------Check authentication-------------------------------------------------//
-
-            //creates a countDownLatch so that this thread is completed before anything else happens
-            CountDownLatch authCDL = new CountDownLatch(1);
-
-            //thread to authenticate the user
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            STE.execute(() -> {
-                sqlRunner.authUser(username, password);
-                authCDL.countDown();
-
-            });
-
-
-            //waits until thread has completed to move on
-            try {
-                authCDL.await();
-            } catch (InterruptedException e) {
-                return new Result.Error("Error logging in");
-            }
-
+            boolean b = auth.get();
 
             //if authentication was not successful, return error
-            if (!sqlRunner.getAuthSuccess()) {
+            if (!b) {
                 return new Result.Error("Email or Password Incorrect. Please try again.");
+            } else {
+                ArrayList<String> userInfo = info.get();
+
+                if (userInfo != null) {
+                    scoutPerson user = new scoutPerson(userInfo);
+                    if (user.isSM()) {
+                        user = new scoutMaster(userInfo);
+                    }
+
+                    return new Result.Success<>(user);
+                }
             }
 
-            //---------------------------------------------------------Pulls user info from database-------------------------------------------------//
-            CountDownLatch loginCDL = new CountDownLatch(1);
-
-            //thread to pull user info
-            STE = Executors.newSingleThreadExecutor();
-            STE.execute(() -> {
-                returned = sqlRunner.getUserInfo(username);
-                loginCDL.countDown();
-
-            });
-
-            //waits until thread has completed to move on
-            try {
-                loginCDL.await();
-            } catch (InterruptedException e) {
-                return new Result.Error("Error logging in");
-            }
-
-
-            if (returned == null || returned.size() == 0) {
-                return new Result.Error("Error logging in");
-            }
-
-
-            scoutPerson user = new scoutPerson(returned);
-
-            if (user.isSM()) {
-                user = new scoutMaster(returned);
-            }
-
-            return new Result.Success<>(user);
-        } catch (Exception e) {
-            return new Result.Error("Error logging in");
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
         }
+
+        return new Result.Error("An error occurred. Please try again");
     }
 
 }

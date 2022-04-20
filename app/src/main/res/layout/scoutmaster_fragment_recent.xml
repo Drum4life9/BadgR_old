@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="@string/clear"
             android:textSize="20sp"
-            android:layout_margin="20dp"
+            android:layout_margin="17dp"
             android:layout_weight="1"
             android:visibility="invisible"
             android:enabled="false"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="17dp"
             android:layout_weight="2"
             android:text="@string/recent_activity_changes"
             android:textColor="@color/light_grey"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:text="@string/clear"
             android:textSize="20sp"
-            android:layout_margin="20dp"
+            android:layout_margin="17dp"
             android:layout_weight="1"/>
 
     </LinearLayout>

@@ -1,5 +1,10 @@
 package com.badgr.data;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+import androidx.lifecycle.LifecycleOwner;
+
 import com.badgr.scoutClasses.scoutPerson;
 
 /**
@@ -33,9 +38,13 @@ public class LoginRepository {
         user = p;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public Result login(String username, String password) {
         //handles login
-        Result result = (Result) dataSource.login(username, password);
+        Result result = dataSource.login(username, password);
+        //creates result object
+
+        //if user, login success
         if (result instanceof Result.Success)
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         return result;
