@@ -2,6 +2,7 @@ package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,25 +29,22 @@ import com.badgr.sql.sqlRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class SMyListFragment extends Fragment {
 
     private ExpandableListView accordionList;
-    private static final MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
     private static ArrayList<meritBadge> badgesAdded;
     private static final scoutPerson user = LoginRepository.getUser();
-    private ProgressBar spinner;
+    private static final MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        //changes myList badges
-        getBadgesAdded();
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.scout_fragment_my_list, container, false);
@@ -56,14 +54,15 @@ public class SMyListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         //toggles spinner
-        spinner = view.findViewById(R.id.searchProgressMyList);
+        ProgressBar spinner = view.findViewById(R.id.searchProgressMyList);
         AppCompatButton submit = view.findViewById(R.id.MyListSubmitButton);
         Button clear = view.findViewById(R.id.clearButton);
         Button collapse = view.findViewById(R.id.collapseButton);
-        toggleSpinner(spinner, true);
 
-        final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
+        new Handler().postDelayed(SMyListFragment::getBadgesAdded, 200);
 
+
+        final Observer<ArrayList<meritBadge>> obs = meritBadges -> {
             badgesAdded = badgesAddedLive.getValue();
             if (badgesAdded == null) {
                 toggleSpinner(spinner, false);
@@ -73,9 +72,12 @@ public class SMyListFragment extends Fragment {
 
             resetList(view);
             toggleSpinner(spinner, false);
+
         };
 
-        badgesAddedLive.observe(getViewLifecycleOwner(), badgeChanged);
+
+        badgesAddedLive.observe(getViewLifecycleOwner(), obs);
+
 
 
         submit.setOnClickListener(v ->
@@ -83,44 +85,38 @@ public class SMyListFragment extends Fragment {
             SMyListExpandListAdapter.updateRequirements();
             SMyListExpandListAdapter.copyFinished();
 
+            ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
+            if (completedBadges.size() != 0) {
+                Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
+                SCompletedBadges.getFinishedBadges();
+            } else {
+                Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
+            }
+            getBadgesAdded();
+            SMyListExpandListAdapter.pullFinishedReqs(user);
+
             if (badgesAdded == null) return;
             if (badgesAdded.size() == 0) {
                 Toast.makeText(getContext(), "No Badges Added! Go to \"Search Badges\"", Toast.LENGTH_LONG).show();
                 return;
             }
-            ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
-            if (completedBadges.size() != 0) {
-                //resets the accordionList
-                for (int i : completedBadges)
-                {
-                    ExecutorService ste = Executors.newSingleThreadExecutor();
-                    ste.execute(() -> sqlRunner.addNewNot(user, i));
-                }
-                Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
-                SCompletedBadges.getFinishedBadges();
-            } else {
-                Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
-
-
-            }
-            getBadgesAdded();
-            SMyListExpandListAdapter.pullFinishedReqs(user);
 
             resetList(view);
         });
 
+
+
+
         clear.setOnClickListener(v ->
         {
             ArrayList<Integer> expanded = new ArrayList<>();
-            for (int i = 0; i < Objects.requireNonNull(badgesAddedLive.getValue()).size(); i++) {
+            if (badgesAdded == null || accordionList == null) return;
+            for (int i = 0; i < badgesAdded.size(); i++) {
                 if (accordionList.isGroupExpanded(i)) expanded.add(i);
             }
 
             //clears the previously checked boxes
             SMyListExpandListAdapter.resetCheckedReqs();
-
-            //resets the accordionList
-            badgesAdded = badgesAddedLive.getValue();
 
             resetList(view);
 
@@ -131,9 +127,12 @@ public class SMyListFragment extends Fragment {
             Toast.makeText(getContext(), "All Changed Boxes Reset!", Toast.LENGTH_LONG).show();
         });
 
+
+
+
         collapse.setOnClickListener(v -> {
             if (accordionList == null) return;
-            for (int i = 0; i < Objects.requireNonNull(badgesAddedLive.getValue()).size(); i++) {
+            for (int i = 0; i < badgesAdded.size(); i++) {
                 accordionList.collapseGroup(i);
             }
 
@@ -143,19 +142,17 @@ public class SMyListFragment extends Fragment {
         toggleSpinner(spinner, false);
     }
 
-    public void onPause() {
-        super.onPause();
-        getBadgesAdded();
-        SMyListExpandListAdapter.pullFinishedReqs(user);
-
-    }
-
     public void onResume() {
         super.onResume();
         getBadgesAdded();
         SMyListExpandListAdapter.pullFinishedReqs(user);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        SMyListExpandListAdapter.resetCheckedReqs();
+    }
 
     public static void toggleSpinner(ProgressBar spinner, boolean set) {
         //switches spinner
@@ -164,12 +161,8 @@ public class SMyListFragment extends Fragment {
     }
 
     public static void getBadgesAdded() {
-        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        singleThreadExecutor.execute(() ->
-        {
-            badgesAddedLive.postValue(sqlRunner.getListOfBadges(user));
-            sqlRunner.getFinishedBadges(user);
-        });
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> badgesAddedLive.postValue(sqlRunner.getAddedBadgesMB(user)));
     }
 
 
@@ -179,21 +172,20 @@ public class SMyListFragment extends Fragment {
         accordionList = view.findViewById(R.id.expandableListViewMyList);
         //Sets the badge titles for the accordion list
         ArrayList<String> badgeTitles = SSearchListTitles.getData(badgesAdded);
-        //Creates an adapter to show the accordion titles
-        ExpandableListAdapter expandableListAdapter = new SMyListExpandListAdapter(getContext(), badgeTitles, badgesAdded, user);
-        //sets adapter to the accordion list
-        accordionList.setAdapter(expandableListAdapter);
+
+        try {
+            //Creates an adapter to show the accordion titles
+            ExpandableListAdapter expandableListAdapter = new SMyListExpandListAdapter(getContext(), badgeTitles, badgesAdded, user);
+            //sets adapter to the accordion list
+            accordionList.setAdapter(expandableListAdapter);
+            accordionList.setVisibility(View.VISIBLE);
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "An error occurred with loading the list. Please try again.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
-    public static void removeLiveAdded(int bID) {
-        ArrayList<meritBadge> badges = badgesAddedLive.getValue();
-        if (badges != null)
-            for (Iterator<meritBadge> it = badges.iterator(); it.hasNext(); ) {
-                meritBadge b = it.next();
-                if (b.getId() == bID) it.remove();
-            }
 
-        badgesAddedLive.postValue(badges);
-    }
 
 }

@@ -6,13 +6,11 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
@@ -22,17 +20,16 @@ import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SMScoutProfile extends AppCompatActivity {
 
     private static scoutPerson u;
-    private static final MutableLiveData<ArrayList<meritBadge>> added = new MutableLiveData<>();
-    private static final MutableLiveData<ArrayList<meritBadge>> compl = new MutableLiveData<>();
-    private static final MutableLiveData<ArrayList<Boolean>> trues = new MutableLiveData<>();
-    private static final MutableLiveData<HashMap<Integer, ArrayList<Integer>>> reqs = new MutableLiveData<>();
-    private static int count;
+    private static ArrayList<meritBadge> added, compl;
+    private static HashMap<Integer, ArrayList<Integer>> reqs;
     private ListView mb;
 
 
@@ -41,11 +38,9 @@ public class SMScoutProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scoutmaster_scout_profile_fragment);
 
-        setReqs();
-
-
         TextView nameRep = findViewById(R.id.nameReplace);
         TextView mbRep = findViewById(R.id.mbReplaceText);
+        TextView noBadges = findViewById(R.id.noBadges);
         Button back = findViewById(R.id.backButton);
         mb = findViewById(R.id.mbList);
         ProgressBar pb = findViewById(R.id.loadingBar);
@@ -58,58 +53,25 @@ public class SMScoutProfile extends AppCompatActivity {
         nameRep.setText(title);
         mbRep.setText(mbTitle);
 
-
-        final Observer<ArrayList<meritBadge>> gotBadges = meritBadges -> {
-            ArrayList<Boolean> tru = trues.getValue();
-            if (tru == null) tru = new ArrayList<>();
-            tru.add(true);
-            trues.postValue(tru);
-            count++;
-        };
-
-        final Observer<ArrayList<meritBadge>> gotComp = meritBadges -> {
-            ArrayList<Boolean> tru = trues.getValue();
-            if (tru == null) tru = new ArrayList<>();
-            tru.add(true);
-            trues.postValue(tru);
-            count++;
-        };
-
-        final Observer<HashMap<Integer, ArrayList<Integer>>> gotReqs = meritBadges -> {
-            ArrayList<Boolean> tru = trues.getValue();
-            if (tru == null) tru = new ArrayList<>();
-            tru.add(true);
-            trues.postValue(tru);
-            count++;
-        };
-
-        final Observer<ArrayList<Boolean>> isTrue = booleans -> {
-            if (count >= 3)
-            {
-                if (reqs.getValue() == null) return;
-                ArrayList<Integer> ids = new ArrayList<>();
-                if (added.getValue() == null) return;
-
-                for (meritBadge badge : added.getValue())
-                {
-                    ids.add(badge.getId());
-                }
-
-                SMScoutProfileAdapter adapter = new SMScoutProfileAdapter(this, getStrings(), added.getValue().size(), ids, reqs.getValue(), added.getValue());
-                mb.setAdapter(adapter);
-
-                pb.setVisibility(View.GONE);
-                mb.setVisibility(View.VISIBLE);
-            }
-        };
+        try {
+            setReqs();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Toast.makeText(getBaseContext(), "An error occurred with database connection. Please exit and try again",Toast.LENGTH_LONG).show();
+        }
 
 
-        added.observe(this, gotBadges);
-        compl.observe(this, gotComp);
-        reqs.observe(this, gotReqs);
+        if (reqs == null) {
+            noBadges.setVisibility(View.VISIBLE);
+            pb.setVisibility(View.GONE);
+            return;
+        }
 
-        trues.observe(this, isTrue);
+        SMScoutProfileAdapter adapter = new SMScoutProfileAdapter(this, getStrings(noBadges), added.size(), reqs, added);
+        mb.setAdapter(adapter);
 
+        pb.setVisibility(View.GONE);
+        mb.setVisibility(View.VISIBLE);
 
 
         back.setOnClickListener(l -> finish());
@@ -119,33 +81,34 @@ public class SMScoutProfile extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        trues.postValue(new ArrayList<>());
-        count = 0;
         mb = null;
     }
 
-    private static void setReqs()
-    {
+    private static void setReqs() throws ExecutionException, InterruptedException {
         ExecutorService ste = Executors.newSingleThreadExecutor();
-        ste.execute(() ->
-                {
-                    compl.postValue(sqlRunner.getFinishedBadges(u));
-                    added.postValue(sqlRunner.getAddedBadges(u));
-                    reqs.postValue(sqlRunner.getAddedAndFinishedReqs(u));
-                });
+
+        Future<ArrayList<meritBadge>> add = ste.submit(() -> sqlRunner.getAddedBadgesMB(u));
+        Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getFinishedBadges(u));
+        Future<HashMap<Integer, ArrayList<Integer>>> req = ste.submit(() -> sqlRunner.getAddedAndFinishedReqs(u));
+
+        added = add.get();
+        compl = comp.get();
+        reqs = req.get();
+
     }
 
 
-    private static String[] getStrings()
+    private static String[] getStrings(TextView noBadges)
     {
-        ArrayList<meritBadge> completed = compl.getValue();
-        ArrayList<meritBadge> inProgress = added.getValue();
 
+        String[] ret = new String[added.size() + compl.size()];
 
-        String[] ret = new String[inProgress.size() + completed.size()];
+        if (ret.length == 0) noBadges.setVisibility(View.VISIBLE);
+        else noBadges.setVisibility(View.GONE);
+
         int count = 0;
 
-        for (meritBadge mb : inProgress)
+        for (meritBadge mb : added)
         {
             ret[count] = mb.getName();
             count++;
@@ -153,12 +116,11 @@ public class SMScoutProfile extends AppCompatActivity {
 
         count = 0;
 
-        for (int i = inProgress.size(); i < inProgress.size() + completed.size(); i++)
+        for (int i = added.size(); i < added.size() + compl.size(); i++)
         {
-            ret[i] = completed.get(count).getName();
+            ret[i] = compl.get(count).getName();
             count++;
         }
-
 
 
         return ret;

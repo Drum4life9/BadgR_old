@@ -65,5 +65,8 @@
     <string name="go_back">Go back</string>
     <string name="no_nots">There are no new notifications!</string>
     <string name="clear">clear</string>
+    <string name="no_badges">This scout has not added or completed any merit badges</string>
+    <string name="all_nots">All notifications</string>
+    <string name="all_xa_nots">All\nPrevious\nNotifications</string>
 
 </resources>

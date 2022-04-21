@@ -12,23 +12,22 @@
 
 
         <Button
+            android:id="@+id/allNotButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/clear"
-            android:textSize="20sp"
-            android:layout_margin="17dp"
-            android:layout_weight="1"
-            android:visibility="invisible"
-            android:enabled="false"
-            android:clickable="false"/>
+            android:text="@string/all_xa_nots"
+            android:textSize="15sp"
+            android:layout_margin="8dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1" />
 
 
         <TextView
+            android:gravity="center"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="17dp"
+            android:layout_gravity="center_vertical"
             android:layout_weight="2"
             android:text="@string/recent_activity_changes"
             android:textColor="@color/light_grey"
@@ -39,8 +38,9 @@
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="@string/clear"
-            android:textSize="20sp"
+            android:textSize="28sp"
             android:layout_margin="17dp"
             android:layout_weight="1"/>
 

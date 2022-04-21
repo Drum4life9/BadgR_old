@@ -189,7 +189,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been already added to their list
         sTE.execute(() ->
-                addedBadges = sqlRunner.addedBadges(p));
+                addedBadges = sqlRunner.getAddedBadgesInt(p));
 
     }
 

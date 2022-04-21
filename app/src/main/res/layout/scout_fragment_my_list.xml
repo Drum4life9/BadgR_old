@@ -31,8 +31,9 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@id/dividerMyBadges"
+        android:layout_margin="20dp"
         android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <ExpandableListView
         android:id="@+id/expandableListViewMyList"
@@ -41,6 +42,7 @@
         android:layout_below="@id/searchProgressMyList"
         android:childDivider="@color/primaryColor"
         android:divider="@color/primaryColorDark"
+        android:visibility="gone"
         android:dividerHeight="3dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true" />

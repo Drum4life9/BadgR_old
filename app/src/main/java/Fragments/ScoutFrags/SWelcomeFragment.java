@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
 
 
@@ -23,8 +22,6 @@ import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -101,14 +98,14 @@ public class SWelcomeFragment extends Fragment {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                addedBadgesLive.postValue(sqlRunner.getAddedBadges(user)));
+                addedBadgesLive.postValue(sqlRunner.getAddedBadgesMB(user)));
     }
 
     public static void getAddedBadges() {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                added = sqlRunner.getAddedBadges(user));
+                added = sqlRunner.getAddedBadgesMB(user));
     }
 
 }

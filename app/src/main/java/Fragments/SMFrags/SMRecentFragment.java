@@ -1,6 +1,9 @@
 package Fragments.SMFrags;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +28,15 @@ import com.badgr.sql.sqlRunner;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SMRecentFragment extends Fragment {
 
     private static final MutableLiveData<ArrayList<notification>> nots = new MutableLiveData<>();
+    private static ArrayList<notification> allNots;
     private static final scoutMaster u = (scoutMaster) LoginRepository.getUser();
     private ListView lv;
     private ProgressBar bar;
@@ -52,14 +58,33 @@ public class SMRecentFragment extends Fragment {
         bar = view.findViewById(R.id.notProgress);
         noNot = view.findViewById(R.id.noNots);
         clear = view.findViewById(R.id.clear);
+        Button allNotBut = view.findViewById(R.id.allNotButton);
 
         getNots();
         nots.observe(getViewLifecycleOwner(), notGot);
 
-        clear.setOnClickListener(l ->
-        {
+        clear.setOnClickListener(l -> {
             clearList(lv, noNot);
             Toast.makeText(getContext(), "Notifications cleared!", Toast.LENGTH_LONG).show();
+        });
+
+
+        allNotBut.setOnClickListener(l -> {
+            lv.setVisibility(View.GONE);
+            bar.setVisibility(View.VISIBLE);
+
+            new Handler().postDelayed(() -> {
+                try {
+                    getAllNots();
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                SMRecentAllNots.setNots(allNots);
+                changeFragmentFromAdapter(getActivity());
+            }, 300);
         });
 
     }
@@ -75,6 +100,9 @@ public class SMRecentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        lv.setVisibility(View.GONE);
+        bar.setVisibility(View.VISIBLE);
+        noNot.setVisibility(View.GONE);
         getNots();
     }
 
@@ -93,9 +121,10 @@ public class SMRecentFragment extends Fragment {
         {
             noNot.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);
-
+            clear.setVisibility(View.VISIBLE);
             SMRecentAdapter adpt = new SMRecentAdapter(getActivity(), getStrings(), notList);
             lv.setAdapter(adpt);
+
         }
     };
 
@@ -104,6 +133,13 @@ public class SMRecentFragment extends Fragment {
     {
         ExecutorService ste = Executors.newSingleThreadExecutor();
         ste.execute(() -> nots.postValue(sqlRunner.getNotifications(u)));
+    }
+
+    private static void getAllNots() throws ExecutionException, InterruptedException {
+        ExecutorService ste = Executors.newSingleThreadExecutor();
+        Future<ArrayList<notification>> getAllNots = ste.submit(() -> sqlRunner.getAllNotifications(u));
+
+        allNots = getAllNots.get();
     }
 
     private static String[] getStrings()
@@ -136,4 +172,9 @@ public class SMRecentFragment extends Fragment {
         noNot.setVisibility(View.VISIBLE);
     }
 
+    public static void changeFragmentFromAdapter(Activity act)
+    {
+        Intent intent = new Intent(act, SMRecentAllNots.class);
+        act.startActivity(intent);
+    }
 }

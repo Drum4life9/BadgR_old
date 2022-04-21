@@ -24,8 +24,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
@@ -39,20 +41,18 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
 
     //Constructor
-    @SuppressWarnings("unchecked")
     public SMyListExpandListAdapter(Context context, List<String> expandableListTitle,
-                                    ArrayList<meritBadge> b, scoutPerson u) {
+                                    ArrayList<meritBadge> b, scoutPerson u) throws ExecutionException, InterruptedException {
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         user = u;
         badges = b;
-        pullFinishedReqs(user);
-        try {
-            cdl.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        changedReqs = (HashMap<Integer, ArrayList<Integer>>) finishedReq.clone();
+
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(user));
+
+        finishedReq = finReq.get();
+        changedReqs = copyFinished();
         deletedReqs = new HashMap<>();
 
     }
@@ -212,24 +212,25 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     }
 
     public static void pullFinishedReqs(scoutPerson p) {
-        //gets which badges have been completed
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        sTE.execute(() ->
-        {
-            finishedReq = sqlRunner.getFinishedReqs(p);
-            cdl.countDown();
-        });
+        //gets which requirements have been completed
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(p));
+
+        try {
+            finishedReq = finReq.get();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void updateRequirements() {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         sTE.execute(() -> sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs));
-
-
     }
 
     //clears all of the checked reqs since submit button was clicked
     public static void resetCheckedReqs() {
+        if (changedReqs == null || deletedReqs == null) return;
         changedReqs.clear();
         deletedReqs.clear();
         changedReqs = copyFinished();
@@ -245,54 +246,54 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         return copy;
     }
 
-    public static ArrayList<Integer> checkCompletedBadges() {
-        try {
-            cdl.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 
+    public static ArrayList<Integer> checkCompletedBadges() {
+        //sets new arrayList for completed integer ids of badges
         ArrayList<Integer> completedBadges = new ArrayList<>();
         Set<Integer> set = changedReqs.keySet();
+        //for int in changedReqs
         for (int i : set) {
 
             boolean comp = true;
             ArrayList<Integer> completedReqs = changedReqs.get(i);
 
             cdl = new CountDownLatch(1);
-            final int[] reqNumber = new int[1];
-            ExecutorService sTE = Executors.newSingleThreadExecutor();
-            sTE.execute(() ->
+
+            int reqNumber = 0;
+            for (meritBadge mb : badges)
             {
-                reqNumber[0] = Objects.requireNonNull(sqlRunner.getBadge(i)).getNumReqs();
-                cdl.countDown();
-            });
-
-            try {
-                cdl.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                if (mb.getId() == i)
+                    reqNumber = mb.getNumReqs();
             }
 
-            if (completedReqs == null || completedReqs.size() != reqNumber[0]) continue;
+            if (completedReqs == null || completedReqs.size() != reqNumber) continue;
+
+            //if any requirements are not completed, skip and move to next merit badge
             for (int req = 0; req < completedReqs.size(); req++) {
-                if (completedReqs.get(req) == 0) comp = false;
+                if (completedReqs.get(req) == 0)
+                {
+                    comp = false;
+                    break;
+                }
             }
 
+            //if comp remains true, add it to completed badges
             if (comp) {
                 completedBadges.add(i);
             }
         }
 
-        for (Iterator<Integer> it = completedBadges.iterator(); it.hasNext(); ) {
-            int i = it.next();
-            SMyListFragment.removeLiveAdded(i);
+
+
+        //removes any completed badges from list
+        for (int i : completedBadges) {
             ExecutorService STE = Executors.newSingleThreadExecutor();
             cdl = new CountDownLatch(1);
             STE.execute(() ->
             {
                 sqlRunner.setBadgeCompleted(user, i);
                 cdl.countDown();
+                sqlRunner.addNewNot(user, i);
             });
 
             finishedReq.remove(i);
@@ -305,17 +306,16 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        cdl = new CountDownLatch(1);
-        SCompletedBadges.getFinishedBadges();
-        pullFinishedReqs(user);
-        copyFinished();
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(user));
 
         try {
-            cdl.await();
-        } catch (InterruptedException e) {
+            finishedReq = finReq.get();
+        } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
 
+        copyFinished();
         finishedReq.clear();
         changedReqs.clear();
 

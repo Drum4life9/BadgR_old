@@ -159,7 +159,7 @@ public class SMSearchBadgesFragment extends Fragment {
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(() -> {
             //gets the searched merit badges
-            setLiveBadges(sqlRunner.getListOfBadges(badgeName));
+            setLiveBadges(sqlRunner.searchForBadges(badgeName));
         });
     }
 
