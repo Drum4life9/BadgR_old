@@ -49,7 +49,6 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
 
     public static void changeFragmentFromAdapter(Activity act, scoutPerson u)
     {
-
         SMScoutProfile.setU(u);
         Intent intent = new Intent(act, SMScoutProfile.class);
         act.startActivity(intent);

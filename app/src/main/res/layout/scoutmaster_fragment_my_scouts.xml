@@ -25,12 +25,22 @@
         android:background="@color/light_grey"
         android:backgroundTint="@color/light_grey" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="3"
+        android:scaleY="3"
+        android:layout_below="@id/spacer"
+        android:layout_centerInParent="true"
+        android:layout_margin="100dp"/>
 
     <ListView
         android:id="@+id/scoutsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/spacer"
+        android:visibility="gone"
         />
 
 

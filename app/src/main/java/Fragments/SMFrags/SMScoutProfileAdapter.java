@@ -34,19 +34,17 @@ public class SMScoutProfileAdapter extends ArrayAdapter<String> {
 
     private final Activity context;
     private final String[] badgeNames;
-    private final ArrayList<Integer> badgeIDs;
     private final int complIndex;
     private final HashMap<Integer, ArrayList<Integer>> compReqs;
     private final ArrayList<meritBadge> added;
 
 
 
-    public SMScoutProfileAdapter(Activity context, String[] bList, int index, ArrayList<Integer> ids, HashMap<Integer, ArrayList<Integer>> reqs, ArrayList<meritBadge> add) {
+    public SMScoutProfileAdapter(Activity context, String[] bList, int index, HashMap<Integer, ArrayList<Integer>> reqs, ArrayList<meritBadge> add) {
         super(context, R.layout.list_group_titles_my_list, bList);
         this.context = context;
         badgeNames = bList;
         complIndex = index;
-        badgeIDs = ids;
         compReqs = reqs;
         added = add;
     }
@@ -65,11 +63,6 @@ public class SMScoutProfileAdapter extends ArrayAdapter<String> {
         ProgressBar bar = row.findViewById(R.id.myProgressBar);
 
         badgeName.setText(badgeNames[position]);
-
-        if (badgeIDs.size() == 0) return row;
-
-
-
 
         if (position >= complIndex)
         {
@@ -92,10 +85,6 @@ public class SMScoutProfileAdapter extends ArrayAdapter<String> {
             percent.setText(percS);
             bar.setProgress(perc);
         }
-
-
-
-
 
 
         return row;

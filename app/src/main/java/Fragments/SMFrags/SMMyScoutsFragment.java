@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,14 +22,14 @@ public class SMMyScoutsFragment extends Fragment {
 
 
     private final scoutMaster u = (scoutMaster) LoginRepository.getUser();
-    private final String[] sNames = new String[u.getTroop().size()];
+    private String[] sNames;
+    private ListView scoutsList;
+    private ProgressBar pb;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-
         return inflater.inflate(R.layout.scoutmaster_fragment_my_scouts, container, false);
     }
 
@@ -37,28 +38,30 @@ public class SMMyScoutsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ListView scoutsList = view.findViewById(R.id.scoutsList);
+        scoutsList = view.findViewById(R.id.scoutsList);
+        pb = view.findViewById(R.id.progressBar);
 
         setsNames();
 
         SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), u, sNames);
         scoutsList.setAdapter(adapter);
 
-
-
-
     }
 
 
     private void setsNames()
     {
+        sNames = new String[u.getTroop().size()];
         int c = 0;
         for (scoutPerson p : u.getTroop())
         {
-            String name = p.getFName() + " " + p.getLName();
+            String name = p.getFullName();
             sNames[c] = name;
             c++;
         }
+
+        scoutsList.setVisibility(View.VISIBLE);
+        pb.setVisibility(View.GONE);
     }
 
 

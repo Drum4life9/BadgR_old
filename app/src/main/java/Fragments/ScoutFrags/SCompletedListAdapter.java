@@ -19,7 +19,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class SCompletedListAdapter extends ArrayAdapter {
+public class SCompletedListAdapter extends ArrayAdapter<String> {
     private final String[] badgeNames;
     private final Activity context;
     private static ArrayList<Integer> checkedBoxes;
