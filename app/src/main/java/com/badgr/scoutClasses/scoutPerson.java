@@ -75,7 +75,7 @@ public class scoutPerson {
         this.user = user;
     }
 
-    public String getUser() {
+    public String getEmail() {
         return user;
     }
 

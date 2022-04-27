@@ -158,7 +158,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUiWithUser(@NonNull scoutPerson p) {
         String welcome = (getString(R.string.welcome) + " " + p.getFName() + " " + p.getLName() + "!");
-        //future versions
 
         if (p.isSM()) openSMApp();
         else openSApp();

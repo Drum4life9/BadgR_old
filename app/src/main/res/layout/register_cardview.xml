@@ -57,7 +57,7 @@
                 android:hint="@string/last_name"
                 android:inputType="text"
                 android:maxLines="1"
-                android:nextFocusForward="@id/registerUser"
+                android:nextFocusForward="@id/registerEmail"
                 android:textColorHighlight="@color/primaryColorDark"
                 android:textSize="@dimen/newsMoreTextSize" />
         </LinearLayout>
@@ -68,7 +68,7 @@
             android:orientation="horizontal">
 
             <EditText
-                android:id="@+id/registerUser"
+                android:id="@+id/registerEmail"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/signup_text_margin_top"

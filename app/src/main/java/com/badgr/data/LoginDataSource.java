@@ -4,25 +4,17 @@ package com.badgr.data;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
-import com.badgr.ui.login.LoginResult;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+
 
 
 /**
@@ -69,7 +61,7 @@ public class LoginDataSource {
             e.printStackTrace();
         }
 
-        return new Result.Error("An error occurred. Please try again");
+        return new Result.Error("A connection or request error occurred. Please try again");
     }
 
 }

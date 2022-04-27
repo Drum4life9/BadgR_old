@@ -28,7 +28,7 @@ public class sqlRunner {
     private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.22:3306/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=1";
+    private final static String url = "jdbc:mysql://192.168.1.20/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -39,20 +39,18 @@ public class sqlRunner {
             int isSM;
             if (p.getAge() >= 18) isSM = 1;
             else isSM = 0;
-            String addStmt = "INSERT INTO userpass VALUES (userPassID, '" + p.getPass() + "'); " +
-                    "INSERT INTO users VALUES (userID, '" + p.getFName() + strDiv + p.getLName() + strDiv + p.getUser() + "', last_insert_id(), " +
-                    p.getAge() + intDiv + isSM + intDiv + p.getTroopNum() + "); " +
-                    "INSERT INTO troop VALUES (" + p.getTroopNum() + ", last_insert_id(), " + p.isSM() + ");";
+            String addStmt = "INSERT INTO `userpass`(`pass`) VALUES ('" + p.getPass() + "'); " +
+                    "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES (" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
+                    p.getAge() + intDiv + isSM + intDiv + p.getTroopNum() + "); ";
             stmt.executeUpdate(addStmt);
 
-            scoutPerson newP = new scoutPerson(Objects.requireNonNull(getUserInfo(p.getUser())));
+            scoutPerson newP = new scoutPerson(Objects.requireNonNull(getUserInfo(p.getEmail())));
             addNewNot(newP, -1);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     public static ArrayList<String> getUserInfo(String givenU) {
@@ -127,63 +125,55 @@ public class sqlRunner {
         return retList;
     }
 
-    public static boolean authUser(String givenU, String givenP) {
-
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds userPassID with the given username
-            String ex = "SELECT userPassID FROM users WHERE username = '" + givenU + "'";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
-
-
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
+    public static boolean authUser(String givenU, String givenP) throws SQLException {
+        Connection c = DriverManager.getConnection(url, username, password);
+        //Finds userPassID with the given username
+        String ex = "SELECT userPassID FROM users WHERE username = '" + givenU + "'";
+        Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
 
-            boolean isFirst;
-            int uPID;
-
-            //sets cursor at beginning of resultSet
-            isFirst = rs.first();
-            if (isFirst) {
-                //if cursor is at beginning, get the user's userPassID
-                uPID = rs.getInt(1);
-            } else {
-                //if not (or there's no data), success set to false
-                //kills method
-                return false;
-            }
+        //gets results from database
+        ResultSet rs = stmt.executeQuery(ex);
 
 
-            //just in case userPassID didn't update, kills method
-            if (uPID < 0) {
-                return false;
-            }
+        boolean isFirst;
+        int uPID;
 
-
-            String pass;
-
-            //selects password from userpass database with the userPassID found from the username
-            rs = stmt.executeQuery("SELECT pass FROM userpass WHERE userPassID = " + uPID + ";");
-            //sets cursor at beginning, if error then success = false and kill method
-            if (!rs.first()) {
-                return false;
-            } else {
-                //sets the pass string to the database password
-                pass = rs.getString(1);
-            }
-
-            //sets the successful login if the username in database = username given, and same for password
-            return pass.equals(givenP);
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //sets cursor at beginning of resultSet
+        isFirst = rs.first();
+        if (isFirst) {
+            //if cursor is at beginning, get the user's userPassID
+            uPID = rs.getInt(1);
+        } else {
+            //if not (or there's no data), success set to false
+            //kills method
+            return false;
         }
 
-        return false;
+
+        //just in case userPassID didn't update, kills method
+        if (uPID < 0) {
+            return false;
+        }
+
+
+        String pass;
+
+        //selects password from userpass database with the userPassID found from the username
+        rs = stmt.executeQuery("SELECT pass FROM userpass WHERE userPassID = " + uPID + ";");
+        //sets cursor at beginning, if error then success = false and kill method
+        if (!rs.first()) {
+            return false;
+        } else {
+            //sets the pass string to the database password
+            pass = rs.getString(1);
+        }
+
+        //sets the successful login if the username in database = username given, and same for password
+        return pass.equals(givenP);
     }
 
-    public static boolean isUserInDatabase(String givenU) {
+    public static boolean isEmailInDatabase(String givenU) {
         boolean userInDB;
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds userPassID with the given username

@@ -24,8 +24,10 @@ import com.badgr.sql.sqlRunner;
 import com.badgr.ui.login.LoginActivity;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class RegisterActivity extends Activity {
@@ -34,7 +36,7 @@ public class RegisterActivity extends Activity {
 
     private EditText fNameEdit;
     private EditText lNameEdit;
-    private EditText userEdit;
+    private EditText emailEdit;
     private EditText passEdit;
     private EditText ageEdit;
     private EditText troopEdit;
@@ -58,7 +60,7 @@ public class RegisterActivity extends Activity {
         {
             fNameEdit = findViewById(R.id.registerFName);
             lNameEdit = findViewById(R.id.registerLName);
-            userEdit = findViewById(R.id.registerUser);
+            emailEdit = findViewById(R.id.registerEmail);
             passEdit = findViewById(R.id.registerPass);
             ageEdit = findViewById(R.id.registerAge);
             troopEdit = findViewById(R.id.registerTroop);
@@ -110,11 +112,11 @@ public class RegisterActivity extends Activity {
                     regButton.setEnabled(update());
                 }
             });
-            userEdit.addTextChangedListener(new TextWatcher() {
+            emailEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
-                    if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
-                        userEdit.setError("Invalid email");
+                    if (!RegisterViewModel.isUserNameValid(emailEdit.getText().toString()))
+                        emailEdit.setError("Invalid email");
                     regButton.setEnabled(update());
                 }
 
@@ -124,8 +126,8 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (!RegisterViewModel.isUserNameValid(userEdit.getText().toString()))
-                        userEdit.setError("Invalid email");
+                    if (!RegisterViewModel.isUserNameValid(emailEdit.getText().toString()))
+                        emailEdit.setError("Invalid email");
                     regButton.setEnabled(update());
                 }
             });
@@ -218,7 +220,7 @@ public class RegisterActivity extends Activity {
         scoutPerson p = new scoutPerson();
         p.setFName(fNameEdit.getText().toString().trim());
         p.setLName(lNameEdit.getText().toString().trim());
-        p.setUser(userEdit.getText().toString());
+        p.setUser(emailEdit.getText().toString());
         p.setPass(passEdit.getText().toString().trim());
         p.setAge(ageEdit.getText().toString());
         p.setSM(p.getAge() >= 18);
@@ -285,21 +287,22 @@ public class RegisterActivity extends Activity {
 
     //checks to see if email is already in database using the sqlRunner class method userInDatabase
     private boolean checkUsernameExists() {
-        userEdit = findViewById(R.id.registerUser);
+        emailEdit = findViewById(R.id.registerEmail);
+        String email = emailEdit.getText().toString();
 
-        //Sets a countDownLatch, which ensures this thread is run before anything else happens
-        CountDownLatch cDL = new CountDownLatch(1);
 
-        //creates check thread
+        CountDownLatch cdl = new CountDownLatch(1);
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() -> {
-            userInDB = sqlRunner.isUserInDatabase(userEdit.getText().toString());
-            cDL.countDown();
+            userInDB = sqlRunner.isEmailInDatabase(email);
+            cdl.countDown();
         });
+        //creates check thread
+
 
         //waits until previous thread has completed to move on
         try {
-            cDL.await();
+            cdl.await();
         } catch (InterruptedException e) {
             usernameCheckSuccess = false;
             return false;
@@ -347,7 +350,7 @@ public class RegisterActivity extends Activity {
         return RegisterViewModel.registerDataChanged(
                 fNameEdit.getText().toString(),
                 lNameEdit.getText().toString(),
-                userEdit.getText().toString(),
+                emailEdit.getText().toString(),
                 passEdit.getText().toString(),
                 ageEdit.getText().toString(),
                 troopEdit.getText().toString());
