@@ -37,7 +37,7 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() ->
         {
-            compBadges = sqlRunner.getFinishedBadges(user);
+            compBadges = sqlRunner.getCompletedBadges(user);
             cdl.countDown();
         });
 

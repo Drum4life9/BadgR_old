@@ -88,7 +88,7 @@ public class SMScoutProfile extends AppCompatActivity {
         ExecutorService ste = Executors.newSingleThreadExecutor();
 
         Future<ArrayList<meritBadge>> add = ste.submit(() -> sqlRunner.getAddedBadgesMB(u));
-        Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getFinishedBadges(u));
+        Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getCompletedBadges(u));
         Future<HashMap<Integer, ArrayList<Integer>>> req = ste.submit(() -> sqlRunner.getAddedAndFinishedReqs(u));
 
         added = add.get();

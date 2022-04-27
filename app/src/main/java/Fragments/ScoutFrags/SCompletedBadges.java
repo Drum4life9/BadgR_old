@@ -125,7 +125,7 @@ public class SCompletedBadges extends Fragment {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                completedBadgesLive.postValue(sqlRunner.getFinishedBadges(user)));
+                completedBadgesLive.postValue(sqlRunner.getCompletedBadges(user)));
     }
 
     private void setTitles() {

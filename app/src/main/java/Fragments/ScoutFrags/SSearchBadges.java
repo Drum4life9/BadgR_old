@@ -103,7 +103,6 @@ public class SSearchBadges extends Fragment {
                     sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes));
             Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
             resetList(view);
-            SWelcomeFragment.getFinishedBadges();
         });
 
     }

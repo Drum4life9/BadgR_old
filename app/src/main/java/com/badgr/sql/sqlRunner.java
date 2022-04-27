@@ -446,7 +446,7 @@ public class sqlRunner {
         }
     }
 
-    public static ArrayList<Integer> getFinishedBadgesInt(scoutPerson p) {
+    public static ArrayList<Integer> getCompletedBadgesInt(scoutPerson p) {
         ArrayList<Integer> completed = new ArrayList<>();
 
         try (Connection c = DriverManager.getConnection(url, username, password)) {
@@ -472,7 +472,7 @@ public class sqlRunner {
         return completed;
     }
 
-    public static ArrayList<meritBadge> getFinishedBadges(scoutPerson p) {
+    public static ArrayList<meritBadge> getCompletedBadges(scoutPerson p) {
         ArrayList<meritBadge> badges = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds badge names with the given name and completed
@@ -496,7 +496,7 @@ public class sqlRunner {
         return badges;
     }
 
-    public static ArrayList<meritBadge> getFinishedBadges(int id) {
+    public static ArrayList<meritBadge> getCompletedBadges(int id) {
         ArrayList<meritBadge> badges = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             //Finds badge names with the given name and completed
@@ -713,7 +713,7 @@ public class sqlRunner {
                 int key = scoutList.getKey();
 
                 ArrayList<meritBadge> badgesPerScout = getAddedBadgesMB(key);
-                ArrayList<meritBadge> compBadges = getFinishedBadges(key);
+                ArrayList<meritBadge> compBadges = getCompletedBadges(key);
                 ArrayList<Integer> badgeIDs = new ArrayList<>();
                 for (meritBadge mb : badgesPerScout) badgeIDs.add(mb.getId());
                 for (meritBadge mb : compBadges) badgeIDs.add(mb.getId());
@@ -856,5 +856,44 @@ public class sqlRunner {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static int[] getTotalAdded(scoutMaster p) throws SQLException {
+        int[] ret = new int[3];
+        int added = 0, comp = 0, eagle = 0;
+
+        Connection c = DriverManager.getConnection(url, username, password);
+        Statement stmt = c.createStatement();
+
+        String query = "SELECT * FROM userbadges WHERE userID IN (SELECT userID FROM users WHERE troop = " + p.getTroopNum() + ");";
+        ResultSet rs = stmt.executeQuery(query);
+
+        if (!rs.first()) return ret;
+        else {
+            int count = 0;
+            while (rs.next())
+            {
+                if (count == 0)
+                {
+                    rs.first();
+                    count++;
+                }
+
+                if (rs.getInt("isCompleted") == 1) comp++;
+                else added++;
+
+                int id = rs.getInt("badgeTableID");
+
+                meritBadge mb = getBadge(id);
+
+                if (mb == null) continue;
+                if (mb.isEagle()) eagle++;
+            }
+        }
+
+        ret[0] = added;
+        ret[1] = comp;
+        ret[2] = eagle;
+        return ret;
     }
 }

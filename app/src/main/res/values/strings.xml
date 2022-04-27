@@ -68,5 +68,6 @@
     <string name="no_badges">This scout has not added or completed any merit badges</string>
     <string name="all_nots">All notifications</string>
     <string name="all_xa_nots">All\nPrevious\nNotifications</string>
+    <string name="troop_statistics">Troop Statistics</string>
 
 </resources>

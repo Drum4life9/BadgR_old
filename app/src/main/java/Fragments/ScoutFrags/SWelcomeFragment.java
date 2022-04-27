@@ -1,19 +1,19 @@
 package Fragments.ScoutFrags;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 import com.badgr.R;
 import com.badgr.data.LoginRepository;
@@ -23,89 +23,76 @@ import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class SWelcomeFragment extends Fragment {
 
     private static final scoutPerson user = LoginRepository.getUser();
-    private static ArrayList<meritBadge> added = new ArrayList<>();
-    private static final MutableLiveData<ArrayList<meritBadge>> addedBadgesLive = new MutableLiveData<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getFinishedBadges();
-        getAddedBadges();
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.scout_fragment_welcome, container, false);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> setTextTitles(view);
-
-        addedBadgesLive.observe(getViewLifecycleOwner(), badgeChanged);
+        reload(view, getContext());
     }
 
 
-
-    private void setTextTitles(View view)
+    private static void reload(View view, Context context)
     {
-        SSearchExpandListAdapter.pullAddedBadges(user);
-        SSearchExpandListAdapter.pullFinishedBadges(user);
-        ArrayList<Integer> completed = SSearchExpandListAdapter.getFinishedBadges();
-
         TextView progress = view.findViewById(R.id.progressGrid);
-        TextView comp = view.findViewById(R.id.completedGrid);
-        TextView eagle = view.findViewById(R.id.eagleGrid);
+        TextView compText = view.findViewById(R.id.completedGrid);
+        TextView eagleText = view.findViewById(R.id.eagleGrid);
 
-        String progressText = added.size() + " badge(s)";
-        String compText = completed.size() + " badge(s)";
-        final int[] eagleBadges = {0};
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<ArrayList<meritBadge>> add = STE.submit(() -> sqlRunner.getAddedBadgesMB(user));
 
-        for (int i : completed)
-        {
-            CountDownLatch cdl = new CountDownLatch(1);
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            STE.execute(() -> {
-                if (Objects.requireNonNull(sqlRunner.getBadge(i)).isEagle()) eagleBadges[0]++;
-                cdl.countDown();
-            });
-            try {
-                cdl.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        ExecutorService STE2 = Executors.newSingleThreadExecutor();
+        Future<ArrayList<meritBadge>> comp = STE2.submit(() -> sqlRunner.getCompletedBadges(user));
+
+        String progressText, compS, eagleS;
+
+        try {
+            ArrayList<meritBadge> added = add.get(), completed = comp.get(), eagle = new ArrayList<>();
+
+            for (meritBadge mb : added)
+            {
+                if (mb.isEagle()) eagle.add(mb);
             }
+
+            progressText = added.size() + " badge(s)";
+            compS = completed.size() + " badge(s)";
+            eagleS = eagle.size() + " badge(s)";
+
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Toast.makeText(context, "A database error has occurred", Toast.LENGTH_LONG).show();
+            progressText = "Error";
+            compS = "Error";
+            eagleS = "Error";
         }
 
-        String eagleText = eagleBadges[0] + " badge(s)";
+
 
         progress.setText(progressText);
-        comp.setText(compText);
-        eagle.setText(eagleText);
+        compText.setText(compS);
+        eagleText.setText(eagleS);
     }
 
 
-    public static void getFinishedBadges() {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        //gets which badges have been completed
-        sTE.execute(() ->
-                addedBadgesLive.postValue(sqlRunner.getAddedBadgesMB(user)));
+    @Override
+    public void onResume() {
+        super.onResume();
+        reload(requireView(), getContext());
     }
-
-    public static void getAddedBadges() {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        //gets which badges have been completed
-        sTE.execute(() ->
-                added = sqlRunner.getAddedBadgesMB(user));
-    }
-
 }

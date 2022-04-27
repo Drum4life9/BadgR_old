@@ -2,6 +2,7 @@ package Fragments.SMFrags;
 
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,10 +42,13 @@ public class SMMyScoutsFragment extends Fragment {
         scoutsList = view.findViewById(R.id.scoutsList);
         pb = view.findViewById(R.id.progressBar);
 
-        setsNames();
+        new Handler().postDelayed(() -> {
+            setsNames();
 
-        SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), u, sNames);
-        scoutsList.setAdapter(adapter);
+            SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), u, sNames);
+            scoutsList.setAdapter(adapter);
+
+        }, 50);
 
     }
 

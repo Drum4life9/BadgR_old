@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import Fragments.SMFrags.SMChatFragment;
-import Fragments.SMFrags.SMInfoFragment;
+import Fragments.SMFrags.SMWelcomeFragment;
 import Fragments.SMFrags.SMMyScoutsFragment;
 import Fragments.SMFrags.SMRecentFragment;
 import Fragments.SMFrags.SMSearchBadgesFragment;
@@ -29,7 +29,7 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new SMInfoFragment();
+                return new SMWelcomeFragment();
             case 1:
                 return new SMRecentFragment();
             case 2:
@@ -39,7 +39,7 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
             case 4:
                 return new SMChatFragment();
         }
-        return new SMInfoFragment();
+        return new SMWelcomeFragment();
     }
 
     //returns total number of available tabs

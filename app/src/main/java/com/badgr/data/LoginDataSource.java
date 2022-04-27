@@ -24,18 +24,13 @@ public class LoginDataSource {
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Result login(String username, String password) {
-        //---------------------------------------------------------Check authentication-------------------------------------------------//
 
-        //thread to authenticate the user
         ExecutorService STE = Executors.newSingleThreadExecutor();
         Future<Boolean> auth = STE.submit(() -> sqlRunner.authUser(username, password));
 
         ExecutorService STE2 = Executors.newSingleThreadExecutor();
         Future<ArrayList<String>> info = STE2.submit(() -> sqlRunner.getUserInfo(username));
 
-        //---------------------------------------------------------Pulls user info from database-------------------------------------------------//
-
-        //thread to pull user info
 
 
         try {
