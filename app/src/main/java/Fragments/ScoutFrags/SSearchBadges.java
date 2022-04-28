@@ -29,8 +29,10 @@ import com.badgr.sql.sqlRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 
 public class SSearchBadges extends Fragment {
@@ -99,9 +101,21 @@ public class SSearchBadges extends Fragment {
             ArrayList<Integer> removedBoxes = SSearchExpandListAdapter.getRemovedBoxes();
 
             ExecutorService STE = Executors.newSingleThreadExecutor();
+            CountDownLatch cdl = new CountDownLatch(1);
             STE.execute(() ->
-                    sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes));
-            Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
+            {
+                sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
+                cdl.countDown();
+            });
+
+            try {
+                cdl.await();
+                Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
+            }
+
             resetList(view);
         });
 

@@ -17,8 +17,8 @@ import com.badgr.sql.AllBadgeReqs;
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,7 +49,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         badges = b;
 
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(user));
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
 
         finishedReq = finReq.get();
         changedReqs = copyFinished();
@@ -214,7 +214,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     public static void pullFinishedReqs(scoutPerson p) {
         //gets which requirements have been completed
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(p));
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(p));
 
         try {
             finishedReq = finReq.get();
@@ -223,9 +223,19 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    public static void updateRequirements() {
+    public static void updateRequirements() throws InterruptedException {
+        CountDownLatch cdl = new CountDownLatch(1);
         ExecutorService sTE = Executors.newSingleThreadExecutor();
-        sTE.execute(() -> sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs));
+        sTE.execute(() ->
+                {
+                    try {
+                        sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
+                        cdl.countDown();
+                    } catch (ConcurrentModificationException e) {
+                        e.printStackTrace();
+                    }
+                });
+        cdl.await();
     }
 
     //clears all of the checked reqs since submit button was clicked
@@ -307,7 +317,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         }
 
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getFinishedReqs(user));
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
 
         try {
             finishedReq = finReq.get();

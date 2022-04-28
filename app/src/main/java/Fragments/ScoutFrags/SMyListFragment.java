@@ -59,7 +59,7 @@ public class SMyListFragment extends Fragment {
         Button clear = view.findViewById(R.id.clearButton);
         Button collapse = view.findViewById(R.id.collapseButton);
 
-        new Handler().postDelayed(SMyListFragment::getBadgesAdded, 200);
+        new Handler().postDelayed(SMyListFragment::getBadgesAdded, 50);
 
 
         final Observer<ArrayList<meritBadge>> obs = meritBadges -> {
@@ -82,8 +82,13 @@ public class SMyListFragment extends Fragment {
 
         submit.setOnClickListener(v ->
         {
-            SMyListExpandListAdapter.updateRequirements();
-            SMyListExpandListAdapter.copyFinished();
+            try {
+                SMyListExpandListAdapter.updateRequirements();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
+            }
+
 
             ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
             if (completedBadges.size() != 0) {
@@ -146,6 +151,7 @@ public class SMyListFragment extends Fragment {
         super.onResume();
         getBadgesAdded();
         SMyListExpandListAdapter.pullFinishedReqs(user);
+        resetList(requireView());
     }
 
     @Override

@@ -204,7 +204,4 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
 
     public static ArrayList<Integer> getRemovedBoxes() { return removedBoxes; }
 
-    public static ArrayList<Integer> getFinishedBadges() { return finishedBadges; }
-
-    public static ArrayList<Integer> getAddedBadges() { return addedBadges; }
 }
