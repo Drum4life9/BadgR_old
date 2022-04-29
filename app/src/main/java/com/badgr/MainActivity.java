@@ -20,24 +20,27 @@ public class MainActivity extends Activity {
         super.onCreate(SIS);
         setContentView(R.layout.home_page);
 
+        //initial databse connection to get all badges and requirements
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(AllBadgeReqs::new);
 
+        //sets buttons
         Button login = findViewById(R.id.btnSignIn);
         Button register = findViewById(R.id.btnNewUser);
 
-
+        //when button is clicked
         login.setOnClickListener(v -> loginClick());
         register.setOnClickListener(v -> registerClick());
     }
 
 
+    //open login
     public void loginClick() {
         Intent login = new Intent(this, LoginActivity.class);
         startActivity(login);
     }
 
-
+    //open register
     public void registerClick() {
         Intent register = new Intent(this, RegisterActivity.class);
         startActivity(register);

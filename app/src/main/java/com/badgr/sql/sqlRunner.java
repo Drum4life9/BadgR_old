@@ -28,7 +28,7 @@ public class sqlRunner {
     private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.20/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
+    private final static String url = "jdbc:mysql://10.50.11.69/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -40,7 +40,7 @@ public class sqlRunner {
             if (p.getAge() >= 18) isSM = 1;
             else isSM = 0;
             String addStmt = "INSERT INTO `userpass`(`pass`) VALUES ('" + p.getPass() + "'); " +
-                    "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES (" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
+                    "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES ('" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
                     p.getAge() + intDiv + isSM + intDiv + p.getTroopNum() + "); ";
             stmt.executeUpdate(addStmt);
 
@@ -56,7 +56,7 @@ public class sqlRunner {
     public static ArrayList<String> getUserInfo(String givenU) {
         ArrayList<String> retList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds userPassID with the given username
+            //Finds everything with the given username
             String ex = "SELECT * FROM users WHERE email = '" + givenU + "'";
             Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
@@ -71,8 +71,6 @@ public class sqlRunner {
             retList.add(rs.getString("firstName"));
             retList.add(rs.getString("lastName"));
             retList.add(rs.getString("email"));
-            int uPID = rs.getInt("userPassID");
-            retList.add(String.valueOf(uPID));
             int age = rs.getInt("age");
             retList.add(String.valueOf(age));
             int isSM = rs.getInt("isScoutmaster");
@@ -92,7 +90,7 @@ public class sqlRunner {
     public static ArrayList<String> getUserInfo(int userId) {
         ArrayList<String> retList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds userPassID with the given username
+            //Finds everything with the given userID
             String ex = "SELECT * FROM users WHERE userID = '" + userId + "'";
             Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
@@ -107,8 +105,6 @@ public class sqlRunner {
             retList.add(rs.getString("firstName"));
             retList.add(rs.getString("lastName"));
             retList.add(rs.getString("email"));
-            int uPID = rs.getInt("userPassID");
-            retList.add(String.valueOf(uPID));
             int age = rs.getInt("age");
             retList.add(String.valueOf(age));
             int isSM = rs.getInt("isScoutmaster");
@@ -128,7 +124,7 @@ public class sqlRunner {
     public static boolean authUser(String givenU, String givenP) throws SQLException {
         Connection c = DriverManager.getConnection(url, username, password);
         //Finds userPassID with the given username
-        String ex = "SELECT userPassID FROM users WHERE email = '" + givenU + "'";
+        String ex = "SELECT userID FROM users WHERE email = '" + givenU + "'";
         Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
 

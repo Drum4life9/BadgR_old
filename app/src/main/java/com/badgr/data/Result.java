@@ -4,9 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.badgr.scoutClasses.scoutPerson;
 
-/**
- * A generic class that holds a result success w/ data or an error exception.
- */
+
 public class Result {
     // hide the private constructor to limit subclass types (Success, Error)
     private Result() {
@@ -15,10 +13,15 @@ public class Result {
     @NonNull
     @Override
     public String toString() {
+        //if instance of Success
         if (this instanceof Result.Success) {
-            Result.Success<scoutPerson> success = (Result.Success) this;
+            //set success = Success (which is a user)
+            Result.Success<scoutPerson> success = (Result.Success<scoutPerson>) this;
             return "Success[data=" + success.getData().toString() + "]";
+
+            //else
         } else if (this instanceof Result.Error) {
+            //set error = Error (which is a string of cause of error)
             Result.Error error = (Result.Error) this;
             return error.getError();
         }

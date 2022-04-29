@@ -36,13 +36,13 @@ public class scoutPerson {
         lName = String.valueOf(list.get(2));
         user = String.valueOf(list.get(3));
 
-        String a = list.get(5);
+        String a = list.get(4);
         age = Integer.parseInt(a);
 
-        String sm = list.get(6);
+        String sm = list.get(5);
         isSM = Integer.parseInt(sm) == 1;
 
-        String t = list.get(7);
+        String t = list.get(6);
         troop = Integer.parseInt(t);
 
     }

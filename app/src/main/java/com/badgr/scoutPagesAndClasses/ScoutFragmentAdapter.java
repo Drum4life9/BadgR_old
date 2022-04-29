@@ -14,9 +14,9 @@ import Fragments.ScoutFrags.SWelcomeFragment;
 public class ScoutFragmentAdapter extends FragmentStateAdapter {
 
     //List of titles for tabs
-    private static final String[] titles = new String[]{"Welcome", "Search", "My Badge List", "Completed Badges", "Scouts BSA Resources"};
+    private static final String[] titles = new String[]{"Welcome", "Search", "My Badge List", "Completed Badges"};
 
-    //creates the viewPager, which allows the fragments to be created and destroyed when swiping
+    //creates the viewPager, which allows the fragments to be created and paused when swiping
     public ScoutFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
     }
@@ -35,8 +35,6 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
                 return new SMyListFragment();
             case 3:
                 return new SCompletedBadges();
-            case 4:
-                return new SResource();
         }
         return new SWelcomeFragment();
     }

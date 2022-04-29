@@ -15,7 +15,7 @@ import Fragments.SMFrags.SMSearchBadgesFragment;
 public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
 
 
-    private static final String[] titles = new String[]{"Troop Info", "Recent changes", "My Scouts", "Search for Merit Badges", "Chat"};
+    private static final String[] titles = new String[]{"Troop Info", "Recent changes", "My Scouts", "Search for Merit Badges"};
 
     //creates the viewPager, which allows the fragments to be created and destroyed when swiping
     public ScoutMasterFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
@@ -36,8 +36,6 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
                 return new SMMyScoutsFragment();
             case 3:
                 return new SMSearchBadgesFragment();
-            case 4:
-                return new SMChatFragment();
         }
         return new SMWelcomeFragment();
     }

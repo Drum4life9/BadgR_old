@@ -13,12 +13,9 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.badgr.R;
 import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.scoutPerson;
-import com.badgr.sql.AllBadgeReqs;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import Fragments.ScoutFrags.SCompletedBadges;
 import Fragments.ScoutFrags.SMyListExpandListAdapter;
@@ -31,8 +28,8 @@ public class scoutPage extends AppCompatActivity {
     ScoutFragmentAdapter viewPagerFragmentAdapter;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
+    //gets titles for tabs and user from LoginRepo
     private final String[] titles = ScoutFragmentAdapter.getTitles();
-
     private final scoutPerson user = LoginRepository.getUser();
 
     @Override
@@ -59,26 +56,19 @@ public class scoutPage extends AppCompatActivity {
         //when tab is changed, dismiss the soft keyboard so the user cannot type in other fragments
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-                hideKeyboard(a);
-            }
-
+            public void onTabSelected(TabLayout.Tab tab) { hideKeyboard(a); }
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 hideKeyboard(a);
             }
-
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-                hideKeyboard(a);
-            }
+            public void onTabReselected(TabLayout.Tab tab) { hideKeyboard(a); }
         });
 
         //sets welcome message
         setUserText();
 
+        //runs some initial database connections to make future loading of lists faster
         SMyListFragment.getBadgesAdded();
         SCompletedBadges.getFinishedBadges();
         SSearchExpandListAdapter.pullAddedBadges(user);
@@ -101,6 +91,7 @@ public class scoutPage extends AppCompatActivity {
         // check if no view has focus:
         View currentFocusedView = activity.getCurrentFocus();
         if (currentFocusedView != null) {
+            //hide soft keyboard
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
