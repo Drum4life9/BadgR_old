@@ -1,8 +1,8 @@
 package Fragments.ScoutFrags;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +12,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,12 +28,13 @@ import java.util.concurrent.Future;
 
 public class SWelcomeFragment extends Fragment {
 
-    private static final scoutPerson user = LoginRepository.getUser();
+    private final scoutPerson user;
+
+    public SWelcomeFragment(scoutPerson p) { user = p; }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.scout_fragment_welcome, container, false);
     }
@@ -44,11 +42,11 @@ public class SWelcomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        reload(view, getContext());
+        new Handler().postDelayed(() -> reload(view, getContext()), 150);
     }
 
 
-    private static void reload(View view, Context context)
+    private void reload(View view, Context context)
     {
         TextView progress = view.findViewById(R.id.progressGrid);
         TextView compText = view.findViewById(R.id.completedGrid);

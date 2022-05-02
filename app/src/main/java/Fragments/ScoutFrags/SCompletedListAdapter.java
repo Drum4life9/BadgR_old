@@ -14,6 +14,7 @@ import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -37,7 +38,9 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() ->
         {
-            compBadges = sqlRunner.getCompletedBadges(user);
+            try {
+                compBadges = sqlRunner.getCompletedBadges(user);
+            } catch (SQLException ignored) {}
             cdl.countDown();
         });
 

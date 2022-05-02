@@ -3,6 +3,7 @@ package com.badgr.scoutPagesAndClasses;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
@@ -16,18 +17,12 @@ import com.badgr.scoutClasses.scoutPerson;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-
 import Fragments.ScoutFrags.SCompletedBadges;
-import Fragments.ScoutFrags.SMyListExpandListAdapter;
 import Fragments.ScoutFrags.SMyListFragment;
 import Fragments.ScoutFrags.SSearchExpandListAdapter;
 
-
 public class scoutPage extends AppCompatActivity {
 
-    ScoutFragmentAdapter viewPagerFragmentAdapter;
-    TabLayout tabLayout;
-    ViewPager2 viewPager2;
     //gets titles for tabs and user from LoginRepo
     private final String[] titles = ScoutFragmentAdapter.getTitles();
     private final scoutPerson user = LoginRepository.getUser();
@@ -38,12 +33,10 @@ public class scoutPage extends AppCompatActivity {
         setContentView(R.layout.activity_scout_tab);
 
 
-        SMyListExpandListAdapter.pullFinishedReqs(user);
-
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
-        viewPager2 = findViewById(R.id.view_pager);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPagerFragmentAdapter = new ScoutFragmentAdapter(this);
+        ViewPager2 viewPager2 = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        ScoutFragmentAdapter viewPagerFragmentAdapter = new ScoutFragmentAdapter(this, user);
         Activity a = this;
 
         //sets the bottom part of the screen to whatever fragment is active
@@ -68,12 +61,28 @@ public class scoutPage extends AppCompatActivity {
         //sets welcome message
         setUserText();
 
-        //runs some initial database connections to make future loading of lists faster
-        SMyListFragment.getBadgesAdded();
-        SCompletedBadges.getFinishedBadges();
-        SSearchExpandListAdapter.pullAddedBadges(user);
-        SSearchExpandListAdapter.pullFinishedBadges(user);
+        new Handler().postDelayed(() -> {
+            //runs some initial database connections to make future loading of lists faster
+            SMyListFragment.getBadgesAdded(user);
+            SCompletedBadges.getFinishedBadges(user);
+            SSearchExpandListAdapter.pullAddedBadges(user);
+            SSearchExpandListAdapter.pullFinishedBadges(user);
+        }, 300);
 
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LoginRepository.logout();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LoginRepository.logout();
+        finish();
     }
 
     //sets welcome message to user's name

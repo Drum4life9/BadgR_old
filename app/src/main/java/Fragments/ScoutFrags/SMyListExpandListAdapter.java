@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-
 public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
     private final Context context;
@@ -223,17 +222,13 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         }
     }
 
-    public static void updateRequirements() throws InterruptedException {
+    public static void updateRequirements() throws InterruptedException, ConcurrentModificationException {
         CountDownLatch cdl = new CountDownLatch(1);
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         sTE.execute(() ->
                 {
-                    try {
-                        sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
-                        cdl.countDown();
-                    } catch (ConcurrentModificationException e) {
-                        e.printStackTrace();
-                    }
+                    sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
+                    cdl.countDown();
                 });
         cdl.await();
     }
