@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
+import com.badgr.scoutClasses.scoutPerson;
+
 import Fragments.ScoutFrags.SCompletedBadges;
 import Fragments.ScoutFrags.SMyListFragment;
 import Fragments.ScoutFrags.SResource;
@@ -14,11 +16,13 @@ import Fragments.ScoutFrags.SWelcomeFragment;
 public class ScoutFragmentAdapter extends FragmentStateAdapter {
 
     //List of titles for tabs
-    private static final String[] titles = new String[]{"Welcome", "Search", "My Badge List", "Completed Badges", "Scouts BSA Resources"};
+    private static final String[] titles = new String[]{"Welcome", "Search", "My Badge List", "Completed Badges"};
+    private final scoutPerson user;
 
-    //creates the viewPager, which allows the fragments to be created and destroyed when swiping
-    public ScoutFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
+    //creates the viewPager, which allows the fragments to be created and paused when swiping
+    public ScoutFragmentAdapter(@NonNull FragmentActivity fragmentActivity, scoutPerson p) {
         super(fragmentActivity);
+        user = p;
     }
 
 
@@ -28,17 +32,15 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new SWelcomeFragment();
+                return new SWelcomeFragment(user);
             case 1:
-                return new SSearchBadges();
+                return new SSearchBadges(user);
             case 2:
-                return new SMyListFragment();
+                return new SMyListFragment(user);
             case 3:
-                return new SCompletedBadges();
-            case 4:
-                return new SResource();
+                return new SCompletedBadges(user);
         }
-        return new SWelcomeFragment();
+        return new SWelcomeFragment(user);
     }
 
     //returns total number of available tabs

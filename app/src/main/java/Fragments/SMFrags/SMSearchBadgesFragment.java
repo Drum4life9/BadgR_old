@@ -51,6 +51,7 @@ public class SMSearchBadgesFragment extends Fragment {
     private ListView list;
     private String[] scoutList;
     private ArrayList<Integer> addedScouts, checked;
+    private static Button addBut;
     private FrameLayout frameLayout;
     private RelativeLayout rl;
 
@@ -70,7 +71,8 @@ public class SMSearchBadgesFragment extends Fragment {
         //Finds and stores actionable pieces, such as the search button and the text search box
         TextView searchBar = view.findViewById(R.id.SMbadgeSearchText);
         Button searchBut = view.findViewById(R.id.SMsearchBadgesButton);
-        Button addBut = view.findViewById(R.id.SMAddButton);
+        Button cancel = view.findViewById(R.id.cancel);
+        addBut = view.findViewById(R.id.SMAddButton);
         ProgressBar spinner = view.findViewById(R.id.SMsearchProgress);
         TextView noSearchResults = view.findViewById(R.id.SMnoSearchResults);
         frameLayout = view.findViewById(R.id.scoutPanel);
@@ -116,23 +118,33 @@ public class SMSearchBadgesFragment extends Fragment {
             if (getActivity() != null)
                 hideKeyboard(getActivity());
 
+            //get scout names and add to String[]
+            getScoutNames();
+
             rl.setVisibility(View.INVISIBLE);
 
             frameLayout.setVisibility(View.VISIBLE);
             list = view.findViewById(R.id.scoutList);
+            RelativeLayout mini = view.findViewById(R.id.miniList);
+            int totalSpace = 70 * (scoutList.length + 2) + 150;
+
+            int height = mini.getHeight();
+
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+            );
+            params.setMargins(100, (height - totalSpace / 2), 100, (height - totalSpace / 2));
+            mini.setLayoutParams(params);
 
 
-
-            //get scout names and add to String[]
-            getScoutNames();
             SMSearchScoutListAdapter listAdapter = new SMSearchScoutListAdapter(getActivity(), scoutList, user);
 
             //set list adapter to customized list adapter (see SMScoutListAdapter)
             list.setAdapter(listAdapter);
 
-
-
         });
+
 
         fab.setOnClickListener(v -> {
             addedScouts = SMSearchScoutListAdapter.getAddedScouts();
@@ -147,12 +159,21 @@ public class SMSearchBadgesFragment extends Fragment {
 
             resetList();
 
-
+            addBut.setEnabled(false);
         });
+
+        cancel.setOnClickListener(v -> {
+            frameLayout.setVisibility(View.INVISIBLE);
+            rl.setVisibility(View.VISIBLE);
+            Toast.makeText(getContext(), "No badges changed", Toast.LENGTH_LONG).show();
+            addBut.setEnabled(false);
+        });
+
 
         badgesLiveData.observe(getViewLifecycleOwner(), badgeChanged);
     }
 
+    public static void toggleBut(boolean bool) { addBut.setEnabled(bool); }
 
     public void setBadges(String badgeName) {
         //ASYNC thread

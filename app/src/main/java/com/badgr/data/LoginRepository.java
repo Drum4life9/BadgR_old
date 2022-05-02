@@ -3,20 +3,14 @@ package com.badgr.data;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.LifecycleOwner;
 
 import com.badgr.scoutClasses.scoutPerson;
 
-/**
- * Class that requests authentication and user information from the remote data source and
- * maintains an in-memory cache of login status and user credentials information.
- */
+
 public class LoginRepository {
 
     private static volatile LoginRepository instance;
-
     private final LoginDataSource dataSource;
-
     private static scoutPerson user;
 
     private LoginRepository(LoginDataSource dataSource) {
@@ -34,25 +28,22 @@ public class LoginRepository {
         return user;
     }
 
-    private void setLoggedInUser(scoutPerson p) {
-        user = p;
-    }
+    private void setLoggedInUser(scoutPerson p) { user = p; }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Result login(String username, String password) {
-        //handles login
+        //handles logout
+        logout();
+        //creates result object from datasource.login
         Result result = dataSource.login(username, password);
-        //creates result object
 
-        //if user, login success
+
+        //if user, login success and set this.user to result
         if (result instanceof Result.Success)
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         return result;
     }
 
-    public static void logout()
-    {
-        user = null;
-    }
+    public static void logout() { user = null; }
 }
 

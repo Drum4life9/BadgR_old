@@ -40,7 +40,7 @@ public class sqlRunner {
             if (p.getAge() >= 18) isSM = 1;
             else isSM = 0;
             String addStmt = "INSERT INTO `userpass`(`pass`) VALUES ('" + p.getPass() + "'); " +
-                    "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES (" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
+                    "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES ('" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
                     p.getAge() + intDiv + isSM + intDiv + p.getTroopNum() + "); ";
             stmt.executeUpdate(addStmt);
 
@@ -56,7 +56,7 @@ public class sqlRunner {
     public static ArrayList<String> getUserInfo(String givenU) {
         ArrayList<String> retList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds userPassID with the given username
+            //Finds everything with the given username
             String ex = "SELECT * FROM users WHERE email = '" + givenU + "'";
             Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
@@ -71,8 +71,6 @@ public class sqlRunner {
             retList.add(rs.getString("firstName"));
             retList.add(rs.getString("lastName"));
             retList.add(rs.getString("email"));
-            int uPID = rs.getInt("userPassID");
-            retList.add(String.valueOf(uPID));
             int age = rs.getInt("age");
             retList.add(String.valueOf(age));
             int isSM = rs.getInt("isScoutmaster");
@@ -92,7 +90,7 @@ public class sqlRunner {
     public static ArrayList<String> getUserInfo(int userId) {
         ArrayList<String> retList = new ArrayList<>();
         try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds userPassID with the given username
+            //Finds everything with the given userID
             String ex = "SELECT * FROM users WHERE userID = '" + userId + "'";
             Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
@@ -107,8 +105,6 @@ public class sqlRunner {
             retList.add(rs.getString("firstName"));
             retList.add(rs.getString("lastName"));
             retList.add(rs.getString("email"));
-            int uPID = rs.getInt("userPassID");
-            retList.add(String.valueOf(uPID));
             int age = rs.getInt("age");
             retList.add(String.valueOf(age));
             int isSM = rs.getInt("isScoutmaster");
@@ -128,7 +124,7 @@ public class sqlRunner {
     public static boolean authUser(String givenU, String givenP) throws SQLException {
         Connection c = DriverManager.getConnection(url, username, password);
         //Finds userPassID with the given username
-        String ex = "SELECT userPassID FROM users WHERE email = '" + givenU + "'";
+        String ex = "SELECT userID FROM users WHERE email = '" + givenU + "'";
         Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_INSENSITIVE);
 
 
@@ -434,38 +430,33 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
-        SCompletedBadges.getFinishedBadges();
+        SCompletedBadges.getFinishedBadges(p);
 
         return completed;
     }
 
-    public static ArrayList<meritBadge> getCompletedBadges(scoutPerson p) {
+    public static ArrayList<meritBadge> getCompletedBadges(scoutPerson p) throws SQLException {
         ArrayList<meritBadge> badges = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds badge names with the given name and completed
+        Connection c = DriverManager.getConnection(url, username, password);
+        //Finds badge names with the given name and completed
+        String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
+        Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
-            String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
-
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
-            while (rs.next()) {
-                int badgeIDAdded = rs.getInt("badgeTableID");
-                meritBadge mb = getBadge(badgeIDAdded);
-                badges.add(mb);
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //gets results from database
+        ResultSet rs = stmt.executeQuery(ex);
+        while (rs.next()) {
+            int badgeIDAdded = rs.getInt("badgeTableID");
+            meritBadge mb = getBadge(badgeIDAdded);
+            badges.add(mb);
         }
+
 
         return badges;
     }
 
-    public static ArrayList<meritBadge> getCompletedBadges(int id) {
+    public static ArrayList<meritBadge> getCompletedBadges(int id) throws SQLException {
         ArrayList<meritBadge> badges = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
+        Connection c = DriverManager.getConnection(url, username, password);
             //Finds badge names with the given name and completed
 
             String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + id + " AND isCompleted = TRUE ORDER BY badgeTableID;";
@@ -479,10 +470,6 @@ public class sqlRunner {
                 badges.add(mb);
             }
 
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         return badges;
     }
@@ -641,8 +628,8 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
-        SMyListFragment.getBadgesAdded();
-        SCompletedBadges.getFinishedBadges();
+        SMyListFragment.getBadgesAdded(p);
+        SCompletedBadges.getFinishedBadges(p);
         SMyListExpandListAdapter.pullFinishedReqs(p);
     }
 

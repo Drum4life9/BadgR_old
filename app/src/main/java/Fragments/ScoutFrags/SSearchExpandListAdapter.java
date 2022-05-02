@@ -86,6 +86,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
             addToList.setText(R.string.completedBadge);
             checkBox.setEnabled(false);
 
+
         } else if (addedBadges.contains(id)) {
             checkBox.setChecked(true);
             addToList.setText(R.string.added);
@@ -95,6 +96,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
             addToList.setText(R.string.toAdd);
             checkBox.setEnabled(true);
         }
+
 
         if (addedBoxes.contains(id)) {
             checkBox.setChecked(true);

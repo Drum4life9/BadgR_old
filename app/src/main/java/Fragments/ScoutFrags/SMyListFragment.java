@@ -29,6 +29,7 @@ import com.badgr.sql.sqlRunner;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,8 +40,10 @@ public class SMyListFragment extends Fragment {
 
     private ExpandableListView accordionList;
     private static ArrayList<meritBadge> badgesAdded;
-    private static final scoutPerson user = LoginRepository.getUser();
+    private static scoutPerson user;
     private static final MutableLiveData<ArrayList<meritBadge>> badgesAddedLive = new MutableLiveData<>();
+
+    public SMyListFragment(scoutPerson p) {user = p;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,7 +62,7 @@ public class SMyListFragment extends Fragment {
         Button clear = view.findViewById(R.id.clearButton);
         Button collapse = view.findViewById(R.id.collapseButton);
 
-        new Handler().postDelayed(SMyListFragment::getBadgesAdded, 50);
+        new Handler().postDelayed(() -> getBadgesAdded(user), 50);
 
 
         final Observer<ArrayList<meritBadge>> obs = meritBadges -> {
@@ -84,7 +87,7 @@ public class SMyListFragment extends Fragment {
         {
             try {
                 SMyListExpandListAdapter.updateRequirements();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | ConcurrentModificationException e) {
                 e.printStackTrace();
                 Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
             }
@@ -93,11 +96,11 @@ public class SMyListFragment extends Fragment {
             ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
             if (completedBadges.size() != 0) {
                 Toast.makeText(getContext(), "Requirements Updated, and All Completed Badges Moved to \"Completed Badges\"", Toast.LENGTH_LONG).show();
-                SCompletedBadges.getFinishedBadges();
+                SCompletedBadges.getFinishedBadges(user);
             } else {
                 Toast.makeText(getContext(), "Requirements Updated!", Toast.LENGTH_LONG).show();
             }
-            getBadgesAdded();
+            getBadgesAdded(user);
             SMyListExpandListAdapter.pullFinishedReqs(user);
 
             if (badgesAdded == null) return;
@@ -149,7 +152,7 @@ public class SMyListFragment extends Fragment {
 
     public void onResume() {
         super.onResume();
-        getBadgesAdded();
+        getBadgesAdded(user);
         SMyListExpandListAdapter.pullFinishedReqs(user);
         resetList(requireView());
     }
@@ -166,9 +169,9 @@ public class SMyListFragment extends Fragment {
         else spinner.setVisibility(View.VISIBLE);
     }
 
-    public static void getBadgesAdded() {
+    public static void getBadgesAdded(scoutPerson p) {
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> badgesAddedLive.postValue(sqlRunner.getAddedBadgesMB(user)));
+        STE.execute(() -> badgesAddedLive.postValue(sqlRunner.getAddedBadgesMB(p)));
     }
 
 

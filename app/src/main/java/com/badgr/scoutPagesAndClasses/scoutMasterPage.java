@@ -22,8 +22,8 @@ public class scoutMasterPage extends AppCompatActivity {
     ScoutMasterFragmentAdapter viewPagerFragmentAdapter;
     TabLayout tabLayout;
     ViewPager2 viewPager2;
+    //gets titles for tab layout and user from LoginRepo
     private final String[] titles = ScoutMasterFragmentAdapter.getTitles();
-
     private final scoutMaster user = (scoutMaster) LoginRepository.getUser();
 
     @Override
@@ -49,12 +49,10 @@ public class scoutMasterPage extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) { hideKeyboard(a); }
-
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 hideKeyboard(a);
             }
-
             @Override
             public void onTabReselected(TabLayout.Tab tab) { hideKeyboard(a); }
         });
@@ -80,6 +78,7 @@ public class scoutMasterPage extends AppCompatActivity {
         // check if no view has focus:
         View currentFocusedView = activity.getCurrentFocus();
         if (currentFocusedView != null) {
+            //hide soft keyboard
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }

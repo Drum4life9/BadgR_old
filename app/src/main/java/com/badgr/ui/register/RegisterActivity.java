@@ -24,10 +24,8 @@ import com.badgr.sql.sqlRunner;
 import com.badgr.ui.login.LoginActivity;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 
 public class RegisterActivity extends Activity {
@@ -74,6 +72,7 @@ public class RegisterActivity extends Activity {
 
         //adds textChangeListeners to items, tries to update button whenever text is changed
         {
+            //first name update
             fNameEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -93,6 +92,7 @@ public class RegisterActivity extends Activity {
                     regButton.setEnabled(update());
                 }
             });
+            //last name update
             lNameEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -112,6 +112,7 @@ public class RegisterActivity extends Activity {
                     regButton.setEnabled(update());
                 }
             });
+            //email update
             emailEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -131,6 +132,7 @@ public class RegisterActivity extends Activity {
                     regButton.setEnabled(update());
                 }
             });
+            //password update
             passEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -143,6 +145,7 @@ public class RegisterActivity extends Activity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    //if password characteristics are valid, change text colors
                     if (RegisterViewModel.passUpperValid(passEdit.getText().toString())) {
                         passCapital.setTextColor(Color.rgb(106, 196, 79));
                     } else {
@@ -161,6 +164,7 @@ public class RegisterActivity extends Activity {
 
                 }
             });
+            //age update
             ageEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -180,6 +184,7 @@ public class RegisterActivity extends Activity {
                     regButton.setEnabled(update());
                 }
             });
+            //troop update
             troopEdit.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
@@ -201,6 +206,7 @@ public class RegisterActivity extends Activity {
             });
         }
 
+        //register button on click
         regButton.setOnClickListener(this::attemptRegister);
     }
 
@@ -214,7 +220,7 @@ public class RegisterActivity extends Activity {
 
         //-------------------------------------------------Toggles Loading Screen Layout Over Register Page-----------------------------//
 
-        toggleVis(true);
+        toggleVis();
 
         //creates a new scoutPerson with the given info
         scoutPerson p = new scoutPerson();
@@ -229,17 +235,16 @@ public class RegisterActivity extends Activity {
 
         //-------------------------------------------Username check----------------------------------------//
 
+        //waits for loading screen to initialize
         new Handler().postDelayed(() ->
         {
             //if username exists
             if (checkUsernameExists()) {
                 if (usernameCheckSuccess) {
                     //display toast that username exists
-                    toggleVis(false);
                     Toast.makeText(this, "Email already exists. Please try a different email.", Toast.LENGTH_LONG).show();
                 } else {
                     //hopefully should never run, but error message in case of username check failure
-                    toggleVis(false);
                     Toast.makeText(this, "There was an error checking email address. Please try again.", Toast.LENGTH_LONG).show();
                 }
                 return;
@@ -254,10 +259,14 @@ public class RegisterActivity extends Activity {
             //creates add user to database thread
             ExecutorService STE = Executors.newSingleThreadExecutor();
             STE.execute(() -> {
+                //if error with adding user
                 if (!sqlRunner.addUser(p))
                 {
-                    toggleVis(false);
-                    Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
+                    //toast error message
+                    runOnUiThread(() -> {
+                        final Toast toast = Toast.makeText(getApplicationContext(), "Error occurred with adding user. Please try again", Toast.LENGTH_SHORT);
+                        toast.show();
+                    });
                 }
                 else
                     cDL.countDown();
@@ -268,15 +277,12 @@ public class RegisterActivity extends Activity {
             try {
                 cDL.await();
             } catch (InterruptedException e) {
-                toggleVis(false);
-                Toast.makeText(this, "Error occurred with register. Please try again", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error occurred with adding user. Please try again", Toast.LENGTH_SHORT).show();
+                return;
             }
 
 
             //---------------------------------------------Open Login page-------------------------------------//
-
-
-            toggleVis(false);
 
             Toast.makeText(this, "Register Successful. Please Log In.", Toast.LENGTH_LONG).show();
             Intent oLogin = new Intent(this, LoginActivity.class);
@@ -290,14 +296,15 @@ public class RegisterActivity extends Activity {
         emailEdit = findViewById(R.id.registerEmail);
         String email = emailEdit.getText().toString();
 
-
+        //creates check thread
         CountDownLatch cdl = new CountDownLatch(1);
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() -> {
+            //is user in the database already
             userInDB = sqlRunner.isEmailInDatabase(email);
             cdl.countDown();
         });
-        //creates check thread
+
 
 
         //waits until previous thread has completed to move on
@@ -324,20 +331,16 @@ public class RegisterActivity extends Activity {
         startActivity(oLogin);
     }
 
-    private void toggleVis(boolean status) {
+    private void toggleVis() {
         loading = findViewById(R.id.loadingScreen);
         ProgressBar spinner = findViewById(R.id.progress_loader);
         TextView loadingText = findViewById(R.id.loading);
 
-        if (status) {
-            loading.setVisibility(View.VISIBLE);
-            spinner.setVisibility(View.VISIBLE);
-            loadingText.setVisibility(View.VISIBLE);
-        } else {
-            loading.setVisibility(View.GONE);
-            spinner.setVisibility(View.GONE);
-            loadingText.setVisibility(View.GONE);
-        }
+        //set loading screen to true
+        loading.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
+        loadingText.setVisibility(View.VISIBLE);
+        regButton.setVisibility(View.INVISIBLE);
 
     }
 
