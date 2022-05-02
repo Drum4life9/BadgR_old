@@ -10,9 +10,11 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
-import com.badgr.scoutClasses.scoutPerson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
-    private static ArrayList<Integer> checked = new ArrayList<>();
+    public static ArrayList<Integer> checked = new ArrayList<>();
 
 
     //Constructor
@@ -52,6 +54,7 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int lstPosn, final int expanded_ListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
         //gets the associated merit badge
+
         meritBadge badge = badges.get(lstPosn);
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -68,10 +71,13 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
 
 
         //sets a checkbox listener and updates the table if box is checked
+
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
             if (isChecked) checked.add(badge.getId());
             else checked.remove((Integer) badge.getId());
+
+            SMSearchBadgesFragment.toggleBut(checked.size() != 0);
         });
 
 
@@ -90,6 +96,7 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
         //sets the eagle text to if the badge is eagle required or not.
         if (badge.isEagle()) eagleReq.setText(R.string.eagleReq);
         else eagleReq.setText(R.string.NEagleReq);
+
 
         return convertView;
     }

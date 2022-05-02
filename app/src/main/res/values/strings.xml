@@ -69,5 +69,6 @@
     <string name="all_nots">All notifications</string>
     <string name="all_xa_nots">All\nPrevious\nNotifications</string>
     <string name="troop_statistics">Troop Statistics</string>
+    <string name="cancel">cancel</string>
 
 </resources>

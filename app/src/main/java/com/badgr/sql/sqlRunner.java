@@ -28,7 +28,7 @@ public class sqlRunner {
     private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://10.50.11.69/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
+    private final static String url = "jdbc:mysql://192.168.1.20/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -430,38 +430,33 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
-        SCompletedBadges.getFinishedBadges();
+        SCompletedBadges.getFinishedBadges(p);
 
         return completed;
     }
 
-    public static ArrayList<meritBadge> getCompletedBadges(scoutPerson p) {
+    public static ArrayList<meritBadge> getCompletedBadges(scoutPerson p) throws SQLException {
         ArrayList<meritBadge> badges = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds badge names with the given name and completed
+        Connection c = DriverManager.getConnection(url, username, password);
+        //Finds badge names with the given name and completed
+        String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
+        Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
-            String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
-
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
-            while (rs.next()) {
-                int badgeIDAdded = rs.getInt("badgeTableID");
-                meritBadge mb = getBadge(badgeIDAdded);
-                badges.add(mb);
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        //gets results from database
+        ResultSet rs = stmt.executeQuery(ex);
+        while (rs.next()) {
+            int badgeIDAdded = rs.getInt("badgeTableID");
+            meritBadge mb = getBadge(badgeIDAdded);
+            badges.add(mb);
         }
+
 
         return badges;
     }
 
-    public static ArrayList<meritBadge> getCompletedBadges(int id) {
+    public static ArrayList<meritBadge> getCompletedBadges(int id) throws SQLException {
         ArrayList<meritBadge> badges = new ArrayList<>();
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
+        Connection c = DriverManager.getConnection(url, username, password);
             //Finds badge names with the given name and completed
 
             String ex = "SELECT badgeTableID FROM userbadges WHERE userID = " + id + " AND isCompleted = TRUE ORDER BY badgeTableID;";
@@ -475,10 +470,6 @@ public class sqlRunner {
                 badges.add(mb);
             }
 
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
         return badges;
     }
@@ -637,8 +628,8 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
-        SMyListFragment.getBadgesAdded();
-        SCompletedBadges.getFinishedBadges();
+        SMyListFragment.getBadgesAdded(p);
+        SCompletedBadges.getFinishedBadges(p);
         SMyListExpandListAdapter.pullFinishedReqs(p);
     }
 

@@ -7,13 +7,14 @@
 
     <FrameLayout
         android:id="@+id/scoutPanel"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".9"
         android:background="@color/grey">
 
         <RelativeLayout
+            android:id="@+id/miniList"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -43,7 +44,7 @@
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:id="@+id/fabSM"
                 android:text="@string/add_to_scouts"
                 android:textSize="20sp"
@@ -53,7 +54,21 @@
                 android:layout_marginBottom="50dp"
                 android:layout_marginEnd="50dp"
                 android:padding="10dp"
-                android:contentDescription="@string/add_to_scouts" />
+                android:contentDescription="@string/add_to_scouts"
+                tools:ignore="RelativeOverlap" />
+
+            <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:id="@+id/cancel"
+                android:text="@string/cancel"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_margin="50dp"
+                android:padding="10dp"
+                android:contentDescription="@string/cancel" />
 
         </RelativeLayout>
 
@@ -159,6 +174,7 @@
             android:textColor="@color/white"
             android:textSize="25sp"
             android:padding="15dp"
+            android:enabled="false"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"

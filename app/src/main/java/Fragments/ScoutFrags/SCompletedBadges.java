@@ -2,6 +2,8 @@ package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +21,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -37,14 +39,16 @@ public class SCompletedBadges extends Fragment {
     private static String[] compTitles;
     private static final MutableLiveData<ArrayList<meritBadge>> completedBadgesLive = new MutableLiveData<>();
     private static ArrayList<meritBadge> completedBadges = new ArrayList<>();
-    private static final scoutPerson user = LoginRepository.getUser();
+    private static scoutPerson user;
 
+
+    public SCompletedBadges (scoutPerson p) {user = p;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getFinishedBadges();
+        getFinishedBadges(user);
 
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.scout_fragment_completed_badges, container, false);
@@ -121,11 +125,16 @@ public class SCompletedBadges extends Fragment {
     }
 
 
-    public static void getFinishedBadges() {
+    public static void getFinishedBadges(scoutPerson user) {
         ExecutorService sTE = Executors.newSingleThreadExecutor();
         //gets which badges have been completed
         sTE.execute(() ->
-                completedBadgesLive.postValue(sqlRunner.getCompletedBadges(user)));
+        {
+            try {
+                completedBadgesLive.postValue(sqlRunner.getCompletedBadges(user));
+            } catch (SQLException ignored) {
+            }
+        });
     }
 
     private void setTitles() {

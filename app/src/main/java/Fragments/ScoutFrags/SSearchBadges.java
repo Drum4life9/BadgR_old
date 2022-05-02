@@ -37,12 +37,14 @@ import java.util.concurrent.Future;
 
 public class SSearchBadges extends Fragment {
 
-    ExpandableListView accordionList;
-    ExpandableListAdapter expandableListAdapter;
-    ArrayList<String> badgeTitles;
-    ArrayList<meritBadge> badges;
-    MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
-    scoutPerson user = LoginRepository.getUser();
+    private ExpandableListView accordionList;
+    private ExpandableListAdapter expandableListAdapter;
+    private ArrayList<String> badgeTitles;
+    private ArrayList<meritBadge> badges;
+    private MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
+    private scoutPerson user;
+
+    public SSearchBadges(scoutPerson p) {user = p;}
 
     //runs first
     @Override
@@ -135,7 +137,7 @@ public class SSearchBadges extends Fragment {
 
     public void onPause() {
         super.onPause();
-        SMyListFragment.getBadgesAdded();
+        SMyListFragment.getBadgesAdded(user);
         accordionList = null;
     }
 
