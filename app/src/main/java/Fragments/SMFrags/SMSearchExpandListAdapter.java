@@ -66,14 +66,18 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
         TextView name = convertView.findViewById(R.id.badgeNameReplace);
         TextView eagleReq = convertView.findViewById(R.id.badgeIsEagleReplace);
         CheckBox checkBox = convertView.findViewById(R.id.badgeChecked);
+        ImageView image = convertView.findViewById(R.id.imageReplace);
+        Context context = convertView.getContext();
 
+        //if the box was already checked, set box to checked
         checkBox.setChecked(checked.contains(badge.getId()));
 
 
         //sets a checkbox listener and updates the table if box is checked
-
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
+
+            //update checked list accordingly
             if (isChecked) checked.add(badge.getId());
             else checked.remove((Integer) badge.getId());
 
@@ -81,13 +85,11 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
         });
 
 
-
-        ImageView image = convertView.findViewById(R.id.imageReplace);
-
-
+        //gets badge name string for image reference
         String badgeImageName = "merit_badge_" + badge.getStrippedName();
-        Context context = convertView.getContext();
         int imageId = context.getResources().getIdentifier(badgeImageName, "drawable", context.getPackageName());
+
+        //set image to resource
         image.setImageResource(imageId);
 
         //sets mini_badge_view to the badge name

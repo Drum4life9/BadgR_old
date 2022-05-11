@@ -20,12 +20,12 @@ import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 
 public class SMMyScoutsFragment extends Fragment {
-
-
-    private final scoutMaster u = (scoutMaster) LoginRepository.getUser();
-    private String[] sNames;
+    private final scoutMaster user;
     private ListView scoutsList;
     private ProgressBar pb;
+
+    //sets user when fragment initialized
+    public SMMyScoutsFragment(scoutMaster u) {user = u;}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,33 +39,38 @@ public class SMMyScoutsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //gets page elements
         scoutsList = view.findViewById(R.id.scoutsList);
         pb = view.findViewById(R.id.progressBar);
 
+        //delays 50ms, then sets list to allow spinner to activate
         new Handler().postDelayed(() -> {
+
+            //sets names
             setsNames();
 
-            SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), u, sNames);
+            //creates list and toggles visibilities
+            SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), user, setsNames());
             scoutsList.setAdapter(adapter);
+            scoutsList.setVisibility(View.VISIBLE);
+            pb.setVisibility(View.GONE);
 
         }, 50);
-
     }
 
 
-    private void setsNames()
+    private String[] setsNames()
     {
-        sNames = new String[u.getTroop().size()];
+        //creates list of names
+        String[] sNames = new String[user.getTroop().size()];
         int c = 0;
-        for (scoutPerson p : u.getTroop())
-        {
+        for (scoutPerson p : user.getTroop()) {
             String name = p.getFullName();
             sNames[c] = name;
             c++;
         }
 
-        scoutsList.setVisibility(View.VISIBLE);
-        pb.setVisibility(View.GONE);
+        return sNames;
     }
 
 

@@ -54,7 +54,7 @@
         android:layout_height="1000dp"
         android:layout_below="@id/searchProgress"
         android:layout_marginTop="5dp"
-        android:divider="@color/primaryColorDark"
+        android:divider="@color/primary_pink_dark"
         android:dividerHeight="3dp" />
 
     <Button

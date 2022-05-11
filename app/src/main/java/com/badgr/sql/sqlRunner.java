@@ -7,6 +7,7 @@ import com.badgr.scoutClasses.scoutPerson;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -39,6 +40,8 @@ public class sqlRunner {
             int isSM;
             if (p.getAge() >= 18) isSM = 1;
             else isSM = 0;
+
+
             String addStmt = "INSERT INTO `userpass`(`pass`) VALUES ('" + p.getPass() + "'); " +
                     "INSERT INTO `users`(`firstName`, `lastName`, `email`, `age`, `isScoutmaster`, `troop`) VALUES ('" + p.getFName() + strDiv + p.getLName() + strDiv + p.getEmail() + "', " +
                     p.getAge() + intDiv + isSM + intDiv + p.getTroopNum() + "); ";
@@ -246,33 +249,44 @@ public class sqlRunner {
         return mb;
     }
 
-    public static void toggleAddToList(scoutPerson p, ArrayList<Integer> added, ArrayList<Integer> removed) {
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            String addOrRemoveBadge;
-            Statement stmtAddOrRemove = c.createStatement();
+    public static void toggleAddToList(scoutPerson p, ArrayList<Integer> added, ArrayList<Integer> removed) throws SQLException {
+        Connection c = DriverManager.getConnection(url, username, password);
+            String addBadge, addReq, removeBadge;
+
+
+            addBadge = "INSERT INTO userbadges VALUES (?, ?, 0)";
+            PreparedStatement badgePS = c.prepareStatement(addBadge);
+
+            addReq = "INSERT INTO userreq VALUES (?, ?, ?, 0);";
+            PreparedStatement addPS = c.prepareStatement(addReq);
+
+            removeBadge = "DELETE FROM userbadges WHERE badgeTableID = ?;";
+            PreparedStatement remPS = c.prepareStatement(removeBadge);
+
 
             for (int i : added) {
+                badgePS.setInt(1, i);
+                badgePS.setInt(2, p.getUserID());
+                badgePS.addBatch();
 
-                addOrRemoveBadge = "INSERT INTO userbadges VALUES (" + i + ", " + p.getUserID() + ", 0);";
-                stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
-
-                //add requirements to list
                 for (int j = 1; j <= Objects.requireNonNull(getBadge(i)).getNumReqs(); j++) {
-                    String addReq = "INSERT INTO userreq VALUES (" + p.getUserID() + ", " + i + ", " + j + ", 0);";
-                    stmtAddOrRemove.executeUpdate(addReq);
+                    addPS.setInt(1, p.getUserID());
+                    addPS.setInt(2, i);
+                    addPS.setInt(3, j);
+                    addPS.addBatch();
                 }
             }
 
             for (int i : removed) {
-                //remove the merit badge
-                addOrRemoveBadge = "DELETE FROM userbadges WHERE badgeTableID = " + i + ";";
-                stmtAddOrRemove.executeUpdate(addOrRemoveBadge);
+                remPS.setInt(1, i);
+                remPS.addBatch();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return;
-        }
+
+            badgePS.executeBatch();
+            addPS.executeBatch();
+            remPS.executeBatch();
+
 
         //update checked boxes for when the children of the expandable list are created
         SSearchExpandListAdapter.pullAddedBadges(p);
@@ -345,10 +359,10 @@ public class sqlRunner {
         return added;
     }
 
-    public static ArrayList<meritBadge> getAddedBadgesMB(scoutPerson p) {
+    public static ArrayList<meritBadge> getAddedBadgesMB(scoutPerson p) throws SQLException {
         ArrayList<meritBadge> added = new ArrayList<>();
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
+        Connection c = DriverManager.getConnection(url, username, password);
             //Finds badge names with the given name
 
             String ex = "SELECT * FROM userbadges WHERE userID = " + p.getUserID() + " AND isCompleted = 0 ORDER BY badgeTableID;";
@@ -361,18 +375,13 @@ public class sqlRunner {
                 added.add(getBadge(badgeIDAdded));
             }
 
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         return added;
     }
 
-    public static ArrayList<meritBadge> getAddedBadgesMB(int userID) {
+    public static ArrayList<meritBadge> getAddedBadgesMB(int userID) throws SQLException {
         ArrayList<meritBadge> added = new ArrayList<>();
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
+        Connection c = DriverManager.getConnection(url, username, password);
             //Finds badge names with the given name
 
             String ex = "SELECT * FROM userbadges WHERE userID = " + userID + " AND isCompleted = 0 ORDER BY badgeTableID;";
@@ -386,9 +395,7 @@ public class sqlRunner {
             }
 
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
 
         return added;
     }
@@ -694,18 +701,25 @@ public class sqlRunner {
         SMSearchBadgesFragment.resetChecked();
     }
 
-    public static void addNewNot(scoutPerson p, int b) {
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            Statement stmt = c.createStatement();
-            String upd;
-            int pID = p.getUserID();
-            if (b == -1) upd = "INSERT INTO recentactivity VALUES (1, \"newUser\", " + pID + intDiv + p.getTroopNum() + intDiv + "-1,  notifID);";
-            else upd = "INSERT INTO recentactivity VALUES (1, \"badgeComp\", " + pID + intDiv + p.getTroopNum() + intDiv + b + ", notifID);";
+    public static void addNewNot(scoutPerson p, int b) throws SQLException {
+        Connection c = DriverManager.getConnection(url, username, password);
+        int pID = p.getUserID();
 
-            stmt.execute(upd);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        String ins = "INSERT INTO recentactivity VALUES (1, ?, ?, ?, ?, ?, notifID);";
+        PreparedStatement stmt = c.prepareStatement(ins);
+
+        if (b == -1) {
+            stmt.setString(1, "\"newUser\"");
+            stmt.setInt(4, -1);
         }
+        else {
+            stmt.setString(1, "\"badgeComp\"");
+            stmt.setInt(4, b);
+        }
+        stmt.setInt(2, pID);
+        stmt.setInt(3, p.getTroopNum());
+
+        stmt.executeUpdate();
     }
 
     public static ArrayList<notification> getNotifications(scoutMaster u) {
@@ -731,85 +745,37 @@ public class sqlRunner {
                 scoutPerson p = new scoutPerson(Objects.requireNonNull(getUserInfo(rs.getInt("userID"))));
                 int notifID = rs.getInt("notifID");
                 int bID = rs.getInt("badgeTableID");
+                boolean newNot = rs.getInt("newNotif") == 1;
 
                 notification n;
                 if (bID == -1)
                 {
-                    n = new notification(p, notifID);
+                    n = new notification(p, notifID, newNot);
                 }
                 else {
-                    n = new notification(p, getBadge(bID), notifID);
+                    n = new notification(p, getBadge(bID), notifID, newNot);
                 }
 
                 nots.add(n);
 
             }
 
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        } catch (SQLException ignored) {}
 
         return nots;
     }
 
-    public static ArrayList<notification> getAllNotifications(scoutMaster u) {
-        ArrayList<notification> nots = new ArrayList<>();
+    public static void clearNots(ArrayList<notification> nots) throws SQLException {
+        Connection c = DriverManager.getConnection(url, username, password);
+        String st = "UPDATE recentactivity SET newNotif = false WHERE notifID = ?";
+        PreparedStatement stmt = c.prepareStatement(st);
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            Statement stmt = c.createStatement();
-
-            String getNots = "SELECT * FROM recentactivity WHERE troop = " + u.getTroopNum() + " AND newNotif = 0;";
-
-            ResultSet rs = stmt.executeQuery(getNots);
-
-            if (!rs.first()) return nots;
-
-            int count = 0;
-            while (rs.next())
-            {
-                if (count == 0)
-                {
-                    count++;
-                    rs.first();
-                }
-                scoutPerson p = new scoutPerson(Objects.requireNonNull(getUserInfo(rs.getInt("userID"))));
-                int notifID = rs.getInt("notifID");
-                int bID = rs.getInt("badgeTableID");
-
-                notification n;
-                if (bID == -1)
-                {
-                    n = new notification(p, notifID);
-                }
-                else {
-                    n = new notification(p, getBadge(bID), notifID);
-                }
-
-                nots.add(n);
-
-            }
-
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        for (notification n : nots) {
+            stmt.setInt(1, n.getId());
+            stmt.addBatch();
         }
 
-        return nots;
-    }
-
-    public static void clearNots(ArrayList<notification> nots) {
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            Statement stmt = c.createStatement();
-
-            String clear;
-
-            for (notification n : nots)
-            {
-                clear = "UPDATE recentactivity SET newNotif = false WHERE notifID = " + n.getId();
-                stmt.executeUpdate(clear);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        stmt.executeBatch();
     }
 
     public static int[] getTotalAdded(scoutMaster p) throws SQLException {

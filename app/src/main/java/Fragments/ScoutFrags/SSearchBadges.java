@@ -21,18 +21,17 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 
 public class SSearchBadges extends Fragment {
@@ -41,8 +40,8 @@ public class SSearchBadges extends Fragment {
     private ExpandableListAdapter expandableListAdapter;
     private ArrayList<String> badgeTitles;
     private ArrayList<meritBadge> badges;
-    private MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
-    private scoutPerson user;
+    private final MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
+    private final scoutPerson user;
 
     public SSearchBadges(scoutPerson p) {user = p;}
 
@@ -59,7 +58,8 @@ public class SSearchBadges extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //Finds and stores actionable pieces, such as the search button and the text search box
+
+        //Sets page elements
         TextView searchBar = view.findViewById(R.id.badgeSearchText);
         Button searchBut = view.findViewById(R.id.searchBadgesButton);
         Button submitBut = view.findViewById(R.id.searchSubmit);
@@ -67,8 +67,9 @@ public class SSearchBadges extends Fragment {
         TextView noSearchResults = view.findViewById(R.id.noSearchResults);
 
 
-        //When merit badges are added to the search results update list
+        //Observer for when database results return
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
+
             //sets loading spinner to true
             toggleSpinner(spinner);
 
@@ -76,41 +77,56 @@ public class SSearchBadges extends Fragment {
             badges = badgesLiveData.getValue();
             if (badges == null) return;
             if (badges.size() == 0) {
+
                 //displays "No Search Results"
                 noSearchResults.setVisibility(View.VISIBLE);
             } else noSearchResults.setVisibility(View.GONE);
 
-
             //sorts badges in name order
             Collections.sort(badges, Comparator.comparing(meritBadge::getName));
 
+            //reset list
             resetList(view);
         };
 
-        searchBut.setOnClickListener(v ->
-        {
+        //search button on click
+        searchBut.setOnClickListener(v -> {
+
             //toggles the spinner
             toggleSpinner(spinner);
+
             //gets the badge results and sets it as the returned badges
             setBadges(searchBar.getText().toString(), view);
-
         });
 
+        //sets observer for when database results come back
         badgesLiveData.observe(getViewLifecycleOwner(), badgeChanged);
 
+        //submit button on click
         submitBut.setOnClickListener(v -> {
+
+            //gets added and removed badge lists
             ArrayList<Integer> addedBoxes = SSearchExpandListAdapter.getAddedBoxes();
             ArrayList<Integer> removedBoxes = SSearchExpandListAdapter.getRemovedBoxes();
 
+            //runs SQL toggle add to list
             ExecutorService STE = Executors.newSingleThreadExecutor();
             CountDownLatch cdl = new CountDownLatch(1);
+            final boolean[] success = new boolean[1];
             STE.execute(() ->
             {
-                sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
-                cdl.countDown();
+                try {
+                    sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
+                    cdl.countDown();
+                    success[0] = true;
+                } catch (SQLException e) {
+                    success[0] = false;
+                }
             });
 
+            //if an error occurred Toast message
             try {
+                if (!success[0]) throw new InterruptedException();
                 cdl.await();
                 Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
             } catch (InterruptedException e) {
@@ -118,6 +134,7 @@ public class SSearchBadges extends Fragment {
                 Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
             }
 
+            //reset list
             resetList(view);
         });
 
@@ -125,18 +142,20 @@ public class SSearchBadges extends Fragment {
 
 
     public void setBadges(String badgeName, View view) {
-        //ASYNC thread
-        ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        singleThreadExecutor.execute(() -> {
-            //gets the searched merit badges
-            setLiveBadges(sqlRunner.searchForBadges(badgeName));
-        });
 
+        //makes database connection to get searched badge names
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> setLiveBadges(sqlRunner.searchForBadges(badgeName)));
+
+        //resets list
         resetList(view);
     }
 
+    //when tab paused
     public void onPause() {
         super.onPause();
+
+        //set list to null and get added badges
         SMyListFragment.getBadgesAdded(user);
         accordionList = null;
     }
@@ -144,14 +163,8 @@ public class SSearchBadges extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if (getView() == null) return;
-        accordionList = getView().findViewById(R.id.expandableListViewSearch);
-        //Sets the badge titles for the accordion list
-        badgeTitles = SSearchListTitles.getData(badges);
-        //Creates an adapter to show the accordion titles
-        expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
-        //sets adapter to the accordion list
-        accordionList.setAdapter(expandableListAdapter);
+        //reset list
+        resetList(requireView());
     }
 
     public void setLiveBadges(ArrayList<meritBadge> b) {
@@ -166,14 +179,29 @@ public class SSearchBadges extends Fragment {
 
 
     public void resetList(View view) {
+
         //sets expandableList by view from XML
         accordionList = view.findViewById(R.id.expandableListViewSearch);
+
         //Sets the badge titles for the accordion list
-        badgeTitles = SSearchListTitles.getData(badges);
+        badgeTitles = getData(badges);
+
         //Creates an adapter to show the accordion titles
         expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
+
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);
+    }
+
+    private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
+        ArrayList<String> titles = new ArrayList<>();
+
+        if (mbs == null) return titles;
+        for (meritBadge b : mbs) {
+            titles.add(b.getName());
+        }
+
+        return titles;
     }
 
 }

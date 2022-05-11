@@ -31,11 +31,14 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
     //Constructor
     public SSearchExpandListAdapter(Context context, List<String> expandableListTitle,
                                     ArrayList<meritBadge> b, scoutPerson u) {
+
+        //sets class fields
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         badges = b;
         addedBoxes = new ArrayList<>();
         removedBoxes = new ArrayList<>();
+
         //pulls the list of merit badges already added
         pullAddedBadges(u);
         pullFinishedBadges(u);
@@ -62,19 +65,21 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         //gets the associated merit badge
         meritBadge badge = badges.get(lstPosn);
 
+        //if row == null create new one
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.mini_search_badge_view, null);
 
         }
 
-        //changes the mini_badge_view fields to match the respective merit badge
+        //gets row elements
         TextView name = convertView.findViewById(R.id.badgeNameReplace);
         TextView eagleReq = convertView.findViewById(R.id.badgeIsEagleReplace);
         TextView addToList = convertView.findViewById(R.id.addToListText);
         CheckBox checkBox = convertView.findViewById(R.id.badgeChecked);
         ImageView image = convertView.findViewById(R.id.imageReplace);
 
+        //sets badge id and image name
         int id = badge.getId();
         String badgeImageName = "merit_badge_" + badge.getStrippedName();
 
@@ -85,8 +90,6 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
             checkBox.setChecked(true);
             addToList.setText(R.string.completedBadge);
             checkBox.setEnabled(false);
-
-
         } else if (addedBadges.contains(id)) {
             checkBox.setChecked(true);
             addToList.setText(R.string.added);
@@ -97,7 +100,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
             checkBox.setEnabled(true);
         }
 
-
+        //if the badge is already added, set checked to true
         if (addedBoxes.contains(id)) {
             checkBox.setChecked(true);
             checkBox.setEnabled(true);
@@ -107,9 +110,11 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
             checkBox.setEnabled(true);
         }
 
-        //sets a checkbox listener and updates the table if box is checked
+        //check box on click
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
+
+            //update appropriate list
             if (addedBadges.contains(id) && !isChecked)
                 removedBoxes.add(id);
             else if (!addedBadges.contains(id) && isChecked)
@@ -120,7 +125,7 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
                 removedBoxes.remove((Integer) id);
         });
 
-        //set image to respective badge name
+        //set image to respective badge
         Context context = convertView.getContext();
         int imageId = context.getResources().getIdentifier(badgeImageName, "drawable", context.getPackageName());
         image.setImageResource(imageId);

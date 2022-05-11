@@ -56,38 +56,44 @@
 
         <LinearLayout style="@style/linearLayStyle">
             <TextView
-                style="@style/gridDark"
+                style="@style/grid"
+                android:background="@color/primary_blue"
                 android:text="@string/progressGrid"
                 android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/progressGrid"
-                style="@style/gridDark"
+                style="@style/grid"
+                android:background="@color/primary_blue"
                 android:layout_weight="1"/>
 
         </LinearLayout>
 
         <LinearLayout style="@style/linearLayStyle">
             <TextView
-                style="@style/gridLight"
+                style="@style/grid"
+                android:background="@color/primary_blue_light"
                 android:text="@string/compGrid"
                 android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/completedGrid"
-                style="@style/gridLight"
+                style="@style/grid"
+                android:background="@color/primary_blue_light"
                 android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout style="@style/linearLayStyle">
             <TextView
-                style="@style/gridDark"
+                style="@style/grid"
+                android:background="@color/primary_blue"
                 android:text="@string/eagleGrid"
                 android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/eagleGrid"
-                style="@style/gridDark"
+                style="@style/grid"
+                android:background="@color/primary_blue"
                 android:layout_weight="1"/>
         </LinearLayout>
 

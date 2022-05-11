@@ -52,7 +52,7 @@
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/requirement_template.xml" value="0.26314102564102565" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_completed_badges.xml" value="0.2782051282051282" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_email_scoutmaster.xml" value="0.2568359375" />
-        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_my_list.xml" value="0.2568359375" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_my_list.xml" value="0.13333333333333333" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_resources.xml" value="0.28910256410256413" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_search_badges.xml" value="0.2782051282051282" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scout_fragment_welcome.xml" value="0.21630859375" />
@@ -67,7 +67,7 @@
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_my_scouts.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_myscouts.xml" value="0.2782051282051282" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_recent.xml" value="0.18489583333333334" />
-        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_search_badges.xml" value="0.12355610561056106" />
+        <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_search_badges.xml" value="0.22" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_fragment_welcome.xml" value="0.2782051282051282" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_scout_profile.xml" value="0.18489583333333334" />
         <entry key="..\:/Users/dasd/AndroidStudioProjects/BadgR/app/src/main/res/layout/scoutmaster_scout_profile_fragment.xml" value="0.18541666666666667" />

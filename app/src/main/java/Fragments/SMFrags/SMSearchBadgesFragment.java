@@ -26,7 +26,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
@@ -40,20 +39,20 @@ import java.util.Hashtable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import Fragments.ScoutFrags.SSearchListTitles;
-
 public class SMSearchBadgesFragment extends Fragment {
 
 
     private ArrayList<meritBadge> badges;
     private final MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
-    private final scoutMaster user = (scoutMaster) LoginRepository.getUser();
+    private final scoutMaster user;
     private ListView list;
     private String[] scoutList;
     private ArrayList<Integer> addedScouts, checked;
     private static Button addBut;
     private FrameLayout frameLayout;
     private RelativeLayout rl;
+
+    public SMSearchBadgesFragment(scoutMaster u) {user = u;}
 
     //runs first
     @Override
@@ -68,7 +67,7 @@ public class SMSearchBadgesFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        //Finds and stores actionable pieces, such as the search button and the text search box
+        //sets page elements
         TextView searchBar = view.findViewById(R.id.SMbadgeSearchText);
         Button searchBut = view.findViewById(R.id.SMsearchBadgesButton);
         Button cancel = view.findViewById(R.id.cancel);
@@ -79,7 +78,8 @@ public class SMSearchBadgesFragment extends Fragment {
         rl = view.findViewById(R.id.relLayout);
         ExtendedFloatingActionButton fab = view.findViewById(R.id.fabSM);
 
-
+        //set button enabled to false
+        addBut.setEnabled(false);
 
         //When merit badges are added to the search results update list
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
@@ -102,8 +102,8 @@ public class SMSearchBadgesFragment extends Fragment {
 
         };
 
-        searchBut.setOnClickListener(v ->
-        {
+        searchBut.setOnClickListener(v -> {
+
             //toggles the spinner
             toggleSpinner(spinner);
             //gets the badge results and sets it as the returned badges
@@ -121,39 +121,48 @@ public class SMSearchBadgesFragment extends Fragment {
             //get scout names and add to String[]
             getScoutNames();
 
+            //toggle visibilities
             rl.setVisibility(View.INVISIBLE);
-
             frameLayout.setVisibility(View.VISIBLE);
-            list = view.findViewById(R.id.scoutList);
-            RelativeLayout mini = view.findViewById(R.id.miniList);
-            int totalSpace = 70 * (scoutList.length + 2) + 150;
 
-            int height = mini.getHeight();
+            //set lists
+            list = view.findViewById(R.id.scoutList);
+            RelativeLayout miniList = view.findViewById(R.id.miniList);
+
+            //heights used for margin calculation
+            int totalSpace = 70 * (scoutList.length + 4) + 150;
+            int height = rl.getHeight();
 
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     FrameLayout.LayoutParams.MATCH_PARENT,
                     FrameLayout.LayoutParams.MATCH_PARENT
             );
-            params.setMargins(100, (height - totalSpace / 2), 100, (height - totalSpace / 2));
-            mini.setLayoutParams(params);
 
+            //if total space needed is bigger than margins that are needed, set margins and let the list scroll
+            if (totalSpace > height - 200) params.setMargins(100, 100, 100, 100);
+            else params.setMargins(100, (height - totalSpace) / 2, 100, (height - totalSpace) / 2);
+            miniList.setLayoutParams(params);
 
+            //create and set list adapter
             SMSearchScoutListAdapter listAdapter = new SMSearchScoutListAdapter(getActivity(), scoutList, user);
-
-            //set list adapter to customized list adapter (see SMScoutListAdapter)
             list.setAdapter(listAdapter);
 
         });
 
-
+        //floating action button inside scout list on click
         fab.setOnClickListener(v -> {
+
+            //gets the added scouts and added badges
             addedScouts = SMSearchScoutListAdapter.getAddedScouts();
             checked = SMSearchExpandListAdapter.getChecked();
 
+            //database connection to add badges to scouts
             addBadgesToScouts(addedScouts, checked);
 
+            //toast completion message
             Toast.makeText(getContext(), "All Scouts' badges updated", Toast.LENGTH_LONG).show();
 
+            //reset list and screen
             frameLayout.setVisibility(View.INVISIBLE);
             rl.setVisibility(View.VISIBLE);
 
@@ -162,32 +171,38 @@ public class SMSearchBadgesFragment extends Fragment {
             addBut.setEnabled(false);
         });
 
+        //cancel button inside scout list on click
         cancel.setOnClickListener(v -> {
+            //reset screen
             frameLayout.setVisibility(View.INVISIBLE);
             rl.setVisibility(View.VISIBLE);
+
+            //toast message
             Toast.makeText(getContext(), "No badges changed", Toast.LENGTH_LONG).show();
+
+            //clear checked boxes
+            SMSearchExpandListAdapter.clear();
+
             addBut.setEnabled(false);
+            resetList();
         });
 
-
+        //waits until database results return
         badgesLiveData.observe(getViewLifecycleOwner(), badgeChanged);
     }
 
     public static void toggleBut(boolean bool) { addBut.setEnabled(bool); }
 
     public void setBadges(String badgeName) {
-        //ASYNC thread
+        //gets badges that user searches for
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
-        singleThreadExecutor.execute(() -> {
-            //gets the searched merit badges
-            setLiveBadges(sqlRunner.searchForBadges(badgeName));
-        });
+        singleThreadExecutor.execute(() -> setLiveBadges(sqlRunner.searchForBadges(badgeName)));
     }
 
     public void onPause() {
         super.onPause();
 
-
+        //reset screen elements
         frameLayout.setVisibility(View.INVISIBLE);
         rl.setVisibility(View.VISIBLE);
         resetList();
@@ -198,6 +213,7 @@ public class SMSearchBadgesFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        //reset screen elements
         frameLayout.setVisibility(View.INVISIBLE);
         rl.setVisibility(View.VISIBLE);
         resetList();
@@ -206,12 +222,13 @@ public class SMSearchBadgesFragment extends Fragment {
 
 
 
-    private void getScoutNames()
-    {
+    private void getScoutNames() {
+
+        //creates a String list with all scout names
         ArrayList<scoutPerson> troop = user.getTroop();
         scoutList = new String[troop.size()];
 
-        for (int i = 0; i < troop.size(); i++) scoutList[i] = troop.get(i).getFName() + " " + troop.get(i).getLName();
+        for (int i = 0; i < troop.size(); i++) scoutList[i] = troop.get(i).getFullName();
     }
 
 
@@ -229,22 +246,21 @@ public class SMSearchBadgesFragment extends Fragment {
         if (getView() == null) return;
         ExpandableListView accordionList = getView().findViewById(R.id.SMexpandableListViewSearch);
         //Sets the badge titles for the accordion list
-        ArrayList<String> badgeTitles = SSearchListTitles.getData(badges);
+        ArrayList<String> badgeTitles = getData(badges);
         //Creates an adapter to show the accordion titles
         ExpandableListAdapter expandableListAdapter = new SMSearchExpandListAdapter(getContext(), badgeTitles, badges);
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);
     }
 
-    private void addBadgesToScouts(ArrayList<Integer> scoutsList, ArrayList<Integer> checked)
-    {
+    private void addBadgesToScouts(ArrayList<Integer> scoutsList, ArrayList<Integer> checked) {
+
+        //creates table with scout IDs and badges to assign to each scout
         Hashtable<Integer, ArrayList<Integer>> table = new Hashtable<>();
         for (int scoutID : scoutsList)
-        {
             table.put(scoutID, checked);
-        }
 
-
+        //make database connection to add badges
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() -> sqlRunner.setBadges(table));
     }
@@ -259,11 +275,23 @@ public class SMSearchBadgesFragment extends Fragment {
         InputMethodManager inputManager = (InputMethodManager) activity
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        // check if no view has focus:
+        //check if no view has focus; hide keyboard
         View currentFocusedView = activity.getCurrentFocus();
         if (currentFocusedView != null) {
             inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
+        ArrayList<String> titles = new ArrayList<>();
+
+        //add badge name to String list of badge names for the list
+        if (mbs == null) return titles;
+        for (meritBadge b : mbs) {
+            titles.add(b.getName());
+        }
+
+        return titles;
     }
 
 }

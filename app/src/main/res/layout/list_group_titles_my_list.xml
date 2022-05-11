@@ -29,7 +29,7 @@
             android:layout_marginTop="16dp"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:progressBackgroundTint="@color/light_grey"
-            android:progressTint="@color/primaryColor"
+            android:progressTint="@color/primary_pink"
             tools:ignore="NestedWeights" />
 
         <TextView

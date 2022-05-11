@@ -20,8 +20,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:layout_gravity="center_vertical"
-            android:padding="10dp"
+            android:padding="15dp"
             android:layout_column="1"
+            android:backgroundTint="@color/primary_blue_dark"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:text="@string/go_back"
             />
@@ -36,12 +38,12 @@
             android:layout_gravity="center"/>
 
         <Button
-            android:id="@+id/invis"
+            android:id="@+id/spacerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:layout_gravity="center_vertical"
-            android:padding="10dp"
+            android:padding="15dp"
             android:layout_column="3"
             android:textSize="20sp"
             android:text="@string/go_back"
@@ -57,8 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_below="@id/linLayout"
-        android:background="@color/primaryColor"
-        android:backgroundTint="@color/primaryColor" />
+        android:background="@color/primary_blue"
+        android:backgroundTint="@color/primary_blue" />
 
     <ListView
         android:id="@+id/allNotList"

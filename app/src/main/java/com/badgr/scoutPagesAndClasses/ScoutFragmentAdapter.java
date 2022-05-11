@@ -9,7 +9,6 @@ import com.badgr.scoutClasses.scoutPerson;
 
 import Fragments.ScoutFrags.SCompletedBadges;
 import Fragments.ScoutFrags.SMyListFragment;
-import Fragments.ScoutFrags.SResource;
 import Fragments.ScoutFrags.SSearchBadges;
 import Fragments.ScoutFrags.SWelcomeFragment;
 

@@ -8,7 +8,7 @@
     android:layout_gravity="center"
     android:layout_marginTop="@dimen/loginViewsMargin"
     android:layout_marginBottom="@dimen/loginViewsMargin"
-    android:background="@color/whiteCardColor"
+    android:background="@color/white_card"
     android:elevation="20dp"
     app:cardCornerRadius="@dimen/loginCardRadius">
 
@@ -23,7 +23,7 @@
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:text="@string/register"
             android:textAlignment="center"
-            android:textColor="@color/primaryColorDark"
+            android:textColor="@color/primary_pink_dark"
             android:textSize="40sp" />
 
         <LinearLayout
@@ -44,7 +44,7 @@
                 android:nextFocusForward="@id/registerLName"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
@@ -58,7 +58,7 @@
                 android:inputType="text"
                 android:maxLines="1"
                 android:nextFocusForward="@id/registerEmail"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
         </LinearLayout>
 
@@ -79,7 +79,7 @@
                 android:maxLines="1"
                 android:paddingStart="0dp"
                 android:paddingEnd="20dp"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
@@ -92,7 +92,7 @@
                 android:hint="@string/login_password_hint"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
 
         </LinearLayout>
@@ -110,7 +110,7 @@
                 android:autofillHints=""
                 android:hint="@string/age"
                 android:inputType="number"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
 
             <EditText
@@ -121,7 +121,7 @@
                 android:autofillHints=""
                 android:hint="@string/troop"
                 android:inputType="number"
-                android:textColorHighlight="@color/primaryColorDark"
+                android:textColorHighlight="@color/primary_pink_dark"
                 android:textSize="@dimen/newsMoreTextSize" />
         </LinearLayout>
 
@@ -142,7 +142,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@id/blank"
                 android:text="@string/passwordChars"
-                android:textColor="@color/primaryColorDark" />
+                android:textColor="@color/primary_pink_dark" />
 
             <TextView
                 android:id="@+id/numberCheck"
@@ -151,7 +151,7 @@
                 android:layout_below="@id/lengthCheck"
                 android:layout_toEndOf="@id/blank"
                 android:text="@string/numberString"
-                android:textColor="@color/primaryColorDark" />
+                android:textColor="@color/primary_pink_dark" />
 
 
             <TextView
@@ -161,7 +161,7 @@
                 android:layout_below="@id/numberCheck"
                 android:layout_toEndOf="@id/blank"
                 android:text="@string/password_must_contain_a_capital_letter"
-                android:textColor="@color/primaryColorDark" />
+                android:textColor="@color/primary_pink_dark" />
         </RelativeLayout>
 
 
@@ -187,7 +187,7 @@
             android:onClick="openLoginApp"
             android:text="@string/signup_login_hint"
             android:textAlignment="center"
-            android:textColor="@color/primaryColor"
+            android:textColor="@color/primary_pink"
             android:textStyle="bold"
             tools:ignore="UsingOnClickInXml" />
 

@@ -16,6 +16,7 @@ import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.AllBadgeReqs;
 import com.badgr.sql.sqlRunner;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -42,14 +43,17 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     //Constructor
     public SMyListExpandListAdapter(Context context, List<String> expandableListTitle,
                                     ArrayList<meritBadge> b, scoutPerson u) throws ExecutionException, InterruptedException {
+        //sets class fields
         this.context = context;
         this.expandableTitleList = expandableListTitle;
         user = u;
         badges = b;
 
+        //pulls finished requirements
         ExecutorService STE = Executors.newSingleThreadExecutor();
         Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
 
+        //sets finishes reqs, makes a copy for changed, and sets new deleted
         finishedReq = finReq.get();
         changedReqs = copyFinished();
         deletedReqs = new HashMap<>();
@@ -74,42 +78,57 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     // Gets a View that displays the data for the given child within the given group.
     public View getChildView(int lstPosn, final int expanded_ListPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
+
+
         //gets the associated merit badge
         meritBadge badge = badges.get(lstPosn);
         ArrayList<Integer> pulledReqs = changedReqs.get(badge.getId());
         ArrayList<Integer> origReqs = finishedReq.get(badge.getId());
         CheckBox checkBox;
 
-
+        //if row doesn't exist yet
         if (convertView == null) {
+
+            //create row
             LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.requirement_template, null);
+
+            //set check box if requirement was already completed
             checkBox = convertView.findViewById(R.id.reqChecked);
             checkBox.setChecked(origReqs != null && origReqs.contains(expanded_ListPosition + 1));
         } else {
+
+            //set check box to if requirement was changed
             checkBox = convertView.findViewById(R.id.reqChecked);
             checkBox.setChecked(pulledReqs != null && pulledReqs.contains(expanded_ListPosition + 1));
         }
 
+        //sets requirement and checkbox elements
         TextView description = convertView.findViewById(R.id.requirementReplace);
         checkBox = convertView.findViewById(R.id.reqChecked);
 
 
         //pulls requirement number
         int reqNum = expanded_ListPosition + 1;
+
         //gets the requirement string
         String desc = AllBadgeReqs.getBadgeReq(badge.getId(), reqNum);
+
         //sets the \n's in the string to whatever is needed to format description correctly
         if (desc != null)
             desc = desc.replace("\\n", Objects.requireNonNull(System.getProperty("line.separator")));
         description.setText(desc);
 
-
+        //if checkbox is changed
         CheckBox finalCheckBox = checkBox;
         checkBox.setOnClickListener(v -> {
             boolean isChecked = finalCheckBox.isChecked();
+
+            //gets lists for whichever badge is open
             ArrayList<Integer> checkedList = changedReqs.get(badge.getId());
             ArrayList<Integer> deletedList = deletedReqs.get(badge.getId());
+
+            //makes new lists if null
             if (deletedList == null) {
                 deletedList = new ArrayList<>();
                 deletedReqs.put(badge.getId(), deletedList);
@@ -119,20 +138,20 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
                 changedReqs.put(badge.getId(), checkedList);
             }
 
-
             //if the box is checked
             if (isChecked) {
+
                 //add to check list
                 checkedList.add(reqNum);
+
                 //remove from delete list
                 deletedList.remove((Integer) reqNum);
             }
-            //if the box is unchecked
-            //------------------------------------------------------------------
-
             else {
+
                 //add to delete list
                 deletedList.add(reqNum);
+
                 //remove from add list
                 checkedList.remove((Integer) reqNum);
             }
@@ -145,6 +164,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     // Gets the number of children in a specified group (number of reqs)
     public int getChildrenCount(int listPosition) {
         return badges.get(listPosition).getNumReqs();
+
     }
 
     @Override
@@ -170,26 +190,36 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     @Override
     // Gets a View that displays the given group.
     public View getGroupView(int listPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+
+        //get badge
         meritBadge badge = badges.get(listPosition);
+
+        //get pulled reqs
         ArrayList<Integer> pulledReqs = finishedReq.get(badge.getId());
         if (pulledReqs == null) pulledReqs = new ArrayList<>();
+
+        //set title
         String listTitle = (String) getGroup(listPosition);
 
+        //if row is null create new row
         if (convertView == null) {
             LayoutInflater layoutInflater = (LayoutInflater) this.context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group_titles_my_list, null);
         }
 
+        //set row elements
         TextView listTitleTextView = convertView.findViewById(R.id.listTitle);
         ProgressBar progress = convertView.findViewById(R.id.myProgressBar);
         TextView progressText = convertView.findViewById(R.id.progressText);
 
+        //create percentage text and integer for progress bar
         int numReqs = badge.getNumReqs();
         int compReqs = pulledReqs.size();
         int percent = (int) (compReqs * 1.0 / numReqs * 100);
         String percentText = percent + "%";
 
+        //set progressbar and text
         progress.setProgress(percent);
         progressText.setText(percentText);
 
@@ -211,22 +241,23 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     }
 
     public static void pullFinishedReqs(scoutPerson p) {
+
         //gets which requirements have been completed
         ExecutorService STE = Executors.newSingleThreadExecutor();
         Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(p));
 
+        //set finished reqs
         try {
             finishedReq = finReq.get();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        } catch (ExecutionException | InterruptedException ignored) {}
     }
 
     public static void updateRequirements() throws InterruptedException, ConcurrentModificationException {
+
+        //SQL connection to change reqs
         CountDownLatch cdl = new CountDownLatch(1);
         ExecutorService sTE = Executors.newSingleThreadExecutor();
-        sTE.execute(() ->
-                {
+        sTE.execute(() -> {
                     sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
                     cdl.countDown();
                 });
@@ -244,6 +275,8 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
 
     public static HashMap<Integer, ArrayList<Integer>> copyFinished() {
+
+        //makes a deep copy of finished reqs that can be changed (changedReqs)
         HashMap<Integer, ArrayList<Integer>> copy = new HashMap<>();
         for (Map.Entry<Integer, ArrayList<Integer>> entry : finishedReq.entrySet()) {
             copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
@@ -253,17 +286,23 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
 
     public static ArrayList<Integer> checkCompletedBadges() {
+
         //sets new arrayList for completed integer ids of badges
         ArrayList<Integer> completedBadges = new ArrayList<>();
         Set<Integer> set = changedReqs.keySet();
-        //for int in changedReqs
+
+        //for int in merit badge list
         for (int i : set) {
 
+            //sets badge completed to true (will change later if false)
             boolean comp = true;
+
+            //gets changed reqs
             ArrayList<Integer> completedReqs = changedReqs.get(i);
 
             cdl = new CountDownLatch(1);
 
+            //gets the number of requirements
             int reqNumber = 0;
             for (meritBadge mb : badges)
             {
@@ -271,12 +310,14 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
                     reqNumber = mb.getNumReqs();
             }
 
+            //if no reqs are completed or the size of the lists don't match, move on to next merit badge
             if (completedReqs == null || completedReqs.size() != reqNumber) continue;
 
             //if any requirements are not completed, skip and move to next merit badge
             for (int req = 0; req < completedReqs.size(); req++) {
                 if (completedReqs.get(req) == 0)
                 {
+                    //badge is not completed, break loop
                     comp = false;
                     break;
                 }
@@ -294,32 +335,37 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         for (int i : completedBadges) {
             ExecutorService STE = Executors.newSingleThreadExecutor();
             cdl = new CountDownLatch(1);
+
+            //SQL set badge completed
             STE.execute(() ->
             {
                 sqlRunner.setBadgeCompleted(user, i);
+                try {
+                    sqlRunner.addNewNot(user, i);
+                } catch (SQLException ignored) {
+                    //TODO toast?
+                }
                 cdl.countDown();
-                sqlRunner.addNewNot(user, i);
             });
 
+            //remove badge that was completed from reqs lists
             finishedReq.remove(i);
             changedReqs.remove(i);
 
             try {
                 cdl.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            } catch (InterruptedException ignored) {}
         }
 
+        //update completed reqs
         ExecutorService STE = Executors.newSingleThreadExecutor();
         Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
 
         try {
             finishedReq = finReq.get();
-        } catch (InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
+        } catch (InterruptedException | ExecutionException ignored) {}
 
+        //reset lists and return any completed badges
         copyFinished();
         finishedReq.clear();
         changedReqs.clear();

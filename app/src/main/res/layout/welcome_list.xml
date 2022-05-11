@@ -25,7 +25,7 @@
         android:layout_weight="1"
         android:id="@+id/welcomeProgress"
         style="@android:style/Widget.ProgressBar.Horizontal"
-        android:progressTint="@color/primaryColor"
+        android:progressTint="@color/primary_blue"
         android:progressBackgroundTint="@color/light_grey"/>
 
 </LinearLayout>
