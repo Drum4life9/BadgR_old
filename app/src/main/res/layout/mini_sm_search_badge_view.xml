@@ -20,7 +20,7 @@
             android:paddingBottom="10sp"
             android:layout_marginEnd="10dp"
             android:text="@string/mb_name"
-            android:textSize="30sp"
+            android:textSize="25sp"
             tools:ignore="RelativeOverlap" />
 
         <TextView
@@ -34,7 +34,7 @@
             android:paddingEnd="10dp"
             android:text="@string/eagle_req"
             android:textAlignment="textEnd"
-            android:textSize="30sp" />
+            android:textSize="25sp" />
 
         <CheckBox
             android:id="@+id/badgeChecked"

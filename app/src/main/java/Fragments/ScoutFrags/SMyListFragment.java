@@ -99,7 +99,7 @@ public class SMyListFragment extends Fragment {
             }
 
             //gets any completed badges
-            ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges();
+            ArrayList<Integer> completedBadges = SMyListExpandListAdapter.checkCompletedBadges(getContext());
 
             //if there are completed badges
             if (completedBadges.size() != 0) {

@@ -57,6 +57,8 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
         SMScoutProfile.setU(u);
         Intent intent = new Intent(act, SMScoutProfile.class);
         act.startActivity(intent);
+
+
     }
 
 

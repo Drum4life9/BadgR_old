@@ -33,6 +33,16 @@ public class SMScoutProfile extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //get database connection results, if error, won't create method
+        try {
+            setReqs();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            Toast.makeText(getBaseContext(), "An error occurred with database connection. Please exit and try again",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        //creates activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.scoutmaster_scout_profile_fragment);
 
@@ -50,14 +60,6 @@ public class SMScoutProfile extends Activity {
 
         nameRep.setText(title);
         mbRep.setText(mbTitle);
-
-        //get database connection results
-        try {
-            setReqs();
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            Toast.makeText(getBaseContext(), "An error occurred with database connection. Please exit and try again",Toast.LENGTH_LONG).show();
-        }
 
         //if there are no badges returned, toggle visibilities of elements and kill method
         if (reqs == null) {
@@ -88,9 +90,10 @@ public class SMScoutProfile extends Activity {
         mb = null;
     }
 
+
     private static void setReqs() throws ExecutionException, InterruptedException {
         ExecutorService ste = Executors.newSingleThreadExecutor();
-        //TODO rewrite as mutableLiveData
+
         Future<ArrayList<meritBadge>> add = ste.submit(() -> sqlRunner.getAddedBadgesMB(u));
         Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getCompletedBadges(u));
         Future<HashMap<Integer, ArrayList<Integer>>> req = ste.submit(() -> sqlRunner.getAddedAndFinishedReqs(u));

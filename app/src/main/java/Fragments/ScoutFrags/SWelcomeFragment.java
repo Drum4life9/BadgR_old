@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +31,8 @@ import java.util.concurrent.Executors;
 public class SWelcomeFragment extends Fragment {
 
     private final scoutPerson user;
+    private LinearLayout infoGrid;
+    private ProgressBar spinner;
 
     //sets user when fragment initialized
     public SWelcomeFragment(scoutPerson p) { user = p; }
@@ -43,6 +47,14 @@ public class SWelcomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        //sets page elements
+        infoGrid = view.findViewById(R.id.infoGrid);
+        spinner = view.findViewById(R.id.spinner);
+
+        //sets visibilities
+        infoGrid.setVisibility(View.INVISIBLE);
+        spinner.setVisibility(View.VISIBLE);
 
         //delays 150ms, then reloads the list so spinner activates
         new Handler().postDelayed(() -> reload(view, getContext()), 150);
@@ -100,7 +112,7 @@ public class SWelcomeFragment extends Fragment {
             int[] booleans = success.getValue();
             assert booleans != null;
 
-            //if anything hasn't come back yet, return
+            //if one of the sets of data hasn't come back yet, return
             if (booleans[0] == 0 || booleans[1] == 0) return;
 
             //if either produced an error
@@ -110,6 +122,9 @@ public class SWelcomeFragment extends Fragment {
                 progressText[0] = "Error";
                 compS[0] = "Error";
                 eagleS[0] = "Error";
+
+                spinner.setVisibility(View.GONE);
+                infoGrid.setVisibility(View.VISIBLE);
                 return;
             }
 
@@ -128,15 +143,19 @@ public class SWelcomeFragment extends Fragment {
             progressText[0] = added.size() + " badge(s)";
             compS[0] = completed.size() + " badge(s)";
             eagleS[0] = eagle.size() + " badge(s)";
+
+            //sets table with strings
+            progress.setText(progressText[0]);
+            compText.setText(compS[0]);
+            eagleText.setText(eagleS[0]);
+
+            spinner.setVisibility(View.GONE);
+            infoGrid.setVisibility(View.VISIBLE);
         };
+
 
         //sets observer for success list
         success.observe(getViewLifecycleOwner(), successObs);
-
-        //sets table with strings
-        progress.setText(progressText[0]);
-        compText.setText(compS[0]);
-        eagleText.setText(eagleS[0]);
     }
 
 

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,7 +64,10 @@ public class SCompletedBadges extends Fragment {
         Button edit = view.findViewById(R.id.CompletedEdit);
         Button remove = view.findViewById(R.id.CompletedRemoveButton);
         TextView none = view.findViewById(R.id.CompletedTextNone);
+        ProgressBar spinner = view.findViewById(R.id.spinner);
 
+        spinner.setVisibility(View.VISIBLE);
+        list.setVisibility(View.INVISIBLE);
         //when the database connection and results come back
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
 
@@ -77,6 +81,7 @@ public class SCompletedBadges extends Fragment {
                 edit.setVisibility(View.GONE);
                 none.setVisibility(View.VISIBLE);
                 list.setVisibility(View.GONE);
+                spinner.setVisibility(View.GONE);
                 return;
             } else {
 
@@ -84,6 +89,7 @@ public class SCompletedBadges extends Fragment {
                 none.setVisibility(View.GONE);
                 edit.setVisibility(View.VISIBLE);
                 list.setVisibility(View.VISIBLE);
+                spinner.setVisibility(View.GONE);
             }
 
             //sorts Merit Badges by title
@@ -93,6 +99,7 @@ public class SCompletedBadges extends Fragment {
 
             //resets list
             resetList(view);
+
         };
 
         //sets observer for when database results are returned
@@ -189,5 +196,6 @@ public class SCompletedBadges extends Fragment {
         //set adapter and list to visible
         list.setAdapter(adapter);
         list.setVisibility(View.VISIBLE);
+        view.findViewById(R.id.spinner).setVisibility(View.GONE);
     }
 }

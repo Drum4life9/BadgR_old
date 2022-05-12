@@ -91,6 +91,7 @@ public class SMRecentFragment extends Fragment {
                 }
 
                 //create new activity with all notifications
+                SMRecentAllNots.setUser(user);
                 SMRecentAllNots.setNots(notList);
                 changeFragmentFromAdapter(getActivity());
             }, 100);
@@ -146,6 +147,12 @@ public class SMRecentFragment extends Fragment {
             for (notification n : notList)
                 if (n.isNew()) newNots.add(n);
 
+            if (newNots.size() == 0){
+                noNot.setVisibility(View.VISIBLE);
+                lv.setVisibility(View.INVISIBLE);
+                clear.setVisibility(View.INVISIBLE);
+                return;
+            }
             //toggle elements
             noNot.setVisibility(View.GONE);
             lv.setVisibility(View.VISIBLE);

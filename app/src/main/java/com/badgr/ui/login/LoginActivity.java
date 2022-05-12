@@ -1,6 +1,7 @@
 package com.badgr.ui.login;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -10,6 +11,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -126,6 +128,8 @@ public class LoginActivity extends AppCompatActivity {
             //toggle loading screen
             toggleLoading(loadingFrame, true);
 
+            hideKeyboard(this);
+
             //gets the username and password strings
             String user = emailEditText.getText().toString(), pass = passwordEditText.getText().toString();
             //wait a bit for loading to toggle, and then attempt login
@@ -208,6 +212,19 @@ public class LoginActivity extends AppCompatActivity {
             f.setVisibility(View.VISIBLE);
         } else {
             f.setVisibility(View.GONE);
+        }
+    }
+
+    //hides keyboard
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            //hide soft keyboard
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 }

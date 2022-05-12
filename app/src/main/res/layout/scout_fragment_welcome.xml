@@ -25,58 +25,66 @@
         android:backgroundTint="@color/light_grey" />
 
 
+    <ProgressBar
+        android:id="@+id/spinner"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/dividerMyBadges"
+        android:layout_margin="20dp"/>
 
-        <LinearLayout
-            android:id="@+id/infoGrid"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/dividerMyBadges"
-            android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/infoGrid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:layout_below="@id/dividerMyBadges"
+        android:orientation="vertical">
 
-            <LinearLayout style="@style/linearLayStyle">
-                <TextView
-                    style="@style/grid"
-                    android:background="@color/primary_pink_light"
-                    android:text="@string/progressGrid"
-                    android:layout_weight="1"/>
+        <LinearLayout style="@style/linearLayStyle">
+            <TextView
+                style="@style/grid"
+                android:background="@color/primary_pink_light"
+                android:text="@string/progressGrid"
+                android:layout_weight="1"/>
 
-                <TextView
-                    android:id="@+id/progressGrid"
-                    android:background="@color/primary_pink_light"
-                    style="@style/grid"
-                    android:layout_weight="1"/>
-
-            </LinearLayout>
-
-            <LinearLayout style="@style/linearLayStyle">
-                <TextView
-                    style="@style/grid"
-                    android:background="@color/primary_pink_x_light"
-                    android:text="@string/compGrid"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/completedGrid"
-                    style="@style/grid"
-                    android:background="@color/primary_pink_x_light"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-
-            <LinearLayout style="@style/linearLayStyle">
-                <TextView
-                    style="@style/grid"
-                    android:background="@color/primary_pink_light"
-                    android:text="@string/eagleGrid"
-                    android:layout_weight="1"/>
-
-                <TextView
-                    android:id="@+id/eagleGrid"
-                    android:background="@color/primary_pink_light"
-                    style="@style/grid"
-                    android:layout_weight="1"/>
-            </LinearLayout>
+            <TextView
+                android:id="@+id/progressGrid"
+                android:background="@color/primary_pink_light"
+                style="@style/grid"
+                android:layout_weight="1"/>
 
         </LinearLayout>
+
+        <LinearLayout style="@style/linearLayStyle">
+            <TextView
+                style="@style/grid"
+                android:background="@color/primary_pink_x_light"
+                android:text="@string/compGrid"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/completedGrid"
+                style="@style/grid"
+                android:background="@color/primary_pink_x_light"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout style="@style/linearLayStyle">
+            <TextView
+                style="@style/grid"
+                android:background="@color/primary_pink_light"
+                android:text="@string/eagleGrid"
+                android:layout_weight="1"/>
+
+            <TextView
+                android:id="@+id/eagleGrid"
+                android:background="@color/primary_pink_light"
+                style="@style/grid"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/image"
@@ -85,7 +93,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
         android:layout_below="@id/infoGrid"
-        android:background="@drawable/app_full_pic"
+        android:background="@drawable/app_full_pic_pink"
         android:contentDescription="@string/app_image"/>
 
     <TextView

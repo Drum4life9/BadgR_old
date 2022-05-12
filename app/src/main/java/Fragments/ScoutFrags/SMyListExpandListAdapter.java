@@ -9,6 +9,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
@@ -39,12 +40,13 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     private static scoutPerson user;
     private static CountDownLatch cdl = new CountDownLatch(1);
 
+    //TODO rewrite mutable
 
     //Constructor
-    public SMyListExpandListAdapter(Context context, List<String> expandableListTitle,
+    public SMyListExpandListAdapter(Context ctx, List<String> expandableListTitle,
                                     ArrayList<meritBadge> b, scoutPerson u) throws ExecutionException, InterruptedException {
         //sets class fields
-        this.context = context;
+        context = ctx;
         this.expandableTitleList = expandableListTitle;
         user = u;
         badges = b;
@@ -90,7 +92,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         if (convertView == null) {
 
             //create row
-            LayoutInflater layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.requirement_template, null);
 
             //set check box if requirement was already completed
@@ -203,7 +205,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
         //if row is null create new row
         if (convertView == null) {
-            LayoutInflater layoutInflater = (LayoutInflater) this.context.
+            LayoutInflater layoutInflater = (LayoutInflater) context.
                     getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.list_group_titles_my_list, null);
         }
@@ -244,12 +246,9 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
         //gets which requirements have been completed
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(p));
-
-        //set finished reqs
-        try {
-            finishedReq = finReq.get();
-        } catch (ExecutionException | InterruptedException ignored) {}
+        STE.execute(() -> {
+            finishedReq = sqlRunner.getCompletedReqs(p);
+        });
     }
 
     public static void updateRequirements() throws InterruptedException, ConcurrentModificationException {
@@ -285,7 +284,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     }
 
 
-    public static ArrayList<Integer> checkCompletedBadges() {
+    public static ArrayList<Integer> checkCompletedBadges(Context ctx) {
 
         //sets new arrayList for completed integer ids of badges
         ArrayList<Integer> completedBadges = new ArrayList<>();
@@ -342,8 +341,8 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
                 sqlRunner.setBadgeCompleted(user, i);
                 try {
                     sqlRunner.addNewNot(user, i);
-                } catch (SQLException ignored) {
-                    //TODO toast?
+                } catch (SQLException e) {
+                    e.printStackTrace();
                 }
                 cdl.countDown();
             });

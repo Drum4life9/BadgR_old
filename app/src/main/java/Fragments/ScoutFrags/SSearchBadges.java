@@ -37,8 +37,6 @@ import java.util.concurrent.Executors;
 public class SSearchBadges extends Fragment {
 
     private ExpandableListView accordionList;
-    private ExpandableListAdapter expandableListAdapter;
-    private ArrayList<String> badgeTitles;
     private ArrayList<meritBadge> badges;
     private final MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
     private final scoutPerson user;
@@ -184,10 +182,10 @@ public class SSearchBadges extends Fragment {
         accordionList = view.findViewById(R.id.expandableListViewSearch);
 
         //Sets the badge titles for the accordion list
-        badgeTitles = getData(badges);
+        ArrayList<String> badgeTitles = getData(badges);
 
         //Creates an adapter to show the accordion titles
-        expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
+        ExpandableListAdapter expandableListAdapter = new SSearchExpandListAdapter(getContext(), badgeTitles, badges, user);
 
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);

@@ -43,7 +43,7 @@ public class SMMyScoutsFragment extends Fragment {
         scoutsList = view.findViewById(R.id.scoutsList);
         pb = view.findViewById(R.id.progressBar);
 
-        //delays 50ms, then sets list to allow spinner to activate
+        //delays 50ms to allow spinner to activate, then sets list
         new Handler().postDelayed(() -> {
 
             //sets names
@@ -55,7 +55,7 @@ public class SMMyScoutsFragment extends Fragment {
             scoutsList.setVisibility(View.VISIBLE);
             pb.setVisibility(View.GONE);
 
-        }, 50);
+        }, 100);
     }
 
 

@@ -50,6 +50,6 @@
         android:contentDescription="@string/app_icon"
         android:layout_marginTop="16dp"
         android:paddingBottom="16dp"
-        android:background="@drawable/app_full_pic" />
+        android:background="@drawable/app_full_pic_pink" />
 
 </RelativeLayout>

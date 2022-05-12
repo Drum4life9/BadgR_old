@@ -679,18 +679,32 @@ public class sqlRunner {
                 for (meritBadge mb : badgesPerScout) badgeIDs.add(mb.getId());
                 for (meritBadge mb : compBadges) badgeIDs.add(mb.getId());
 
-                Statement stmt = c.createStatement();
+                String badges = "INSERT INTO userbadges VALUES (?, ?, 0);";
+                PreparedStatement userStmt = c.prepareStatement(badges);
+
+                String reqs = "INSERT INTO userreq VALUES (?, ?, ?, 0);";
+                PreparedStatement reqStmt = c.prepareStatement(reqs);
+
+
                 for (int i : scoutList.getValue()) {
                     if (!badgeIDs.contains(i)) {
-                        String update = "INSERT INTO userbadges VALUES (" + i + ", " + key + ", 0);";
-                        stmt.executeUpdate(update);
+                        userStmt.setInt(1, i);
+                        userStmt.setInt(2, key);
+                        userStmt.addBatch();
 
                         for (int badgeReq = 1; badgeReq <= Objects.requireNonNull(getBadge(i)).getNumReqs(); badgeReq++) {
-                            String addReq = "INSERT INTO userreq VALUES (" + key + ", " + i + ", " + badgeReq + ", 0);";
-                            stmt.executeUpdate(addReq);
+                            reqStmt.setInt(1, key);
+                            reqStmt.setInt(2, i);
+                            reqStmt.setInt(3, badgeReq);
+
+                            reqStmt.addBatch();
                         }
                     }
                 }
+
+
+                userStmt.executeBatch();
+                reqStmt.executeBatch();
             }
 
         } catch (SQLException e) {
@@ -705,21 +719,21 @@ public class sqlRunner {
         Connection c = DriverManager.getConnection(url, username, password);
         int pID = p.getUserID();
 
-        String ins = "INSERT INTO recentactivity VALUES (1, ?, ?, ?, ?, ?, notifID);";
+        String ins = "INSERT INTO recentactivity VALUES (notifID, 1, ?, ?, ?, ?);";
         PreparedStatement stmt = c.prepareStatement(ins);
 
         if (b == -1) {
-            stmt.setString(1, "\"newUser\"");
+            stmt.setString(1, "n");
             stmt.setInt(4, -1);
         }
         else {
-            stmt.setString(1, "\"badgeComp\"");
+            stmt.setString(1, "b");
             stmt.setInt(4, b);
         }
         stmt.setInt(2, pID);
         stmt.setInt(3, p.getTroopNum());
 
-        stmt.executeUpdate();
+        stmt.execute();
     }
 
     public static ArrayList<notification> getNotifications(scoutMaster u) {
@@ -728,7 +742,7 @@ public class sqlRunner {
         try (Connection c = DriverManager.getConnection(url, username, password)) {
             Statement stmt = c.createStatement();
 
-            String getNots = "SELECT * FROM recentactivity WHERE troop = " + u.getTroopNum() + " AND newNotif = 1;";
+            String getNots = "SELECT * FROM recentactivity WHERE troop = " + u.getTroopNum() + ";";
 
             ResultSet rs = stmt.executeQuery(getNots);
 
@@ -776,6 +790,16 @@ public class sqlRunner {
         }
 
         stmt.executeBatch();
+    }
+
+    public static void deleteAllNots(scoutMaster p) throws SQLException{
+        Connection c = DriverManager.getConnection(url, username, password);
+        String del = "DELETE FROM recentactivity WHERE troop = ?;";
+        PreparedStatement s = c.prepareStatement(del);
+
+        s.setInt(1, p.getTroopNum());
+
+        s.executeUpdate();
     }
 
     public static int[] getTotalAdded(scoutMaster p) throws SQLException {

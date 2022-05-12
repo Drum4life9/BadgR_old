@@ -38,17 +38,19 @@
             android:layout_gravity="center"/>
 
         <Button
-            android:id="@+id/spacerButton"
+            android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:layout_gravity="center_vertical"
             android:padding="15dp"
+            android:backgroundTint="@color/primary_blue_dark"
             android:layout_column="3"
             android:textSize="20sp"
-            android:text="@string/go_back"
-            android:visibility="invisible"
-            android:enabled="false"
+            android:text="@string/clear"
+            android:textColor="@color/white"
+            android:visibility="visible"
+            android:enabled="true"
             />
 
     </GridLayout>
