@@ -38,20 +38,21 @@
     <ExpandableListView
         android:id="@+id/expandableListViewMyList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/searchProgressMyList"
-        android:childDivider="@color/primaryColor"
-        android:divider="@color/primaryColorDark"
+        android:childDivider="@color/primary_pink"
+        android:divider="@color/primary_pink_dark"
         android:visibility="gone"
         android:dividerHeight="3dp"
         android:footerDividersEnabled="true"
-        android:headerDividersEnabled="true" />
+        android:headerDividersEnabled="true"
+        android:layout_marginBottom="150dp"/>
 
 
     <Button
         android:id="@+id/MyListSubmitButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="90dp"

@@ -35,7 +35,7 @@ public class scoutMasterPage extends AppCompatActivity {
         //sets viewPager (a.k.a tab scroller), tabLayout (houses the tabs at the top of screen), and fragmentAdapter (creates new fragments when scrolled)
         viewPager2 = findViewById(R.id.SMview_pager);
         tabLayout = findViewById(R.id.SMtab_layout);
-        viewPagerFragmentAdapter = new ScoutMasterFragmentAdapter(this);
+        viewPagerFragmentAdapter = new ScoutMasterFragmentAdapter(this, user);
         Activity a = this;
 
         //sets the bottom part of the screen to whichever fragment is active

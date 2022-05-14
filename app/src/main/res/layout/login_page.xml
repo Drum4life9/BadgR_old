@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:autofillHints=""
-            android:backgroundTint="@color/primaryColorDark"
+            android:backgroundTint="@color/primary_pink_dark"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:maxLines="1"
@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:autofillHints=""
-            android:backgroundTint="@color/primaryColorDark"
+            android:backgroundTint="@color/primary_pink_dark"
             android:hint="@string/login_password_hint"
             android:imeOptions="actionDone"
             android:inputType="textPassword"
@@ -65,7 +65,7 @@
             android:layout_marginTop="@dimen/loginViewsMargin"
             android:text="@string/login_signup_hint"
             android:textAlignment="center"
-            android:textColor="@color/primaryColorDark"
+            android:textColor="@color/primary_pink_dark"
             android:textStyle="bold" />
 
 

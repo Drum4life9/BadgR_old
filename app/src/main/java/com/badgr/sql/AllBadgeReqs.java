@@ -1,12 +1,19 @@
 package com.badgr.sql;
 
+import android.os.Handler;
+
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class AllBadgeReqs {
     public static HashMap<Integer, HashMap<Integer, String>> badgeRequirements = new HashMap<>();
 
     public AllBadgeReqs() {
-        badgeRequirements = sqlRunner.getReqs();
+        try {
+            badgeRequirements = sqlRunner.getReqs();
+        } catch (SQLException e) {
+            new Handler().postDelayed(AllBadgeReqs::new, 1000);
+        }
     }
 
     public static String getBadgeReq(int bID, int req) {

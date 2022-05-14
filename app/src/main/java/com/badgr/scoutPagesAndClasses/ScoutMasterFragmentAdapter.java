@@ -5,21 +5,24 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import Fragments.SMFrags.SMChatFragment;
-import Fragments.SMFrags.SMWelcomeFragment;
+import com.badgr.scoutClasses.scoutMaster;
+
 import Fragments.SMFrags.SMMyScoutsFragment;
 import Fragments.SMFrags.SMRecentFragment;
 import Fragments.SMFrags.SMSearchBadgesFragment;
+import Fragments.SMFrags.SMWelcomeFragment;
 
 
 public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
 
 
     private static final String[] titles = new String[]{"Troop Info", "Recent changes", "My Scouts", "Search for Merit Badges"};
+    private final scoutMaster user;
 
     //creates the viewPager, which allows the fragments to be created and destroyed when swiping
-    public ScoutMasterFragmentAdapter(@NonNull FragmentActivity fragmentActivity) {
+    public ScoutMasterFragmentAdapter(@NonNull FragmentActivity fragmentActivity, scoutMaster u) {
         super(fragmentActivity);
+        user = u;
     }
 
 
@@ -29,15 +32,15 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         switch (position) {
             case 0:
-                return new SMWelcomeFragment();
+                return new SMWelcomeFragment(user);
             case 1:
-                return new SMRecentFragment();
+                return new SMRecentFragment(user);
             case 2:
-                return new SMMyScoutsFragment();
+                return new SMMyScoutsFragment(user);
             case 3:
-                return new SMSearchBadgesFragment();
+                return new SMSearchBadgesFragment(user);
         }
-        return new SMWelcomeFragment();
+        return new SMWelcomeFragment(user);
     }
 
     //returns total number of available tabs

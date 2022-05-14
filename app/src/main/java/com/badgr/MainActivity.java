@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
         super.onCreate(SIS);
         setContentView(R.layout.home_page);
 
-        //initial databse connection to get all badges and requirements
+        //initial database connection to get all badges and requirements
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
         singleThreadExecutor.execute(AllBadgeReqs::new);
 
