@@ -2,11 +2,13 @@ package Fragments.SMFrags;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.badgr.R;
@@ -19,11 +21,13 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
 
     private final Activity act;
     private static ArrayList<scoutPerson> scouts;
+    private final ProgressBar spinner;
 
-    public SMMyScoutsListAdapter(Activity context, scoutMaster u, String[] sList) {
+    public SMMyScoutsListAdapter(Activity context, scoutMaster u, String[] sList, ProgressBar spin) {
         super(context, R.layout.sm_scout_list_item, sList);
         this.act = context;
         scouts = u.getTroop();
+        spinner = spin;
     }
 
 
@@ -45,7 +49,11 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
 
         //profile button on click
         profile.setOnClickListener(l ->
-                changeFragmentFromAdapter(act, scouts.get(position)));
+                {
+                    spinner.setVisibility(View.VISIBLE);
+                    new Handler().postDelayed(() -> changeFragmentFromAdapter(act, scouts.get(position)), 100);
+                });
+
 
 
         return row;
@@ -55,6 +63,7 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
     public static void changeFragmentFromAdapter(Activity act, scoutPerson u)
     {
         SMScoutProfile.setU(u);
+
         Intent intent = new Intent(act, SMScoutProfile.class);
         act.startActivity(intent);
 

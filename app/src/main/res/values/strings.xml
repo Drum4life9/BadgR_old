@@ -69,6 +69,7 @@
     <string name="all_nots">All notifications</string>
     <string name="all_xa_nots">All\nPrevious\nNotifications</string>
     <string name="troop_statistics">Troop Statistics</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
+    <string name="smNoNots">There are no notifications. Have your scouts complete some badges!</string>
 
 </resources>

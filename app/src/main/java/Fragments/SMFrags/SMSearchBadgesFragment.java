@@ -32,6 +32,7 @@ import com.badgr.scoutClasses.scoutPerson;
 import com.badgr.sql.sqlRunner;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -262,7 +263,13 @@ public class SMSearchBadgesFragment extends Fragment {
 
         //make database connection to add badges
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> sqlRunner.setBadges(table));
+        STE.execute(() -> {
+            try {
+                sqlRunner.smSetBadges(table);
+            } catch (SQLException e) {
+                Toast.makeText(getContext(), "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     public static void resetChecked()

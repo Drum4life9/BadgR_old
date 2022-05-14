@@ -115,17 +115,17 @@ public class SSearchBadges extends Fragment {
             {
                 try {
                     sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
-                    cdl.countDown();
                     success[0] = true;
                 } catch (SQLException e) {
                     success[0] = false;
                 }
+                cdl.countDown();
             });
 
             //if an error occurred Toast message
             try {
-                if (!success[0]) throw new InterruptedException();
                 cdl.await();
+                if (!success[0]) throw new InterruptedException();
                 Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
 public class SMWelcomeFragment extends Fragment {
 
     private static scoutMaster user;
-    private static final MutableLiveData<int[]> add = new MutableLiveData<>();
+    private static final MutableLiveData<int[]> add = new MutableLiveData<>(), comp = new MutableLiveData<>();
 
     public SMWelcomeFragment(scoutMaster u) {user = u;}
 

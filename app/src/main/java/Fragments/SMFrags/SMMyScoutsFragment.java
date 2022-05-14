@@ -13,9 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 
@@ -50,7 +48,7 @@ public class SMMyScoutsFragment extends Fragment {
             setsNames();
 
             //creates list and toggles visibilities
-            SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), user, setsNames());
+            SMMyScoutsListAdapter adapter = new SMMyScoutsListAdapter(getActivity(), user, setsNames(), pb);
             scoutsList.setAdapter(adapter);
             scoutsList.setVisibility(View.VISIBLE);
             pb.setVisibility(View.GONE);
@@ -58,6 +56,11 @@ public class SMMyScoutsFragment extends Fragment {
         }, 100);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        pb.setVisibility(View.INVISIBLE);
+    }
 
     private String[] setsNames()
     {
@@ -72,6 +75,5 @@ public class SMMyScoutsFragment extends Fragment {
 
         return sNames;
     }
-
 
 }

@@ -209,6 +209,7 @@ public class SMyListFragment extends Fragment {
 
     private void resetList(View view) {
 
+
         //resets the accordionList
         this.accordionList = null;
         accordionList = view.findViewById(R.id.expandableListViewMyList);

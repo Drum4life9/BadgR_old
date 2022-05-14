@@ -40,7 +40,6 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     private static scoutPerson user;
     private static CountDownLatch cdl = new CountDownLatch(1);
 
-    //TODO rewrite mutable
 
     //Constructor
     public SMyListExpandListAdapter(Context ctx, List<String> expandableListTitle,
@@ -51,6 +50,8 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         user = u;
         badges = b;
 
+
+        //TODO rewrite mutableLive
         //pulls finished requirements
         ExecutorService STE = Executors.newSingleThreadExecutor();
         Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
@@ -246,12 +247,12 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
         //gets which requirements have been completed
         ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> {
-            finishedReq = sqlRunner.getCompletedReqs(p);
-        });
+        STE.execute(() -> finishedReq = sqlRunner.getCompletedReqs(p));
     }
 
     public static void updateRequirements() throws InterruptedException, ConcurrentModificationException {
+
+        //TODO rewrite mutableLive
 
         //SQL connection to change reqs
         CountDownLatch cdl = new CountDownLatch(1);

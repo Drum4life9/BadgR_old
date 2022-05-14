@@ -29,7 +29,7 @@ public class sqlRunner {
     private final static String intDiv = ", ";
 
     //sql connection strings
-    private final static String url = "jdbc:mysql://192.168.1.20/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
+    private final static String url = "jdbc:mysql://192.168.0.197/users?allowPublicKeyRetrieval=true&autoReconnect=true&useSSL=false&allowMultiQueries=true&connectRetryInterval=10&connectTimeout=10000";
     private final static String username = "AppRunner";
     private final static String password = "AppRunner1";
 
@@ -667,49 +667,47 @@ public class sqlRunner {
         return retList;
     }
 
-    public static void setBadges(Hashtable<Integer, ArrayList<Integer>> table) {
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
+    public static void smSetBadges(Hashtable<Integer, ArrayList<Integer>> table) throws SQLException {
+        Connection c = DriverManager.getConnection(url, username, password);
 
-            for (Map.Entry<Integer, ArrayList<Integer>> scoutList : table.entrySet()) {
-                int key = scoutList.getKey();
+        for (Map.Entry<Integer, ArrayList<Integer>> scoutList : table.entrySet()) {
+            int key = scoutList.getKey();
 
-                ArrayList<meritBadge> badgesPerScout = getAddedBadgesMB(key);
-                ArrayList<meritBadge> compBadges = getCompletedBadges(key);
-                ArrayList<Integer> badgeIDs = new ArrayList<>();
-                for (meritBadge mb : badgesPerScout) badgeIDs.add(mb.getId());
-                for (meritBadge mb : compBadges) badgeIDs.add(mb.getId());
+            ArrayList<meritBadge> badgesPerScout = getAddedBadgesMB(key);
+            ArrayList<meritBadge> compBadges = getCompletedBadges(key);
+            ArrayList<Integer> badgeIDs = new ArrayList<>();
+            for (meritBadge mb : badgesPerScout) badgeIDs.add(mb.getId());
+            for (meritBadge mb : compBadges) badgeIDs.add(mb.getId());
 
-                String badges = "INSERT INTO userbadges VALUES (?, ?, 0);";
-                PreparedStatement userStmt = c.prepareStatement(badges);
+            String badges = "INSERT INTO userbadges VALUES (?, ?, 0);";
+            PreparedStatement userStmt = c.prepareStatement(badges);
 
-                String reqs = "INSERT INTO userreq VALUES (?, ?, ?, 0);";
-                PreparedStatement reqStmt = c.prepareStatement(reqs);
+            String reqs = "INSERT INTO userreq VALUES (?, ?, ?, 0);";
+            PreparedStatement reqStmt = c.prepareStatement(reqs);
 
 
-                for (int i : scoutList.getValue()) {
-                    if (!badgeIDs.contains(i)) {
-                        userStmt.setInt(1, i);
-                        userStmt.setInt(2, key);
-                        userStmt.addBatch();
+            for (int i : scoutList.getValue()) {
+                if (!badgeIDs.contains(i)) {
+                    userStmt.setInt(1, i);
+                    userStmt.setInt(2, key);
+                    userStmt.addBatch();
 
-                        for (int badgeReq = 1; badgeReq <= Objects.requireNonNull(getBadge(i)).getNumReqs(); badgeReq++) {
-                            reqStmt.setInt(1, key);
-                            reqStmt.setInt(2, i);
-                            reqStmt.setInt(3, badgeReq);
+                    meritBadge badge = getBadge(i);
 
-                            reqStmt.addBatch();
-                        }
+                    for (int badgeReq = 1; badgeReq <= Objects.requireNonNull(badge).getNumReqs(); badgeReq++) {
+                        reqStmt.setInt(1, key);
+                        reqStmt.setInt(2, i);
+                        reqStmt.setInt(3, badgeReq);
+
+                        reqStmt.addBatch();
                     }
                 }
-
-
-                userStmt.executeBatch();
-                reqStmt.executeBatch();
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            userStmt.executeBatch();
+            reqStmt.executeBatch();
         }
+
 
         table.clear();
         SMSearchBadgesFragment.resetChecked();
@@ -748,14 +746,9 @@ public class sqlRunner {
 
             if (!rs.first()) return nots;
 
-            int count = 0;
-            while (rs.next())
-            {
-                if (count == 0)
-                {
-                    count++;
-                    rs.first();
-                }
+
+            do {
+
                 scoutPerson p = new scoutPerson(Objects.requireNonNull(getUserInfo(rs.getInt("userID"))));
                 int notifID = rs.getInt("notifID");
                 int bID = rs.getInt("badgeTableID");
@@ -772,7 +765,7 @@ public class sqlRunner {
 
                 nots.add(n);
 
-            }
+            } while (rs.next());
 
         } catch (SQLException ignored) {}
 
@@ -814,15 +807,7 @@ public class sqlRunner {
 
         if (!rs.first()) return ret;
         else {
-            int count = 0;
-            while (rs.next())
-            {
-                if (count == 0)
-                {
-                    rs.first();
-                    count++;
-                }
-
+            do {
                 if (rs.getInt("isCompleted") == 1) comp++;
                 else added++;
 
@@ -832,7 +817,7 @@ public class sqlRunner {
 
                 if (mb == null) continue;
                 if (mb.isEagle()) eagle++;
-            }
+            } while (rs.next());
         }
 
         ret[0] = added;

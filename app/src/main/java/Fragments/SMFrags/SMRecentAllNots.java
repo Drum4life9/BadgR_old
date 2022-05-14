@@ -2,9 +2,12 @@ package Fragments.SMFrags;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -13,6 +16,8 @@ import com.badgr.R;
 import com.badgr.scoutClasses.notification;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.sql.sqlRunner;
+
+import org.w3c.dom.Text;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,29 +38,54 @@ public class SMRecentAllNots extends Activity {
         ListView lv = findViewById(R.id.allNotList);
         Button back = findViewById(R.id.back);
         Button clear = findViewById(R.id.clear);
+        ProgressBar spinner = findViewById(R.id.spinner);
+        TextView noNots = findViewById(R.id.noNots);
 
-        //create new adapter and set list
-        SMRecentAdapter adapter = new SMRecentAdapter(this, getStrings(), nots);
-        lv.setAdapter(adapter);
-        lv.setVisibility(View.VISIBLE);
+
 
         //back button on click, finish activity
         back.setOnClickListener(l -> finish());
 
+        //gets strings
+        String[] strings = getStrings();
+
+        //if no notifications, display text and remove clear button
+        if (strings.length == 0)
+        {
+            noNots.setVisibility(View.VISIBLE);
+            spinner.setVisibility(View.INVISIBLE);
+            clear.setVisibility(View.INVISIBLE);
+            return;
+        }
+
+        //create new adapter and set list
+        SMRecentAdapter adapter = new SMRecentAdapter(this, strings, nots);
+        lv.setAdapter(adapter);
+        lv.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.INVISIBLE);
+
+
+
+
         //clear button on click, try to clear nots. If error, toast message.
         clear.setOnClickListener(l -> {
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            STE.execute(() -> {
-                try {
-                    sqlRunner.deleteAllNots(user);
 
-                    //finish activity (goes back to scoutmaster page)
-                    finish();
-                } catch (SQLException e) {
-                    Toast.makeText(getApplicationContext(), "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
-                }
-            });
+            spinner.setVisibility(View.VISIBLE);
 
+
+            new Handler().postDelayed(() -> {
+                ExecutorService STE = Executors.newSingleThreadExecutor();
+                STE.execute(() -> {
+                    try {
+                        sqlRunner.deleteAllNots(user);
+
+                        //finish activity (goes back to scoutmaster page)
+                        finish();
+                    } catch (SQLException e) {
+                        Toast.makeText(getApplicationContext(), "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
+                    }
+                });
+            }, 100);
         });
     }
 

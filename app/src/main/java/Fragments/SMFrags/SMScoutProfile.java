@@ -33,6 +33,9 @@ public class SMScoutProfile extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        //creates activity
+        super.onCreate(savedInstanceState);
+
         //get database connection results, if error, won't create method
         try {
             setReqs();
@@ -42,8 +45,6 @@ public class SMScoutProfile extends Activity {
             return;
         }
 
-        //creates activity
-        super.onCreate(savedInstanceState);
         setContentView(R.layout.scoutmaster_scout_profile_fragment);
 
         //sets page elements

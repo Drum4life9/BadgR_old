@@ -87,20 +87,22 @@ public class SWelcomeFragment extends Fragment {
             success.postValue(bool);
         });
 
-        //gets completed merit badges. If success, set second of success list to 1, else 2
-        ExecutorService STE2 = Executors.newSingleThreadExecutor();
-        STE2.execute(() -> {
-            int[] bool = success.getValue();
-            if (bool == null) bool = new int[2];
+        final Observer<ArrayList<meritBadge>> addedObs = meritBadges -> {
+            //gets completed merit badges. If success, set second of success list to 1, else 2
+            ExecutorService STE2 = Executors.newSingleThreadExecutor();
+            STE2.execute(() -> {
+                int[] bool = success.getValue();
+                if (bool == null) bool = new int[2];
 
-            try {
-                add.postValue(sqlRunner.getCompletedBadges(user));
-                bool[1] = 1;
-            } catch (SQLException e) {
-                bool[1] = 2;
-            }
-            success.postValue(bool);
-        });
+                try {
+                    comp.postValue(sqlRunner.getCompletedBadges(user));
+                    bool[1] = 1;
+                } catch (SQLException e) {
+                    bool[1] = 2;
+                }
+                success.postValue(bool);
+            });
+        };
 
         //sets display strings
         final String[] progressText = new String[1];
@@ -156,6 +158,7 @@ public class SWelcomeFragment extends Fragment {
 
         //sets observer for success list
         success.observe(getViewLifecycleOwner(), successObs);
+        add.observe(getViewLifecycleOwner(), addedObs);
     }
 
 
