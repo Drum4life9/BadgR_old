@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:textSize="70sp"
         android:layout_margin="20dp"
-        android:textColor="@color/primaryColorDark"/>
+        android:textColor="@color/primary_pink_dark"/>
 
 
     <Button
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_margin="20dp"
-        android:background="@color/primaryColor"
+        android:background="@color/primary_pink"
         android:text="@string/sign_in"
         android:textColor="@color/black"
         android:textSize="20sp"/>
@@ -36,7 +36,7 @@
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:background="@color/primaryColor"
+        android:background="@color/primary_pink"
         android:layout_marginBottom="10dp"
         android:text="@string/register_new_user"
         android:textColor="@color/black"
@@ -50,6 +50,6 @@
         android:contentDescription="@string/app_icon"
         android:layout_marginTop="16dp"
         android:paddingBottom="16dp"
-        android:background="@drawable/app_full_pic" />
+        android:background="@drawable/app_full_pic_pink" />
 
 </RelativeLayout>

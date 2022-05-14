@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="11dp"
         android:layout_below="@id/SMwelcomeScout"
-        android:background="@color/primaryColor" />
+        android:background="@color/primary_blue" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/SMtab_layout"
@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/SMspacer"
         android:background="@color/light_grey"
-        app:tabIndicatorColor="@color/primaryColor"
+        app:tabIndicatorColor="@color/primary_blue"
         app:tabIndicatorHeight="5dp"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="#FFFFFF">

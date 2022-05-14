@@ -34,17 +34,23 @@ public class SMSearchScoutListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        //if row doesnt exist, create new
         View row = convertView;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null)
             row = inflater.inflate(R.layout.scoutmaster_add_to_scouts, null, true);
+
+        //set row elements
         TextView scoutName = row.findViewById(R.id.scoutName);
         CheckBox checkBox = row.findViewById(R.id.scoutBox);
 
+        //set scout name
         scoutName.setText(sNames[position]);
 
+        //when checkbox is clicked
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
+            //update added scouts accordingly
             if (isChecked) addedScouts.add(scouts.get(position).getUserID());
             else addedScouts.remove((Integer) scouts.get(position).getUserID());
         });

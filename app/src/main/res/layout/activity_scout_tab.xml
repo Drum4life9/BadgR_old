@@ -14,7 +14,7 @@
         android:paddingStart="10dp"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
-        android:textColor="@color/whiteCardColor"
+        android:textColor="@color/white_card"
         android:textSize="30sp"
         android:textStyle="italic"
         tools:ignore="RtlSymmetry" />
@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="11dp"
         android:layout_below="@id/welcomeScout"
-        android:background="@color/primaryColor" />
+        android:background="@color/primary_pink" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
@@ -32,8 +32,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/spacer"
         android:background="@color/light_grey"
-        app:tabIndicator="@color/primaryColor"
-        app:tabIndicatorColor="@color/primaryColor"
+        app:tabIndicator="@color/primary_pink"
+        app:tabIndicatorColor="@color/primary_pink"
         app:tabIndicatorHeight="5dp"
         app:tabSelectedTextColor="@color/white"
         app:tabTextColor="#FFFFFF">

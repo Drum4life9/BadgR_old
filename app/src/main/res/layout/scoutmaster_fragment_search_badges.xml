@@ -7,7 +7,7 @@
 
     <FrameLayout
         android:id="@+id/scoutPanel"
-        android:visibility="visible"
+        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".9"
@@ -38,7 +38,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/textReplace"
-                android:background="@color/white"/>
+                android:background="@color/white" />
 
 
 
@@ -131,6 +131,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/primary_blue_dark"
                 android:padding="10dp"
                 android:layout_weight="1"
                 android:text="@string/search"
@@ -161,16 +162,18 @@
         <ExpandableListView
             android:id="@+id/SMexpandableListViewSearch"
             android:layout_width="match_parent"
-            android:layout_height="1000dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/SMsearchProgress"
-            android:divider="@color/primaryColorDark"
-            android:dividerHeight="1dp" />
+            android:divider="@color/primary_blue"
+            android:dividerHeight="1dp"
+            android:layout_marginBottom="150dp"/>
 
         <Button
             android:id="@+id/SMAddButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/assign_to_scout"
+            android:backgroundTint="@color/primary_blue_dark"
             android:textColor="@color/white"
             android:textSize="25sp"
             android:padding="15dp"

@@ -30,17 +30,19 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
 
     public SCompletedListAdapter(Activity context, String[] bList, scoutPerson u) {
         super(context, R.layout.completed_check_titles, bList);
+        //sets user, badge names, context, and resets checked boxes
         user = u;
         badgeNames = bList;
         this.context = context;
         checkedBoxes = new ArrayList<>();
 
+
+        //gets completed badges from database
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() ->
         {
-            try {
-                compBadges = sqlRunner.getCompletedBadges(user);
-            } catch (SQLException ignored) {}
+            try { compBadges = sqlRunner.getCompletedBadges(user);}
+            catch (SQLException ignored) {}
             cdl.countDown();
         });
 
@@ -48,23 +50,32 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        //if theres no row, create new row
         View row = convertView;
         LayoutInflater inflater = context.getLayoutInflater();
         if (convertView == null)
             row = inflater.inflate(R.layout.completed_check_titles, null, true);
+
+        //set row elements
         TextView badgeName = row.findViewById(R.id.CompletedLabel);
         CheckBox checkBox = row.findViewById(R.id.CompletedCheckBox);
 
+        //set name
         badgeName.setText(badgeNames[position]);
 
+        //if box is checked
         checkBox.setOnClickListener(v -> {
             boolean isChecked = checkBox.isChecked();
+
+            //if databse connection was not made yet, toast error message
             try {
                 cdl.await();
             } catch (InterruptedException e) {
                 Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_SHORT).show();
                 return;
             }
+
+            //add or remove item to checked list if box is checked
             if (isChecked) checkedBoxes.add(compBadges.get(position).getId());
             else checkedBoxes.remove((Integer) compBadges.get(position).getId());
         });
@@ -73,6 +84,7 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
     }
 
 
+    //return which boxes are checked
     public static ArrayList<Integer> getCheckedBoxes() {
         return checkedBoxes;
     }
