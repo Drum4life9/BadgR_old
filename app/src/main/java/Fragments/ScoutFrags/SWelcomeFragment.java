@@ -166,7 +166,9 @@ public class SWelcomeFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        //reload list when tab is resumed
-        reload(requireView(), getContext());
+        spinner.setVisibility(View.VISIBLE);
+        infoGrid.setVisibility(View.INVISIBLE);
+
+        new Handler().postDelayed(() -> reload(requireView(), getContext()), 100);
     }
 }

@@ -1,5 +1,9 @@
 package com.badgr.sql;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.badgr.scoutClasses.meritBadge;
 import com.badgr.scoutClasses.notification;
 import com.badgr.scoutClasses.scoutMaster;
@@ -481,45 +485,41 @@ public class sqlRunner {
         return badges;
     }
 
-    public static HashMap<Integer, HashMap<Integer, String>> getReqs() {
+    public static HashMap<Integer, HashMap<Integer, String>> getReqs() throws SQLException {
         HashMap<Integer, HashMap<Integer, String>> retList = new HashMap<>();
 
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds badge names with the given name
+        Connection c = DriverManager.getConnection(url, username, password);
+        //Finds badge names with the given name
 
-            String ex = "SELECT * FROM badgereqs;";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+        String ex = "SELECT * FROM badgereqs;";
+        Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
 
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
-            while (rs.next()) {
-                int badgeNum = rs.getInt("badgeTableID");
-                int reqNum = rs.getInt("reqNum");
-                String requirement = rs.getString("reqDesc");
-                if (retList.get(badgeNum) == null)
-                    retList.put(badgeNum, new HashMap<Integer, String>() {{
-                        put(reqNum, requirement);
-                    }});
-                else {
-                    HashMap<Integer, String> badgeMap = retList.get(badgeNum);
-                    if (badgeMap == null) retList.put(badgeNum, new HashMap<Integer, String>() {{
-                        put(reqNum, requirement);
-                    }});
-                    else badgeMap.put(reqNum, requirement);
-                }
+        //gets results from database
+        ResultSet rs = stmt.executeQuery(ex);
+        while (rs.next()) {
+            int badgeNum = rs.getInt("badgeTableID");
+            int reqNum = rs.getInt("reqNum");
+            String requirement = rs.getString("reqDesc");
+            if (retList.get(badgeNum) == null)
+                retList.put(badgeNum, new HashMap<Integer, String>() {{
+                    put(reqNum, requirement);
+                }});
+            else {
+                HashMap<Integer, String> badgeMap = retList.get(badgeNum);
+                if (badgeMap == null) retList.put(badgeNum, new HashMap<Integer, String>() {{
+                    put(reqNum, requirement);
+                }});
+                else badgeMap.put(reqNum, requirement);
             }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
 
         return retList;
     }
 
-    public static HashMap<Integer, ArrayList<Integer>> getCompletedReqs(scoutPerson p) {
+    public static HashMap<Integer, ArrayList<Integer>> getCompletedReqs(scoutPerson p) throws SQLException {
         HashMap<Integer, ArrayList<Integer>> compReqs = new HashMap<>();
         ArrayList<Integer> reqsPerBadge = new ArrayList<>();
         int badgeID = -1;
@@ -528,39 +528,35 @@ public class sqlRunner {
         int iteration = 0;
 
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            //Finds badge names with the given name and completed
+        Connection c = DriverManager.getConnection(url, username, password);
+        //Finds badge names with the given name and completed
 
-            String ex = "SELECT * FROM userReq WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
-            Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
+        String ex = "SELECT * FROM userReq WHERE userID = " + p.getUserID() + " AND isCompleted = TRUE ORDER BY badgeTableID;";
+        Statement stmt = c.createStatement(ResultSet.CONCUR_READ_ONLY, ResultSet.TYPE_SCROLL_SENSITIVE);
 
-            //gets results from database
-            ResultSet rs = stmt.executeQuery(ex);
-            while (rs.next()) {
-                badgeID = rs.getInt("badgeTableID");
-                reqNum = rs.getInt("reqNum");
+        //gets results from database
+        ResultSet rs = stmt.executeQuery(ex);
+        while (rs.next()) {
+            badgeID = rs.getInt("badgeTableID");
+            reqNum = rs.getInt("reqNum");
 
-                if (badgeID != lastBadgeID && iteration != 0) {
+            if (badgeID != lastBadgeID && iteration != 0) {
 
-                    compReqs.put(lastBadgeID, new ArrayList<>(reqsPerBadge));
-                    reqsPerBadge.clear();
-                    lastBadgeID = badgeID;
-                    reqsPerBadge.add(reqNum);
-                } else {
-                    reqsPerBadge.add(reqNum);
-                    lastBadgeID = badgeID;
-                    iteration++;
-                }
+                compReqs.put(lastBadgeID, new ArrayList<>(reqsPerBadge));
+                reqsPerBadge.clear();
+                lastBadgeID = badgeID;
+                reqsPerBadge.add(reqNum);
+            } else {
+                reqsPerBadge.add(reqNum);
+                lastBadgeID = badgeID;
+                iteration++;
             }
-
-            if (badgeID != -1) {
-                compReqs.put(badgeID, new ArrayList<>(reqsPerBadge));
-            }
-
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
+
+        if (badgeID != -1) {
+            compReqs.put(badgeID, new ArrayList<>(reqsPerBadge));
+        }
+
 
 
         return compReqs;
@@ -613,6 +609,7 @@ public class sqlRunner {
         return compReqs;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public static void removeCompleted(ArrayList<Integer> badgeList, scoutPerson p) {
         try (Connection c = DriverManager.getConnection(url, username, password)) {
 
@@ -635,9 +632,9 @@ public class sqlRunner {
             e.printStackTrace();
         }
 
-        SMyListFragment.getBadgesAdded(p);
+        SMyListFragment.getDatabaseInfo(p);
         SCompletedBadges.getFinishedBadges(p);
-        SMyListExpandListAdapter.pullFinishedReqs(p);
+        SMyListFragment.getDatabaseInfo(p);
     }
 
     public static ArrayList<scoutPerson> getTroop(scoutMaster p) {

@@ -141,8 +141,7 @@ public class SCompletedBadges extends Fragment {
                 STE.execute(() ->
                         sqlRunner.removeCompleted(badges, user));
 
-                //re-updates my list
-                SMyListExpandListAdapter.pullFinishedReqs(user);
+                SMyListFragment.getDatabaseInfo(user);
 
                 //Toast complementary message
                 Toast.makeText(getContext(), "Badges Removed", Toast.LENGTH_LONG).show();
@@ -155,8 +154,6 @@ public class SCompletedBadges extends Fragment {
                 none.setVisibility(View.VISIBLE);
             }
 
-            //reset the list
-            resetList(view);
         });
 
     }

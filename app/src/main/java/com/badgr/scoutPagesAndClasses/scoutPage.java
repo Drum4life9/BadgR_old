@@ -2,12 +2,14 @@ package com.badgr.scoutPagesAndClasses;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -27,6 +29,7 @@ public class scoutPage extends AppCompatActivity {
     private final String[] titles = ScoutFragmentAdapter.getTitles();
     private final scoutPerson user = LoginRepository.getUser();
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +66,7 @@ public class scoutPage extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
             //runs some initial database connections to make future loading of lists faster
-            SMyListFragment.getBadgesAdded(user);
+            SMyListFragment.getDatabaseInfo(user);
             SCompletedBadges.getFinishedBadges(user);
             SSearchExpandListAdapter.pullAddedBadges(user);
             SSearchExpandListAdapter.pullFinishedBadges(user);

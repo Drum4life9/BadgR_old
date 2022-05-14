@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
@@ -43,21 +42,14 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
     //Constructor
     public SMyListExpandListAdapter(Context ctx, List<String> expandableListTitle,
-                                    ArrayList<meritBadge> b, scoutPerson u) throws ExecutionException, InterruptedException {
+                                    ArrayList<meritBadge> b, scoutPerson u, HashMap<Integer, ArrayList<Integer>> inpReqs) {
         //sets class fields
         context = ctx;
         this.expandableTitleList = expandableListTitle;
         user = u;
         badges = b;
 
-
-        //TODO rewrite mutableLive
-        //pulls finished requirements
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
-
-        //sets finishes reqs, makes a copy for changed, and sets new deleted
-        finishedReq = finReq.get();
+        finishedReq = inpReqs;
         changedReqs = copyFinished();
         deletedReqs = new HashMap<>();
 
@@ -243,16 +235,8 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    public static void pullFinishedReqs(scoutPerson p) {
 
-        //gets which requirements have been completed
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> finishedReq = sqlRunner.getCompletedReqs(p));
-    }
-
-    public static void updateRequirements() throws InterruptedException, ConcurrentModificationException {
-
-        //TODO rewrite mutableLive
+    public static void updateRequirements(ProgressBar spinner) throws InterruptedException, ConcurrentModificationException {
 
         //SQL connection to change reqs
         CountDownLatch cdl = new CountDownLatch(1);
@@ -262,6 +246,8 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
                     cdl.countDown();
                 });
         cdl.await();
+
+        spinner.setVisibility(View.INVISIBLE);
     }
 
     //clears all of the checked reqs since submit button was clicked
@@ -285,7 +271,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     }
 
 
-    public static ArrayList<Integer> checkCompletedBadges(Context ctx) {
+    public static ArrayList<Integer> checkCompletedBadges() {
 
         //sets new arrayList for completed integer ids of badges
         ArrayList<Integer> completedBadges = new ArrayList<>();

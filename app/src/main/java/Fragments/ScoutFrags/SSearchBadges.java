@@ -150,11 +150,12 @@ public class SSearchBadges extends Fragment {
     }
 
     //when tab paused
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void onPause() {
         super.onPause();
 
         //set list to null and get added badges
-        SMyListFragment.getBadgesAdded(user);
+        SMyListFragment.getDatabaseInfo(user);
         accordionList = null;
     }
 
