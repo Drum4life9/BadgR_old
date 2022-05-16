@@ -1,6 +1,9 @@
 package com.badgr.scoutPagesAndClasses;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
@@ -24,8 +27,13 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
         user = p;
     }
 
+    //returns the titles of the tabs
+    public static String[] getTitles() {
+        return titles;
+    }
 
     //creates the fragment based on the tab position
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
     public Fragment createFragment(int position) {
@@ -46,11 +54,6 @@ public class ScoutFragmentAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return titles.length;
-    }
-
-    //returns the titles of the tabs
-    public static String[] getTitles() {
-        return titles;
     }
 
 

@@ -14,6 +14,7 @@ public class LoginResult {
     LoginResult(@Nullable String error) {
         this.error = error;
     }
+
     LoginResult(@Nullable scoutPerson success) {
         this.success = success;
     }

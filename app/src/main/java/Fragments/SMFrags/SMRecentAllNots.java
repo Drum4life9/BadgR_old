@@ -47,7 +47,7 @@ public class SMRecentAllNots extends Activity {
         back.setOnClickListener(l -> finish());
 
         //gets strings
-        String[] strings = getStrings();
+        String[] strings = SMRecentFragment.getStrings(false);
 
         //if no notifications, display text and remove clear button
         if (strings.length == 0)

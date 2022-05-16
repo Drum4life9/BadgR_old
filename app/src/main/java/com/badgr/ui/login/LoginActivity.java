@@ -36,6 +36,28 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
 
+    //toggles loading screen
+    private static void toggleLoading(FrameLayout f, boolean tog) {
+        if (tog) {
+            f.setVisibility(View.VISIBLE);
+        } else {
+            f.setVisibility(View.GONE);
+        }
+    }
+
+    //hides keyboard
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            //hide soft keyboard
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +85,9 @@ public class LoginActivity extends AppCompatActivity {
 
 
             //if nothing return
-            if (loginResult == null) { return; }
+            if (loginResult == null) {
+                return;
+            }
             //if the result is an error
             if (loginResult.getError() != null) {
                 //show the error and toggle loading screen
@@ -71,7 +95,9 @@ public class LoginActivity extends AppCompatActivity {
                 toggleLoading(loadingFrame, false);
             }
             //if result is success, update UI and log in the user to their page
-            if (loginResult.getSuccess() != null) { updateUiWithUser(loginResult.getSuccess()); }
+            if (loginResult.getSuccess() != null) {
+                updateUiWithUser(loginResult.getSuccess());
+            }
             setResult(Activity.RESULT_OK);
         });
 
@@ -204,27 +230,5 @@ public class LoginActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.username);
         EditText pass = findViewById(R.id.password);
         return !(email.getText().toString().equals("") || pass.getText().toString().equals(""));
-    }
-
-    //toggles loading screen
-    private static void toggleLoading(FrameLayout f, boolean tog) {
-        if (tog) {
-            f.setVisibility(View.VISIBLE);
-        } else {
-            f.setVisibility(View.GONE);
-        }
-    }
-
-    //hides keyboard
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // check if no view has focus:
-        View currentFocusedView = activity.getCurrentFocus();
-        if (currentFocusedView != null) {
-            //hide soft keyboard
-            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 }

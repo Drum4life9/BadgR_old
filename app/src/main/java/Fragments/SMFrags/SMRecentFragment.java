@@ -25,6 +25,7 @@ import com.badgr.scoutClasses.notification;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.sql.sqlRunner;
 
+import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -159,7 +160,7 @@ public class SMRecentFragment extends Fragment {
             clear.setVisibility(View.VISIBLE);
 
             //create notification list
-            SMRecentAdapter adpt = new SMRecentAdapter(getActivity(), getStrings(), newNots);
+            SMRecentAdapter adpt = new SMRecentAdapter(getActivity(), getStrings(true), newNots);
             lv.setAdapter(adpt);
         }
     };
@@ -173,17 +174,32 @@ public class SMRecentFragment extends Fragment {
     }
 
 
-    private static String[] getStrings()
+    public static String[] getStrings(boolean n)
     {
-        String[] strs = new String[Objects.requireNonNull(nots.getValue()).size()];
+        String[] strs;
+        ArrayList<notification> listNots = new ArrayList<>();
+
+        if (n)
+        {
+            for (notification not : Objects.requireNonNull(nots.getValue()))
+                if (not.isNew()) listNots.add(not);
+
+            strs = new String[listNots.size()];
+        }
+        else
+        {
+            listNots.addAll(Objects.requireNonNull(nots.getValue()));
+            strs = new String[Objects.requireNonNull(nots.getValue()).size()];
+        }
+
         int i = 0;
 
         //each notification
-        for (notification n : nots.getValue())
+        for (notification not : listNots)
         {
             //assign respective string if notification has a merit badge attached to it
-            if (n.getMb() == null) strs[i] = n.getPerson().getFullName() + " has been added to your troop!";
-            else strs[i] = n.getPerson().getFullName() + " has completed the " + n.getMb().getName() + " merit badge!";
+            if (not.getMb() == null) strs[i] = not.getPerson().getFullName() + " has been added to your troop!";
+            else strs[i] = not.getPerson().getFullName() + " has completed the " + not.getMb().getName() + " merit badge!";
 
             i++;
         }

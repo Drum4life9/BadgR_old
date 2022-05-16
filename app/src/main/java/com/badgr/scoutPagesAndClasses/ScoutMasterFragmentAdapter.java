@@ -25,6 +25,10 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
         user = u;
     }
 
+    //returns the titles of the tabs
+    public static String[] getTitles() {
+        return titles;
+    }
 
     //creates the fragment based on the tab position
     @NonNull
@@ -47,11 +51,6 @@ public class ScoutMasterFragmentAdapter extends FragmentStateAdapter {
     @Override
     public int getItemCount() {
         return titles.length;
-    }
-
-    //returns the titles of the tabs
-    public static String[] getTitles() {
-        return titles;
     }
 
 }

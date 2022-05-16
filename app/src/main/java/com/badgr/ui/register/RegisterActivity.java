@@ -260,15 +260,13 @@ public class RegisterActivity extends Activity {
             ExecutorService STE = Executors.newSingleThreadExecutor();
             STE.execute(() -> {
                 //if error with adding user
-                if (!sqlRunner.addUser(p))
-                {
+                if (!sqlRunner.addUser(p)) {
                     //toast error message
                     runOnUiThread(() -> {
                         final Toast toast = Toast.makeText(getApplicationContext(), "Error occurred with adding user. Please try again", Toast.LENGTH_SHORT);
                         toast.show();
                     });
-                }
-                else
+                } else
                     cDL.countDown();
             });
 
@@ -304,7 +302,6 @@ public class RegisterActivity extends Activity {
             userInDB = sqlRunner.isEmailInDatabase(email);
             cdl.countDown();
         });
-
 
 
         //waits until previous thread has completed to move on

@@ -10,8 +10,8 @@ import com.badgr.scoutClasses.scoutPerson;
 public class LoginRepository {
 
     private static volatile LoginRepository instance;
-    private final LoginDataSource dataSource;
     private static scoutPerson user;
+    private final LoginDataSource dataSource;
 
     private LoginRepository(LoginDataSource dataSource) {
         this.dataSource = dataSource;
@@ -28,7 +28,13 @@ public class LoginRepository {
         return user;
     }
 
-    private void setLoggedInUser(scoutPerson p) { user = p; }
+    public static void logout() {
+        user = null;
+    }
+
+    private void setLoggedInUser(scoutPerson p) {
+        user = p;
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     public Result login(String username, String password) {
@@ -43,7 +49,5 @@ public class LoginRepository {
             setLoggedInUser(((Result.Success<scoutPerson>) result).getData());
         return result;
     }
-
-    public static void logout() { user = null; }
 }
 

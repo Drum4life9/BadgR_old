@@ -4,11 +4,11 @@ import java.util.ArrayList;
 
 public class scoutPerson {
 
+    private final int userID;
     private String fName, lName;
     private String user, pass;
     private int age;
     private int troop;
-    private final int userID;
     private boolean isSM;
 
 
@@ -79,12 +79,12 @@ public class scoutPerson {
         return user;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
-    }
-
     public String getPass() {
         return pass;
+    }
+
+    public void setPass(String pass) {
+        this.pass = pass;
     }
 
     public String getLName() {
@@ -107,5 +107,7 @@ public class scoutPerson {
         return userID;
     }
 
-    public String getFullName() {return fName + " " + lName;}
+    public String getFullName() {
+        return fName + " " + lName;
+    }
 }

@@ -3,7 +3,6 @@ package com.badgr.ui.login;
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -13,8 +12,8 @@ import com.badgr.data.Result;
 
 public class LoginViewModel extends ViewModel {
 
-    public MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
     private final LoginRepository loginRepository;
+    public MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
 
     LoginViewModel(LoginRepository loginRepository) {
         this.loginRepository = loginRepository;
