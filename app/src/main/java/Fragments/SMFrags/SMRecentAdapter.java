@@ -1,6 +1,7 @@
 package Fragments.SMFrags;
 
 import android.app.Activity;
+import android.app.Notification;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class SMRecentAdapter extends ArrayAdapter<String> {
         ImageView img = row.findViewById(R.id.image);
         TextView text = row.findViewById(R.id.text);
 
+
         //get notification
         notification n = nots.get(position);
 
@@ -55,7 +57,7 @@ public class SMRecentAdapter extends ArrayAdapter<String> {
             img.setImageResource(imgID);
         }
         else {
-            int imgID = context.getResources().getIdentifier("ic_launcher_foreground", "drawable", context.getPackageName());
+            int imgID = context.getResources().getIdentifier("newpersonbadgr", "drawable", context.getPackageName());
             img.setImageResource(imgID);
         }
 
