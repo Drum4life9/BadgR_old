@@ -19,12 +19,24 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class scoutMasterPage extends AppCompatActivity {
 
-    ScoutMasterFragmentAdapter viewPagerFragmentAdapter;
-    TabLayout tabLayout;
-    ViewPager2 viewPager2;
     //gets titles for tab layout and user from LoginRepo
     private final String[] titles = ScoutMasterFragmentAdapter.getTitles();
     private final scoutMaster user = (scoutMaster) LoginRepository.getUser();
+    ScoutMasterFragmentAdapter viewPagerFragmentAdapter;
+    TabLayout tabLayout;
+    ViewPager2 viewPager2;
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            //hide soft keyboard
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +60,19 @@ public class scoutMasterPage extends AppCompatActivity {
         //when tab is changed, dismiss the soft keyboard so the user cannot type in other fragments
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) { hideKeyboard(a); }
+            public void onTabSelected(TabLayout.Tab tab) {
+                hideKeyboard(a);
+            }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 hideKeyboard(a);
             }
+
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { hideKeyboard(a); }
+            public void onTabReselected(TabLayout.Tab tab) {
+                hideKeyboard(a);
+            }
         });
 
         //sets welcome message
@@ -68,19 +86,6 @@ public class scoutMasterPage extends AppCompatActivity {
         TextView welcome = findViewById(R.id.SMwelcomeScout);
         String welcomeS = "Welcome " + user.getFName() + " " + user.getLName() + "!";
         welcome.setText(welcomeS);
-    }
-
-
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // check if no view has focus:
-        View currentFocusedView = activity.getCurrentFocus();
-        if (currentFocusedView != null) {
-            //hide soft keyboard
-            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
 }

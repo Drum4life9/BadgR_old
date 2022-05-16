@@ -29,6 +29,18 @@ public class scoutPage extends AppCompatActivity {
     private final String[] titles = ScoutFragmentAdapter.getTitles();
     private final scoutPerson user = LoginRepository.getUser();
 
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        // check if no view has focus:
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            //hide soft keyboard
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +64,19 @@ public class scoutPage extends AppCompatActivity {
         //when tab is changed, dismiss the soft keyboard so the user cannot type in other fragments
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) { hideKeyboard(a); }
+            public void onTabSelected(TabLayout.Tab tab) {
+                hideKeyboard(a);
+            }
+
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 hideKeyboard(a);
             }
+
             @Override
-            public void onTabReselected(TabLayout.Tab tab) { hideKeyboard(a); }
+            public void onTabReselected(TabLayout.Tab tab) {
+                hideKeyboard(a);
+            }
         });
 
         //sets welcome message
@@ -93,19 +111,6 @@ public class scoutPage extends AppCompatActivity {
         TextView welcome = findViewById(R.id.welcomeScout);
         String welcomeS = "Welcome " + user.getFName() + " " + user.getLName() + "!";
         welcome.setText(welcomeS);
-    }
-
-
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        // check if no view has focus:
-        View currentFocusedView = activity.getCurrentFocus();
-        if (currentFocusedView != null) {
-            //hide soft keyboard
-            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
     }
 
 

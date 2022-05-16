@@ -32,10 +32,12 @@ public class meritBadge implements Comparable<meritBadge> {
         return name;
     }
 
-    public String getStrippedName() {return name.toLowerCase(Locale.ROOT).replaceAll(" ", "");}
-
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getStrippedName() {
+        return name.toLowerCase(Locale.ROOT).replaceAll(" ", "");
     }
 
     public boolean isEagle() {
@@ -54,12 +56,12 @@ public class meritBadge implements Comparable<meritBadge> {
         this.numReqs = numReq;
     }
 
-    public void setId(int i) {
-        id = i;
-    }
-
     public int getId() {
         return id;
+    }
+
+    public void setId(int i) {
+        id = i;
     }
 
     @Override
