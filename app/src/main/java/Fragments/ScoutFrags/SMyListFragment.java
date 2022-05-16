@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -236,9 +237,13 @@ public class SMyListFragment extends Fragment {
 
     private void resetList(View view, boolean keep) {
 
+        //gets no badge text view
+        TextView noBadges = view.findViewById(R.id.noBadges);
+
         //resets the accordionList
         this.accordionList = null;
         accordionList = view.findViewById(R.id.expandableListViewMyList);
+        noBadges.setVisibility(View.INVISIBLE);
 
         if (!keep) {
             accordionList.setVisibility(View.GONE);
@@ -248,6 +253,12 @@ public class SMyListFragment extends Fragment {
         //Sets the badge titles for the accordion list
         ArrayList<String> badgeTitles = getData(badgesAdded);
 
+        if (badgeTitles.size() == 0){
+            noBadges.setVisibility(View.VISIBLE);
+            accordionList.setVisibility(View.GONE);
+            toggleSpinner(spinner, false);
+            return;
+        }
 
         //Creates an adapter to show the accordion titles
         ExpandableListAdapter expandableListAdapter = new SMyListExpandListAdapter(getContext(), badgeTitles, badgesAdded, user, reqs);

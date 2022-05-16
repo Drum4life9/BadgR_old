@@ -3,6 +3,7 @@ package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +70,7 @@ public class SSearchBadges extends Fragment {
         final Observer<ArrayList<meritBadge>> badgeChanged = meritBadges -> {
 
             //sets loading spinner to true
-            toggleSpinner(spinner);
+            toggleSpinner(spinner, true);
 
             //sets the returned badges to the livedata that was changed
             badges = badgesLiveData.getValue();
@@ -85,13 +86,15 @@ public class SSearchBadges extends Fragment {
 
             //reset list
             resetList(view);
+
+            toggleSpinner(spinner, false);
         };
 
         //search button on click
         searchBut.setOnClickListener(v -> {
 
             //toggles the spinner
-            toggleSpinner(spinner);
+            toggleSpinner(spinner, true);
 
             //gets the badge results and sets it as the returned badges
             setBadges(searchBar.getText().toString(), view);
@@ -111,29 +114,36 @@ public class SSearchBadges extends Fragment {
             ExecutorService STE = Executors.newSingleThreadExecutor();
             CountDownLatch cdl = new CountDownLatch(1);
             final boolean[] success = new boolean[1];
-            STE.execute(() ->
-            {
+
+            toggleSpinner(spinner, true);
+            new Handler().postDelayed(() -> {
+                STE.execute(() ->
+                {
+                    try {
+                        sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
+                        success[0] = true;
+                    } catch (SQLException e) {
+                        success[0] = false;
+                    }
+                    cdl.countDown();
+                });
+
+                //if an error occurred Toast message
                 try {
-                    sqlRunner.toggleAddToList(user, addedBoxes, removedBoxes);
-                    success[0] = true;
-                } catch (SQLException e) {
-                    success[0] = false;
+                    cdl.await();
+                    if (!success[0]) throw new InterruptedException();
+                    Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
                 }
-                cdl.countDown();
-            });
 
-            //if an error occurred Toast message
-            try {
-                cdl.await();
-                if (!success[0]) throw new InterruptedException();
-                Toast.makeText(getContext(), "My List updated!", Toast.LENGTH_LONG).show();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Toast.makeText(getContext(), "An error occurred. Please try again", Toast.LENGTH_LONG).show();
-            }
+                //reset list
+                resetList(view);
 
-            //reset list
-            resetList(view);
+                toggleSpinner(spinner, false);
+            }, 100);
+
         });
 
     }
@@ -170,9 +180,9 @@ public class SSearchBadges extends Fragment {
         badgesLiveData.postValue(b);
     }
 
-    public void toggleSpinner(ProgressBar spinner) {
+    public void toggleSpinner(ProgressBar spinner, boolean set) {
         //switches spinner
-        if (spinner.getVisibility() == View.VISIBLE) spinner.setVisibility(View.GONE);
+        if (!set) spinner.setVisibility(View.GONE);
         else spinner.setVisibility(View.VISIBLE);
     }
 
@@ -190,6 +200,8 @@ public class SSearchBadges extends Fragment {
 
         //sets adapter to the accordion list
         accordionList.setAdapter(expandableListAdapter);
+
+
     }
 
     private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
