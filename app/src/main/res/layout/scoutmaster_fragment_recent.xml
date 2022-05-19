@@ -15,37 +15,37 @@
             android:id="@+id/allNotButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/all_xa_nots"
-            android:textSize="15sp"
-            android:layout_margin="8dp"
             android:layout_gravity="center_vertical"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
             android:backgroundTint="@color/primary_blue_dark"
-            android:layout_weight="1" />
+            android:text="@string/all_xa_nots"
+            android:textSize="15sp" />
 
 
         <TextView
-            android:gravity="center"
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="2"
+            android:gravity="center"
             android:text="@string/recent_activity_changes"
+            android:textAlignment="center"
             android:textColor="@color/light_grey"
-            android:textSize="30sp"
-            android:textAlignment="center"/>
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/clear"
-            android:visibility="invisible"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_margin="17dp"
+            android:layout_weight="1"
             android:backgroundTint="@color/primary_blue_dark"
             android:text="@string/clear"
             android:textSize="28sp"
-            android:layout_margin="17dp"
-            android:layout_weight="1"/>
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -62,18 +62,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/spacer"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/noNots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/no_nots"
-        android:textSize="40sp"
         android:layout_below="@id/spacer"
         android:layout_centerInParent="true"
         android:layout_margin="10dp"
-        android:visibility="gone"/>
+        android:text="@string/no_nots"
+        android:textSize="40sp"
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/notProgress"
@@ -83,8 +83,7 @@
         android:layout_centerInParent="true"
         android:layout_margin="100dp"
         android:scaleX="3"
-        android:scaleY="3"/>
-
+        android:scaleY="3" />
 
 
 </RelativeLayout>

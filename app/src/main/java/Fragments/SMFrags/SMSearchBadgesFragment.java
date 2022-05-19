@@ -43,17 +43,51 @@ import java.util.concurrent.Executors;
 public class SMSearchBadgesFragment extends Fragment {
 
 
-    private ArrayList<meritBadge> badges;
+    private static Button addBut;
     private final MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
     private final scoutMaster user;
+    private ArrayList<meritBadge> badges;
     private ListView list;
     private String[] scoutList;
     private ArrayList<Integer> addedScouts, checked;
-    private static Button addBut;
     private FrameLayout frameLayout;
     private RelativeLayout rl;
 
-    public SMSearchBadgesFragment(scoutMaster u) {user = u;}
+    public SMSearchBadgesFragment(scoutMaster u) {
+        user = u;
+    }
+
+    public static void toggleBut(boolean bool) {
+        addBut.setEnabled(bool);
+    }
+
+    public static void resetChecked() {
+        SMSearchScoutListAdapter.clearScouts();
+        SMSearchExpandListAdapter.clear();
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager inputManager = (InputMethodManager) activity
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        //check if no view has focus; hide keyboard
+        View currentFocusedView = activity.getCurrentFocus();
+        if (currentFocusedView != null) {
+            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
+
+    public static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
+        ArrayList<String> titles = new ArrayList<>();
+
+        //add badge name to String list of badge names for the list
+        if (mbs == null) return titles;
+        for (meritBadge b : mbs) {
+            titles.add(b.getName());
+        }
+
+        return titles;
+    }
 
     //runs first
     @Override
@@ -192,8 +226,6 @@ public class SMSearchBadgesFragment extends Fragment {
         badgesLiveData.observe(getViewLifecycleOwner(), badgeChanged);
     }
 
-    public static void toggleBut(boolean bool) { addBut.setEnabled(bool); }
-
     public void setBadges(String badgeName) {
         //gets badges that user searches for
         ExecutorService singleThreadExecutor = Executors.newSingleThreadExecutor();
@@ -221,8 +253,6 @@ public class SMSearchBadgesFragment extends Fragment {
         resetChecked();
     }
 
-
-
     private void getScoutNames() {
 
         //creates a String list with all scout names
@@ -231,7 +261,6 @@ public class SMSearchBadgesFragment extends Fragment {
 
         for (int i = 0; i < troop.size(); i++) scoutList[i] = troop.get(i).getFullName();
     }
-
 
     public void setLiveBadges(ArrayList<meritBadge> b) {
         badgesLiveData.postValue(b);
@@ -270,35 +299,6 @@ public class SMSearchBadgesFragment extends Fragment {
                 Toast.makeText(getContext(), "An error occurred. Please try again.", Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    public static void resetChecked()
-    {
-        SMSearchScoutListAdapter.clearScouts();
-        SMSearchExpandListAdapter.clear();
-    }
-
-    public static void hideKeyboard(Activity activity) {
-        InputMethodManager inputManager = (InputMethodManager) activity
-                .getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        //check if no view has focus; hide keyboard
-        View currentFocusedView = activity.getCurrentFocus();
-        if (currentFocusedView != null) {
-            inputManager.hideSoftInputFromWindow(currentFocusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    public static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
-        ArrayList<String> titles = new ArrayList<>();
-
-        //add badge name to String list of badge names for the list
-        if (mbs == null) return titles;
-        for (meritBadge b : mbs) {
-            titles.add(b.getName());
-        }
-
-        return titles;
     }
 
 }

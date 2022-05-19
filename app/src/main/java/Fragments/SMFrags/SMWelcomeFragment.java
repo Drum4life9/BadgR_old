@@ -20,7 +20,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.badgr.R;
-import com.badgr.data.LoginRepository;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.sql.sqlRunner;
 
@@ -30,10 +29,12 @@ import java.util.concurrent.Executors;
 
 public class SMWelcomeFragment extends Fragment {
 
-    private static scoutMaster user;
     private static final MutableLiveData<int[]> add = new MutableLiveData<>(), comp = new MutableLiveData<>();
+    private static scoutMaster user;
 
-    public SMWelcomeFragment(scoutMaster u) {user = u;}
+    public SMWelcomeFragment(scoutMaster u) {
+        user = u;
+    }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -85,7 +86,7 @@ public class SMWelcomeFragment extends Fragment {
                 }
             });
 
-            }, 200);
+        }, 200);
 
         //once database results come back
         final Observer<int[]> addedObs = ints -> {

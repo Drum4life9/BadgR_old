@@ -22,10 +22,10 @@ import java.util.concurrent.Executors;
 
 public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
 
+    private static ArrayList<Integer> addedBadges, finishedBadges, addedBoxes, removedBoxes;
     private final Context context;
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
-    private static ArrayList<Integer> addedBadges, finishedBadges, addedBoxes, removedBoxes;
 
 
     //Constructor
@@ -44,6 +44,28 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         pullFinishedBadges(u);
     }
 
+    public static void pullAddedBadges(scoutPerson p) {
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        //gets which badges have been already added to their list
+        sTE.execute(() ->
+                addedBadges = sqlRunner.getAddedBadgesInt(p));
+
+    }
+
+    public static void pullFinishedBadges(scoutPerson p) {
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        //gets which badges have been completed
+        sTE.execute(() ->
+                finishedBadges = sqlRunner.getCompletedBadgesInt(p));
+    }
+
+    public static ArrayList<Integer> getAddedBoxes() {
+        return addedBoxes;
+    }
+
+    public static ArrayList<Integer> getRemovedBoxes() {
+        return removedBoxes;
+    }
 
     @Override
     // Gets the data associated with the given child within the given group.
@@ -164,7 +186,6 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
         return listPosition;
     }
 
-
     @SuppressLint("InflateParams")
     @Override
     // Gets a View that displays the given group.
@@ -191,24 +212,5 @@ public class SSearchExpandListAdapter extends BaseExpandableListAdapter {
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
     }
-
-    public static void pullAddedBadges(scoutPerson p) {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        //gets which badges have been already added to their list
-        sTE.execute(() ->
-                addedBadges = sqlRunner.getAddedBadgesInt(p));
-
-    }
-
-    public static void pullFinishedBadges(scoutPerson p) {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        //gets which badges have been completed
-        sTE.execute(() ->
-                finishedBadges = sqlRunner.getCompletedBadgesInt(p));
-    }
-
-    public static ArrayList<Integer> getAddedBoxes() { return addedBoxes; }
-
-    public static ArrayList<Integer> getRemovedBoxes() { return removedBoxes; }
 
 }

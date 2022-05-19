@@ -32,12 +32,12 @@ import java.util.concurrent.Future;
 
 public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
-    private final Context context;
-    private final List<String> expandableTitleList;
     private static ArrayList<meritBadge> badges;
     private static HashMap<Integer, ArrayList<Integer>> finishedReq, changedReqs, deletedReqs;
     private static scoutPerson user;
     private static CountDownLatch cdl = new CountDownLatch(1);
+    private final Context context;
+    private final List<String> expandableTitleList;
 
 
     //Constructor
@@ -55,6 +55,126 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
     }
 
+    public static void updateRequirements(ProgressBar spinner) throws InterruptedException, ConcurrentModificationException {
+
+        //SQL connection to change reqs
+        CountDownLatch cdl = new CountDownLatch(1);
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+        sTE.execute(() -> {
+            sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
+            cdl.countDown();
+        });
+        cdl.await();
+
+        spinner.setVisibility(View.INVISIBLE);
+    }
+
+    //clears all of the checked reqs since submit button was clicked
+    public static void resetCheckedReqs() {
+        if (changedReqs == null || deletedReqs == null) return;
+        changedReqs.clear();
+        deletedReqs.clear();
+        changedReqs = copyFinished();
+
+    }
+
+    public static HashMap<Integer, ArrayList<Integer>> copyFinished() {
+
+        //makes a deep copy of finished reqs that can be changed (changedReqs)
+        HashMap<Integer, ArrayList<Integer>> copy = new HashMap<>();
+        for (Map.Entry<Integer, ArrayList<Integer>> entry : finishedReq.entrySet()) {
+            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+        }
+        return copy;
+    }
+
+    public static ArrayList<Integer> checkCompletedBadges() {
+
+        //sets new arrayList for completed integer ids of badges
+        ArrayList<Integer> completedBadges = new ArrayList<>();
+        Set<Integer> set = changedReqs.keySet();
+
+        //for int in merit badge list
+        for (int i : set) {
+
+            //sets badge completed to true (will change later if false)
+            boolean comp = true;
+
+            //gets changed reqs
+            ArrayList<Integer> completedReqs = changedReqs.get(i);
+
+            cdl = new CountDownLatch(1);
+
+            //gets the number of requirements
+            int reqNumber = 0;
+            for (meritBadge mb : badges) {
+                if (mb.getId() == i)
+                    reqNumber = mb.getNumReqs();
+            }
+
+            //if no reqs are completed or the size of the lists don't match, move on to next merit badge
+            if (completedReqs == null || completedReqs.size() != reqNumber) continue;
+
+            //if any requirements are not completed, skip and move to next merit badge
+            for (int req = 0; req < completedReqs.size(); req++) {
+                if (completedReqs.get(req) == 0) {
+                    //badge is not completed, break loop
+                    comp = false;
+                    break;
+                }
+            }
+
+            //if comp remains true, add it to completed badges
+            if (comp) {
+                completedBadges.add(i);
+            }
+        }
+
+
+        //removes any completed badges from list
+        for (int i : completedBadges) {
+            ExecutorService STE = Executors.newSingleThreadExecutor();
+            cdl = new CountDownLatch(1);
+
+            //SQL set badge completed
+            STE.execute(() ->
+            {
+                sqlRunner.setBadgeCompleted(user, i);
+                try {
+                    sqlRunner.addNewNot(user, i);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                cdl.countDown();
+            });
+
+            //remove badge that was completed from reqs lists
+            finishedReq.remove(i);
+            changedReqs.remove(i);
+
+            try {
+                cdl.await();
+            } catch (InterruptedException ignored) {
+            }
+        }
+
+        //update completed reqs
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
+
+        try {
+            finishedReq = finReq.get();
+        } catch (InterruptedException | ExecutionException ignored) {
+        }
+
+        //reset lists and return any completed badges
+        copyFinished();
+        finishedReq.clear();
+        changedReqs.clear();
+
+
+        return completedBadges;
+    }
 
     @Override
     // Gets the data associated with the given child within the given group.
@@ -141,8 +261,7 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
 
                 //remove from delete list
                 deletedList.remove((Integer) reqNum);
-            }
-            else {
+            } else {
 
                 //add to delete list
                 deletedList.add(reqNum);
@@ -179,7 +298,6 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int listPosition) {
         return listPosition;
     }
-
 
     @SuppressLint("InflateParams")
     @Override
@@ -233,131 +351,6 @@ public class SMyListExpandListAdapter extends BaseExpandableListAdapter {
     // Whether the child at the specified position is selectable.
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
-    }
-
-
-    public static void updateRequirements(ProgressBar spinner) throws InterruptedException, ConcurrentModificationException {
-
-        //SQL connection to change reqs
-        CountDownLatch cdl = new CountDownLatch(1);
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-        sTE.execute(() -> {
-                    sqlRunner.toggleAddToReqList(user, changedReqs, deletedReqs);
-                    cdl.countDown();
-                });
-        cdl.await();
-
-        spinner.setVisibility(View.INVISIBLE);
-    }
-
-    //clears all of the checked reqs since submit button was clicked
-    public static void resetCheckedReqs() {
-        if (changedReqs == null || deletedReqs == null) return;
-        changedReqs.clear();
-        deletedReqs.clear();
-        changedReqs = copyFinished();
-
-    }
-
-
-    public static HashMap<Integer, ArrayList<Integer>> copyFinished() {
-
-        //makes a deep copy of finished reqs that can be changed (changedReqs)
-        HashMap<Integer, ArrayList<Integer>> copy = new HashMap<>();
-        for (Map.Entry<Integer, ArrayList<Integer>> entry : finishedReq.entrySet()) {
-            copy.put(entry.getKey(), new ArrayList<>(entry.getValue()));
-        }
-        return copy;
-    }
-
-
-    public static ArrayList<Integer> checkCompletedBadges() {
-
-        //sets new arrayList for completed integer ids of badges
-        ArrayList<Integer> completedBadges = new ArrayList<>();
-        Set<Integer> set = changedReqs.keySet();
-
-        //for int in merit badge list
-        for (int i : set) {
-
-            //sets badge completed to true (will change later if false)
-            boolean comp = true;
-
-            //gets changed reqs
-            ArrayList<Integer> completedReqs = changedReqs.get(i);
-
-            cdl = new CountDownLatch(1);
-
-            //gets the number of requirements
-            int reqNumber = 0;
-            for (meritBadge mb : badges)
-            {
-                if (mb.getId() == i)
-                    reqNumber = mb.getNumReqs();
-            }
-
-            //if no reqs are completed or the size of the lists don't match, move on to next merit badge
-            if (completedReqs == null || completedReqs.size() != reqNumber) continue;
-
-            //if any requirements are not completed, skip and move to next merit badge
-            for (int req = 0; req < completedReqs.size(); req++) {
-                if (completedReqs.get(req) == 0)
-                {
-                    //badge is not completed, break loop
-                    comp = false;
-                    break;
-                }
-            }
-
-            //if comp remains true, add it to completed badges
-            if (comp) {
-                completedBadges.add(i);
-            }
-        }
-
-
-
-        //removes any completed badges from list
-        for (int i : completedBadges) {
-            ExecutorService STE = Executors.newSingleThreadExecutor();
-            cdl = new CountDownLatch(1);
-
-            //SQL set badge completed
-            STE.execute(() ->
-            {
-                sqlRunner.setBadgeCompleted(user, i);
-                try {
-                    sqlRunner.addNewNot(user, i);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                cdl.countDown();
-            });
-
-            //remove badge that was completed from reqs lists
-            finishedReq.remove(i);
-            changedReqs.remove(i);
-
-            try {
-                cdl.await();
-            } catch (InterruptedException ignored) {}
-        }
-
-        //update completed reqs
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        Future<HashMap<Integer, ArrayList<Integer>>> finReq = STE.submit(() -> sqlRunner.getCompletedReqs(user));
-
-        try {
-            finishedReq = finReq.get();
-        } catch (InterruptedException | ExecutionException ignored) {}
-
-        //reset lists and return any completed badges
-        copyFinished();
-        finishedReq.clear();
-        changedReqs.clear();
-
-
-        return completedBadges;
     }
 
 }

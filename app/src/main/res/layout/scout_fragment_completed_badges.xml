@@ -30,9 +30,9 @@
         android:id="@+id/spinner"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_margin="20dp"
         android:layout_below="@id/completedSpacer"
         android:layout_centerInParent="true"
+        android:layout_margin="20dp"
         android:visibility="visible" />
 
     <TextView
@@ -53,11 +53,11 @@
         android:id="@+id/completedListView"
         android:layout_width="match_parent"
         android:layout_height="1000dp"
-        android:visibility="invisible"
         android:layout_below="@id/spinner"
         android:layout_marginTop="5dp"
         android:divider="@color/primary_pink_dark"
-        android:dividerHeight="3dp" />
+        android:dividerHeight="3dp"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/CompletedEdit"

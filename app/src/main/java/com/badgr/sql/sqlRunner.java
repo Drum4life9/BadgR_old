@@ -633,29 +633,24 @@ public class sqlRunner {
         SMyListFragment.getDatabaseInfo(p);
     }
 
-    public static ArrayList<scoutPerson> getTroop(scoutMaster p) {
+    public static ArrayList<scoutPerson> getTroop(scoutMaster p) throws SQLException {
         ArrayList<scoutPerson> retList = new ArrayList<>();
 
-        try (Connection c = DriverManager.getConnection(url, username, password)) {
-            String getT = "SELECT userID FROM users WHERE troop = " + p.getTroopNum() + " AND isScoutmaster = false;";
-            Statement stmt = c.createStatement();
+        Connection c = DriverManager.getConnection(url, username, password);
+        String getT = "SELECT userID FROM users WHERE troop = " + p.getTroopNum() + " AND isScoutmaster = false;";
+        Statement stmt = c.createStatement();
 
-            ResultSet rs = stmt.executeQuery(getT);
+        ResultSet rs = stmt.executeQuery(getT);
 
-            while (rs.next()) {
-                scoutPerson scout;
-                int id = rs.getInt("userID");
-                ArrayList<String> info = getUserInfo(id);
-                if (info != null) {
-                    scout = new scoutPerson(info);
-                    retList.add(scout);
-                } else return retList;
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            scoutPerson scout;
+            int id = rs.getInt("userID");
+            ArrayList<String> info = getUserInfo(id);
+            if (info != null) {
+                scout = new scoutPerson(info);
+                retList.add(scout);
+            } else return retList;
         }
-
 
         return retList;
     }

@@ -10,9 +10,6 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import com.badgr.R;
 import com.badgr.scoutClasses.meritBadge;
 
@@ -20,10 +17,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
+    public static ArrayList<Integer> checked = new ArrayList<>();
     private final Context context;
     private final List<String> expandableTitleList;
     private final ArrayList<meritBadge> badges;
-    public static ArrayList<Integer> checked = new ArrayList<>();
 
 
     //Constructor
@@ -35,6 +32,13 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
 
     }
 
+    public static ArrayList<Integer> getChecked() {
+        return checked;
+    }
+
+    public static void clear() {
+        checked = new ArrayList<>();
+    }
 
     @Override
     // Gets the data associated with the given child within the given group.
@@ -127,7 +131,6 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
         return listPosition;
     }
 
-
     @SuppressLint("InflateParams")
     @Override
     // Gets a View that displays the given group.
@@ -153,13 +156,6 @@ public class SMSearchExpandListAdapter extends BaseExpandableListAdapter {
     // Whether the child at the specified position is selectable.
     public boolean isChildSelectable(int listPosition, int expandedListPosition) {
         return true;
-    }
-
-    public static ArrayList<Integer> getChecked() { return checked; }
-
-    public static void clear()
-    {
-        checked = new ArrayList<>();
     }
 
 }

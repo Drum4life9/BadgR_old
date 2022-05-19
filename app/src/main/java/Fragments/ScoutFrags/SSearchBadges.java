@@ -37,12 +37,25 @@ import java.util.concurrent.Executors;
 
 public class SSearchBadges extends Fragment {
 
-    private ExpandableListView accordionList;
-    private ArrayList<meritBadge> badges;
     private final MutableLiveData<ArrayList<meritBadge>> badgesLiveData = new MutableLiveData<>();
     private final scoutPerson user;
+    private ExpandableListView accordionList;
+    private ArrayList<meritBadge> badges;
 
-    public SSearchBadges(scoutPerson p) {user = p;}
+    public SSearchBadges(scoutPerson p) {
+        user = p;
+    }
+
+    private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
+        ArrayList<String> titles = new ArrayList<>();
+
+        if (mbs == null) return titles;
+        for (meritBadge b : mbs) {
+            titles.add(b.getName());
+        }
+
+        return titles;
+    }
 
     //runs first
     @Override
@@ -148,7 +161,6 @@ public class SSearchBadges extends Fragment {
 
     }
 
-
     public void setBadges(String badgeName, View view) {
 
         //makes database connection to get searched badge names
@@ -186,7 +198,6 @@ public class SSearchBadges extends Fragment {
         else spinner.setVisibility(View.VISIBLE);
     }
 
-
     public void resetList(View view) {
 
         //sets expandableList by view from XML
@@ -202,17 +213,6 @@ public class SSearchBadges extends Fragment {
         accordionList.setAdapter(expandableListAdapter);
 
 
-    }
-
-    private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
-        ArrayList<String> titles = new ArrayList<>();
-
-        if (mbs == null) return titles;
-        for (meritBadge b : mbs) {
-            titles.add(b.getName());
-        }
-
-        return titles;
     }
 
 }

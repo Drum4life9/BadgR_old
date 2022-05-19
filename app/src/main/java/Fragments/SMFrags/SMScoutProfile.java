@@ -30,6 +30,50 @@ public class SMScoutProfile extends Activity {
     private static HashMap<Integer, ArrayList<Integer>> reqs;
     private ListView mb;
 
+    private static void setReqs() throws ExecutionException, InterruptedException {
+        ExecutorService ste = Executors.newSingleThreadExecutor();
+
+        Future<ArrayList<meritBadge>> add = ste.submit(() -> sqlRunner.getAddedBadgesMB(u));
+        Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getCompletedBadges(u));
+        Future<HashMap<Integer, ArrayList<Integer>>> req = ste.submit(() -> sqlRunner.getAddedAndFinishedReqs(u));
+
+        added = add.get();
+        compl = comp.get();
+        reqs = req.get();
+
+    }
+
+    private static String[] getStrings(TextView noBadges) {
+        //creates string list
+        String[] ret = new String[added.size() + compl.size()];
+
+        //if no badges, set noBadge visibility
+        if (ret.length == 0) noBadges.setVisibility(View.VISIBLE);
+        else noBadges.setVisibility(View.GONE);
+
+        int count = 0;
+
+        //loop through added badges and add name
+        for (meritBadge mb : added) {
+            ret[count] = mb.getName();
+            count++;
+        }
+
+        count = 0;
+
+        //loop through completed, add to string list
+        for (int i = added.size(); i < added.size() + compl.size(); i++) {
+            ret[i] = compl.get(count).getName();
+            count++;
+        }
+
+
+        return ret;
+    }
+
+    public static void setU(scoutPerson user) {
+        u = user;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,7 +85,7 @@ public class SMScoutProfile extends Activity {
             setReqs();
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
-            Toast.makeText(getBaseContext(), "An error occurred with database connection. Please exit and try again",Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(), "An error occurred with database connection. Please exit and try again", Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -84,62 +128,11 @@ public class SMScoutProfile extends Activity {
         back.setOnClickListener(l -> finish());
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         mb = null;
     }
-
-
-    private static void setReqs() throws ExecutionException, InterruptedException {
-        ExecutorService ste = Executors.newSingleThreadExecutor();
-
-        Future<ArrayList<meritBadge>> add = ste.submit(() -> sqlRunner.getAddedBadgesMB(u));
-        Future<ArrayList<meritBadge>> comp = ste.submit(() -> sqlRunner.getCompletedBadges(u));
-        Future<HashMap<Integer, ArrayList<Integer>>> req = ste.submit(() -> sqlRunner.getAddedAndFinishedReqs(u));
-
-        added = add.get();
-        compl = comp.get();
-        reqs = req.get();
-
-    }
-
-
-    private static String[] getStrings(TextView noBadges)
-    {
-        //creates string list
-        String[] ret = new String[added.size() + compl.size()];
-
-        //if no badges, set noBadge visibility
-        if (ret.length == 0) noBadges.setVisibility(View.VISIBLE);
-        else noBadges.setVisibility(View.GONE);
-
-        int count = 0;
-
-        //loop through added badges and add name
-        for (meritBadge mb : added) {
-            ret[count] = mb.getName();
-            count++;
-        }
-
-        count = 0;
-
-        //loop through completed, add to string list
-        for (int i = added.size(); i < added.size() + compl.size(); i++) {
-            ret[i] = compl.get(count).getName();
-            count++;
-        }
-
-
-        return ret;
-    }
-
-    public static void setU(scoutPerson user)
-    {
-        u = user;
-    }
-
 
 
 }

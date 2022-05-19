@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
 
-    private final Activity act;
     private static ArrayList<scoutPerson> scouts;
+    private final Activity act;
     private final ProgressBar spinner;
 
     public SMMyScoutsListAdapter(Activity context, scoutMaster u, String[] sList, ProgressBar spin) {
@@ -30,6 +30,15 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
         spinner = spin;
     }
 
+    //opens profile
+    public static void changeFragmentFromAdapter(Activity act, scoutPerson u) {
+        SMScoutProfile.setU(u);
+
+        Intent intent = new Intent(act, SMScoutProfile.class);
+        act.startActivity(intent);
+
+
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -49,27 +58,14 @@ public class SMMyScoutsListAdapter extends ArrayAdapter<String> {
 
         //profile button on click
         profile.setOnClickListener(l ->
-                {
-                    spinner.setVisibility(View.VISIBLE);
-                    new Handler().postDelayed(() -> changeFragmentFromAdapter(act, scouts.get(position)), 100);
-                });
-
+        {
+            spinner.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(() -> changeFragmentFromAdapter(act, scouts.get(position)), 100);
+        });
 
 
         return row;
     }
-
-    //opens profile
-    public static void changeFragmentFromAdapter(Activity act, scoutPerson u)
-    {
-        SMScoutProfile.setU(u);
-
-        Intent intent = new Intent(act, SMScoutProfile.class);
-        act.startActivity(intent);
-
-
-    }
-
 
 
 }

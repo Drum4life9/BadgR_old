@@ -39,15 +39,86 @@ import java.util.concurrent.Executors;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class SMyListFragment extends Fragment {
 
-    private ExpandableListView accordionList;
+    private static final MutableLiveData<int[]> returns = new MutableLiveData<>();
     private static ArrayList<meritBadge> badgesAdded;
     private static scoutPerson user;
     private static HashMap<Integer, ArrayList<Integer>> reqs = new HashMap<>();
-    private static final MutableLiveData<int[]> returns = new MutableLiveData<>();
+    private ExpandableListView accordionList;
     private ProgressBar spinner;
+    final Observer<int[]> loadListCheck = booleans -> {
+        int[] rets = returns.getValue();
+        assert rets != null;
 
+        //if either method returned an error, toast error
+        if (rets[0] == 2 || rets[1] == 2) {
+            Toast.makeText(getContext(), "An error occurred with database connection. Try again.", Toast.LENGTH_LONG).show();
+            toggleSpinner(spinner, false);
+            return;
+        }
 
-    public SMyListFragment(scoutPerson p) {user = p;}
+        //badges came back
+        if (rets[0] == 1 && rets[1] == 0)
+            getReqs(user);
+
+            //both infos come back
+        else if (rets[0] == 1 && rets[1] == 1) {
+            Collections.sort(badgesAdded, Comparator.comparing(meritBadge::getName));
+            resetList(requireView(), true);
+        }
+    };
+
+    public SMyListFragment(scoutPerson p) {
+        user = p;
+    }
+
+    public static void toggleSpinner(ProgressBar spinner, boolean set) {
+        //switches spinner
+        if (!set) spinner.setVisibility(View.GONE);
+        else spinner.setVisibility(View.VISIBLE);
+    }
+
+    public static void getDatabaseInfo(scoutPerson p) {
+        //pulls added badges
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> {
+            try {
+                badgesAdded = sqlRunner.getAddedBadgesMB(p);
+                returns.postValue(new int[]{1, 0});
+            } catch (SQLException e) {
+                returns.postValue(new int[]{2, 0});
+            }
+        });
+    }
+
+    public static void getReqs(scoutPerson p) {
+        int[] rets = returns.getValue();
+
+        assert rets != null;
+
+        //pulls added badges
+        ExecutorService STE = Executors.newSingleThreadExecutor();
+        STE.execute(() -> {
+            try {
+                reqs = sqlRunner.getCompletedReqs(p);
+                rets[1] = 1;
+                returns.postValue(rets);
+            } catch (SQLException e) {
+                rets[1] = 2;
+                returns.postValue(rets);
+            }
+        });
+    }
+
+    private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
+        ArrayList<String> titles = new ArrayList<>();
+
+        if (mbs == null) return titles;
+        for (meritBadge b : mbs) {
+            titles.add(b.getName());
+        }
+
+        return titles;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -151,33 +222,6 @@ public class SMyListFragment extends Fragment {
         });
     }
 
-
-    final Observer<int[]> loadListCheck = booleans -> {
-        int[] rets = returns.getValue();
-        assert rets != null;
-
-        //if either method returned an error, toast error
-        if (rets[0] == 2 || rets[1] == 2)
-        {
-            Toast.makeText(getContext(), "An error occurred with database connection. Try again.", Toast.LENGTH_LONG).show();
-            toggleSpinner(spinner, false);
-            return;
-        }
-
-        //badges came back
-        if (rets[0] == 1 && rets[1] == 0)
-            getReqs(user);
-
-        //both infos come back
-        else if (rets[0] == 1 && rets[1] == 1)
-        {
-            Collections.sort(badgesAdded, Comparator.comparing(meritBadge::getName));
-            resetList(requireView(), true);
-        }
-    };
-
-
-
     //when tab is resumed
     public void onResume() {
         super.onResume();
@@ -195,44 +239,6 @@ public class SMyListFragment extends Fragment {
         //reset checked reqs
         SMyListExpandListAdapter.resetCheckedReqs();
         resetList(requireView(), false);
-    }
-
-    public static void toggleSpinner(ProgressBar spinner, boolean set) {
-        //switches spinner
-        if (!set) spinner.setVisibility(View.GONE);
-        else spinner.setVisibility(View.VISIBLE);
-    }
-
-    public static void getDatabaseInfo(scoutPerson p) {
-        //pulls added badges
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> {
-            try {
-                badgesAdded = sqlRunner.getAddedBadgesMB(p);
-                returns.postValue(new int[]{1, 0});
-            } catch (SQLException e) {
-                returns.postValue(new int[]{2, 0});
-            }
-        });
-    }
-
-    public static void getReqs(scoutPerson p) {
-        int[] rets = returns.getValue();
-
-        assert rets != null;
-
-        //pulls added badges
-        ExecutorService STE = Executors.newSingleThreadExecutor();
-        STE.execute(() -> {
-            try {
-                reqs = sqlRunner.getCompletedReqs(p);
-                rets[1] = 1;
-                returns.postValue(rets);
-            } catch (SQLException e) {
-                rets[1] = 2;
-                returns.postValue(rets);
-            }
-        });
     }
 
     private void resetList(View view, boolean keep) {
@@ -253,7 +259,7 @@ public class SMyListFragment extends Fragment {
         //Sets the badge titles for the accordion list
         ArrayList<String> badgeTitles = getData(badgesAdded);
 
-        if (badgeTitles.size() == 0){
+        if (badgeTitles.size() == 0) {
             noBadges.setVisibility(View.VISIBLE);
             accordionList.setVisibility(View.GONE);
             toggleSpinner(spinner, false);
@@ -268,16 +274,5 @@ public class SMyListFragment extends Fragment {
         accordionList.setVisibility(View.VISIBLE);
 
         toggleSpinner(spinner, false);
-    }
-
-    private static ArrayList<String> getData(ArrayList<meritBadge> mbs) {
-        ArrayList<String> titles = new ArrayList<>();
-
-        if (mbs == null) return titles;
-        for (meritBadge b : mbs) {
-            titles.add(b.getName());
-        }
-
-        return titles;
     }
 }

@@ -2,14 +2,14 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_gravity="center"
-    style="@style/loginCard">
+    style="@style/loginCard"
+    android:layout_gravity="center">
 
 
     <LinearLayout
         style="@style/linearParent"
-        android:layout_gravity="center"
         android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:padding="@dimen/loginViewsMargin">
 
         <TextView

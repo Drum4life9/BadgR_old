@@ -21,11 +21,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class SCompletedListAdapter extends ArrayAdapter<String> {
-    private final String[] badgeNames;
-    private final Activity context;
     private static ArrayList<Integer> checkedBoxes;
     private static ArrayList<meritBadge> compBadges;
     private static scoutPerson user;
+    private final String[] badgeNames;
+    private final Activity context;
     private final CountDownLatch cdl = new CountDownLatch(1);
 
     public SCompletedListAdapter(Activity context, String[] bList, scoutPerson u) {
@@ -41,11 +41,18 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
         ExecutorService STE = Executors.newSingleThreadExecutor();
         STE.execute(() ->
         {
-            try { compBadges = sqlRunner.getCompletedBadges(user);}
-            catch (SQLException ignored) {}
+            try {
+                compBadges = sqlRunner.getCompletedBadges(user);
+            } catch (SQLException ignored) {
+            }
             cdl.countDown();
         });
 
+    }
+
+    //return which boxes are checked
+    public static ArrayList<Integer> getCheckedBoxes() {
+        return checkedBoxes;
     }
 
     @Override
@@ -81,12 +88,6 @@ public class SCompletedListAdapter extends ArrayAdapter<String> {
         });
 
         return row;
-    }
-
-
-    //return which boxes are checked
-    public static ArrayList<Integer> getCheckedBoxes() {
-        return checkedBoxes;
     }
 
 }

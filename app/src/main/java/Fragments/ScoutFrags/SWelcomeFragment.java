@@ -35,7 +35,9 @@ public class SWelcomeFragment extends Fragment {
     private ProgressBar spinner;
 
     //sets user when fragment initialized
-    public SWelcomeFragment(scoutPerson p) { user = p; }
+    public SWelcomeFragment(scoutPerson p) {
+        user = p;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,8 +63,7 @@ public class SWelcomeFragment extends Fragment {
     }
 
     //reloads list
-    private void reload(View view, Context context)
-    {
+    private void reload(View view, Context context) {
         //sets page elements
         TextView progress = view.findViewById(R.id.progressGrid);
         TextView compText = view.findViewById(R.id.completedGrid);
@@ -118,8 +119,7 @@ public class SWelcomeFragment extends Fragment {
             if (booleans[0] == 0 || booleans[1] == 0) return;
 
             //if either produced an error
-            if (booleans[0] == 2 || booleans[1] == 2)
-            {
+            if (booleans[0] == 2 || booleans[1] == 2) {
                 Toast.makeText(context, "A database error has occurred", Toast.LENGTH_LONG).show();
                 progressText[0] = "Error";
                 compS[0] = "Error";

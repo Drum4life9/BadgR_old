@@ -6,50 +6,50 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/titleText"
-        android:text="@string/welcome_to_badgr"
         android:layout_centerHorizontal="true"
-        android:textSize="70sp"
         android:layout_margin="20dp"
-        android:textColor="@color/primary_pink_dark"/>
+        android:text="@string/welcome_to_badgr"
+        android:textColor="@color/primary_pink_dark"
+        android:textSize="70sp" />
 
 
     <Button
         android:id="@+id/btnSignIn"
-        android:layout_below="@id/titleText"
-        android:layout_centerHorizontal="true"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/titleText"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_margin="20dp"
         android:background="@color/primary_pink"
         android:text="@string/sign_in"
         android:textColor="@color/black"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/btnNewUser"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/btnSignIn"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
+        android:layout_below="@id/btnSignIn"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:background="@color/primary_pink"
         android:layout_marginBottom="10dp"
+        android:background="@color/primary_pink"
         android:text="@string/register_new_user"
         android:textColor="@color/black"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
     <ImageView
         android:layout_width="700dp"
         android:layout_height="700dp"
-        android:layout_centerHorizontal="true"
         android:layout_below="@id/btnNewUser"
-        android:contentDescription="@string/app_icon"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        android:paddingBottom="16dp"
-        android:background="@drawable/app_full_pic_pink" />
+        android:background="@drawable/app_full_pic_pink"
+        android:contentDescription="@string/app_icon"
+        android:paddingBottom="16dp" />
 
 </RelativeLayout>

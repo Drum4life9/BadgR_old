@@ -1,7 +1,6 @@
 package Fragments.SMFrags;
 
 import android.app.Activity;
-import android.app.Notification;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +54,7 @@ public class SMRecentAdapter extends ArrayAdapter<String> {
             String badgeImageName = "merit_badge_" + n.getMb().getStrippedName();
             int imgID = context.getResources().getIdentifier(badgeImageName, "drawable", context.getPackageName());
             img.setImageResource(imgID);
-        }
-        else {
+        } else {
             int imgID = context.getResources().getIdentifier("newpersonbadgr", "drawable", context.getPackageName());
             img.setImageResource(imgID);
         }

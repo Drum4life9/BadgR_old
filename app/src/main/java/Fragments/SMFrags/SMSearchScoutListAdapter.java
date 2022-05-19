@@ -1,7 +1,6 @@
 package Fragments.SMFrags;
 
 import android.app.Activity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +12,14 @@ import com.badgr.R;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.scoutClasses.scoutPerson;
 
-
 import java.util.ArrayList;
 
 public class SMSearchScoutListAdapter extends ArrayAdapter<String> {
 
-    private final Activity context;
-    private final String[] sNames;
     private static ArrayList<Integer> addedScouts = new ArrayList<>();
     private static ArrayList<scoutPerson> scouts;
+    private final Activity context;
+    private final String[] sNames;
 
     public SMSearchScoutListAdapter(Activity context, String[] sList, scoutMaster u) {
         super(context, R.layout.scoutmaster_add_to_scouts, sList);
@@ -30,7 +28,13 @@ public class SMSearchScoutListAdapter extends ArrayAdapter<String> {
         scouts = u.getTroop();
     }
 
+    public static ArrayList<Integer> getAddedScouts() {
+        return addedScouts;
+    }
 
+    public static void clearScouts() {
+        addedScouts = new ArrayList<>();
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -56,13 +60,6 @@ public class SMSearchScoutListAdapter extends ArrayAdapter<String> {
         });
 
         return row;
-    }
-
-    public static ArrayList<Integer> getAddedScouts() {return addedScouts;}
-
-    public static void clearScouts()
-    {
-        addedScouts = new ArrayList<>();
     }
 
 }

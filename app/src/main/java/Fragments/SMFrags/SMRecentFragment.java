@@ -25,11 +25,9 @@ import com.badgr.scoutClasses.notification;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.sql.sqlRunner;
 
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,9 +39,109 @@ public class SMRecentFragment extends Fragment {
     private ProgressBar bar;
     private TextView noNot;
     private Button clear;
+    private final Observer<ArrayList<notification>> notGot = notifications -> {
+
+        //gets notification list
+        ArrayList<notification> notList = nots.getValue();
+        ArrayList<notification> newNots = new ArrayList<>();
+
+        //remove spinner
+        bar.setVisibility(View.GONE);
+
+        //if notifications == null (should never happen)
+        if (notList == null) return;
+
+        //if no notifications
+        if (notList.size() == 0) {
+            //set no not visibilty true
+            noNot.setVisibility(View.VISIBLE);
+            lv.setVisibility(View.GONE);
+            clear.setVisibility(View.INVISIBLE);
+        } else {
+
+            //if notification is new, add to new list
+            for (notification n : notList)
+                if (n.isNew()) newNots.add(n);
+
+            if (newNots.size() == 0) {
+                noNot.setVisibility(View.VISIBLE);
+                lv.setVisibility(View.INVISIBLE);
+                clear.setVisibility(View.INVISIBLE);
+                return;
+            }
+            //toggle elements
+            noNot.setVisibility(View.GONE);
+            lv.setVisibility(View.VISIBLE);
+            clear.setVisibility(View.VISIBLE);
+
+            //create notification list
+            SMRecentAdapter adpt = new SMRecentAdapter(getActivity(), getStrings(true), newNots);
+            lv.setAdapter(adpt);
+        }
+    };
 
     //constructor, sets user
-    public SMRecentFragment(scoutMaster u) { user = u;}
+    public SMRecentFragment(scoutMaster u) {
+        user = u;
+    }
+
+    private static void getNots() {
+        //database connection to get notifications
+        ExecutorService ste = Executors.newSingleThreadExecutor();
+        ste.execute(() -> nots.postValue(sqlRunner.getNotifications(user)));
+    }
+
+    public static String[] getStrings(boolean n) {
+        String[] strs;
+        ArrayList<notification> listNots = new ArrayList<>();
+
+        if (n) {
+            for (notification not : Objects.requireNonNull(nots.getValue()))
+                if (not.isNew()) listNots.add(not);
+
+            strs = new String[listNots.size()];
+        } else {
+            listNots.addAll(Objects.requireNonNull(nots.getValue()));
+            strs = new String[Objects.requireNonNull(nots.getValue()).size()];
+        }
+
+        int i = 0;
+
+        //each notification
+        for (notification not : listNots) {
+            //assign respective string if notification has a merit badge attached to it
+            if (not.getMb() == null)
+                strs[i] = not.getPerson().getFullName() + " has been added to your troop!";
+            else
+                strs[i] = not.getPerson().getFullName() + " has completed the " + not.getMb().getName() + " merit badge!";
+
+            i++;
+        }
+
+        return strs;
+    }
+
+    private static void clearList(ListView lv, TextView noNot, Context c) {
+        //tries to run SQl clear
+        ExecutorService ste = Executors.newSingleThreadExecutor();
+        ste.execute(() -> {
+            try {
+                sqlRunner.clearNots(Objects.requireNonNull(nots.getValue()));
+            } catch (SQLException e) {
+                Toast.makeText(c, "An error occurred, please try again.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        //toggle page elements
+        lv.setVisibility(View.GONE);
+        noNot.setVisibility(View.VISIBLE);
+    }
+
+    public static void changeFragmentFromAdapter(Activity act) {
+        //open new activity
+        Intent intent = new Intent(act, SMRecentAllNots.class);
+        act.startActivity(intent);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -121,113 +219,5 @@ public class SMRecentFragment extends Fragment {
 
         //retrieve notifications
         getNots();
-    }
-
-    private final Observer<ArrayList<notification>> notGot = notifications -> {
-
-        //gets notification list
-        ArrayList<notification> notList = nots.getValue();
-        ArrayList<notification> newNots = new ArrayList<>();
-
-        //remove spinner
-        bar.setVisibility(View.GONE);
-
-        //if notifications == null (should never happen)
-        if (notList == null) return;
-
-        //if no notifications
-        if (notList.size() == 0) {
-            //set no not visibilty true
-            noNot.setVisibility(View.VISIBLE);
-            lv.setVisibility(View.GONE);
-            clear.setVisibility(View.INVISIBLE);
-        }
-        else {
-
-            //if notification is new, add to new list
-            for (notification n : notList)
-                if (n.isNew()) newNots.add(n);
-
-            if (newNots.size() == 0){
-                noNot.setVisibility(View.VISIBLE);
-                lv.setVisibility(View.INVISIBLE);
-                clear.setVisibility(View.INVISIBLE);
-                return;
-            }
-            //toggle elements
-            noNot.setVisibility(View.GONE);
-            lv.setVisibility(View.VISIBLE);
-            clear.setVisibility(View.VISIBLE);
-
-            //create notification list
-            SMRecentAdapter adpt = new SMRecentAdapter(getActivity(), getStrings(true), newNots);
-            lv.setAdapter(adpt);
-        }
-    };
-
-
-    private static void getNots()
-    {
-        //database connection to get notifications
-        ExecutorService ste = Executors.newSingleThreadExecutor();
-        ste.execute(() -> nots.postValue(sqlRunner.getNotifications(user)));
-    }
-
-
-    public static String[] getStrings(boolean n)
-    {
-        String[] strs;
-        ArrayList<notification> listNots = new ArrayList<>();
-
-        if (n)
-        {
-            for (notification not : Objects.requireNonNull(nots.getValue()))
-                if (not.isNew()) listNots.add(not);
-
-            strs = new String[listNots.size()];
-        }
-        else
-        {
-            listNots.addAll(Objects.requireNonNull(nots.getValue()));
-            strs = new String[Objects.requireNonNull(nots.getValue()).size()];
-        }
-
-        int i = 0;
-
-        //each notification
-        for (notification not : listNots)
-        {
-            //assign respective string if notification has a merit badge attached to it
-            if (not.getMb() == null) strs[i] = not.getPerson().getFullName() + " has been added to your troop!";
-            else strs[i] = not.getPerson().getFullName() + " has completed the " + not.getMb().getName() + " merit badge!";
-
-            i++;
-        }
-
-        return strs;
-    }
-
-    private static void clearList(ListView lv, TextView noNot, Context c)
-    {
-        //tries to run SQl clear
-        ExecutorService ste = Executors.newSingleThreadExecutor();
-        ste.execute(() -> {
-            try {
-                sqlRunner.clearNots(Objects.requireNonNull(nots.getValue()));
-            } catch (SQLException e) {
-                Toast.makeText(c, "An error occurred, please try again.",Toast.LENGTH_LONG).show();
-            }
-        });
-
-        //toggle page elements
-        lv.setVisibility(View.GONE);
-        noNot.setVisibility(View.VISIBLE);
-    }
-
-    public static void changeFragmentFromAdapter(Activity act)
-    {
-        //open new activity
-        Intent intent = new Intent(act, SMRecentAllNots.class);
-        act.startActivity(intent);
     }
 }

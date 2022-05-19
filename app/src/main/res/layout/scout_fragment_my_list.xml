@@ -31,8 +31,8 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_below="@id/dividerMyBadges"
-        android:layout_margin="20dp"
         android:layout_centerInParent="true"
+        android:layout_margin="20dp"
         android:visibility="visible" />
 
     <ExpandableListView
@@ -40,24 +40,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/searchProgressMyList"
+        android:layout_marginBottom="150dp"
         android:childDivider="@color/primary_pink"
         android:divider="@color/primary_pink_dark"
-        android:visibility="gone"
         android:dividerHeight="3dp"
         android:footerDividersEnabled="true"
         android:headerDividersEnabled="true"
-        android:layout_marginBottom="150dp"/>
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/noBadges"
-        android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/dividerMyBadges"
         android:layout_centerHorizontal="true"
         android:layout_margin="30dp"
         android:text="@string/scoutNoBadges"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/MyListSubmitButton"

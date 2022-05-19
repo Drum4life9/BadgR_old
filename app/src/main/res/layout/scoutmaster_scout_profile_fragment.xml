@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/relLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,46 +10,42 @@
         android:id="@+id/linLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/backButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_column="1"
             android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
             android:backgroundTint="@color/primary_blue_dark"
             android:padding="20dp"
-            android:layout_column="1"
-            android:textSize="20sp"
             android:text="@string/go_back"
             android:textColor="@color/white"
-            />
-
+            android:textSize="20sp" />
 
 
         <TextView
+            android:id="@+id/nameReplace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="40sp"
-            android:textColor="@color/grey"
             android:layout_column="2"
-            android:id="@+id/nameReplace"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:textColor="@color/grey"
+            android:textSize="40sp" />
 
         <Button
             android:id="@+id/spacerButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
-            android:layout_gravity="center_vertical"
-            android:padding="20dp"
             android:layout_column="3"
-            android:textSize="20sp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="15dp"
+            android:padding="20dp"
             android:text="@string/go_back"
-            android:visibility="invisible"
-            />
+            android:textSize="20sp"
+            android:visibility="invisible" />
 
     </GridLayout>
 
@@ -65,15 +60,14 @@
 
     <TextView
         android:id="@+id/mbReplaceText"
-        android:layout_below="@id/spacer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textColor="@color/grey"
+        android:layout_below="@id/spacer"
         android:layout_margin="10dp"
         android:gravity="center"
         android:textAlignment="center"
-        />
+        android:textColor="@color/grey"
+        android:textSize="30sp" />
 
     <View
         android:id="@+id/spacer2"
@@ -84,32 +78,32 @@
         android:background="@color/primary_blue" />
 
     <ProgressBar
+        android:id="@+id/loadingBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleY="3"
-        android:scaleX="3"
-        android:id="@+id/loadingBar"
         android:layout_below="@id/spacer2"
         android:layout_centerInParent="true"
-        android:layout_margin="60dp"/>
+        android:layout_margin="60dp"
+        android:scaleX="3"
+        android:scaleY="3" />
 
     <TextView
         android:id="@+id/noBadges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/spacer2"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
         android:text="@string/no_badges"
         android:textSize="30sp"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/spacer2"
-        android:layout_margin="20dp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ListView
         android:id="@+id/mbList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/spacer2"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
 </RelativeLayout>

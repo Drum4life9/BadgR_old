@@ -7,31 +7,31 @@
 
     <FrameLayout
         android:id="@+id/scoutPanel"
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha=".9"
-        android:background="@color/grey">
+        android:background="@color/grey"
+        android:visibility="invisible">
 
         <RelativeLayout
             android:id="@+id/miniList"
-            android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginEnd="100dp"
             android:layout_marginStart="100dp"
             android:layout_marginTop="200dp"
-            android:layout_marginBottom="400dp">
+            android:layout_marginEnd="100dp"
+            android:layout_marginBottom="400dp"
+            android:background="@color/white">
 
 
             <TextView
                 android:id="@+id/textReplace"
-                android:textSize="25sp"
-                android:textAlignment="center"
-                android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:text="@string/assign_badge_text"/>
+                android:text="@string/assign_badge_text"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="25sp" />
 
             <ListView
                 android:id="@+id/scoutList"
@@ -41,37 +41,35 @@
                 android:background="@color/white" />
 
 
-
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/fabSM"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:id="@+id/fabSM"
-                android:text="@string/add_to_scouts"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginBottom="50dp"
+                android:layout_alignParentBottom="true"
                 android:layout_marginEnd="50dp"
-                android:padding="10dp"
+                android:layout_marginBottom="50dp"
                 android:contentDescription="@string/add_to_scouts"
+                android:padding="10dp"
+                android:text="@string/add_to_scouts"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 tools:ignore="RelativeOverlap" />
 
             <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:id="@+id/cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="50dp"
-                android:id="@+id/cancel"
-                android:text="@string/cancel"
-                android:textSize="20sp"
-                android:textColor="@color/white"
-                android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
                 android:layout_margin="50dp"
+                android:contentDescription="@string/cancel"
                 android:padding="10dp"
-                android:contentDescription="@string/cancel" />
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
 
         </RelativeLayout>
-
 
 
     </FrameLayout>
@@ -81,7 +79,6 @@
         android:id="@+id/relLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
 
 
         <TextView
@@ -117,13 +114,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
 
+                android:layout_marginStart="10dp"
+                android:layout_weight="6"
                 android:autofillHints="name"
                 android:hint="@string/enter_badge_name"
                 android:inputType="text"
-                android:layout_marginStart="10dp"
-                android:padding="10dp"
-                android:layout_weight="6"
-                />
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/SMsearchBadgesButton"
@@ -131,11 +127,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/primary_blue_dark"
                 android:padding="10dp"
-                android:layout_weight="1"
                 android:text="@string/search"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
 
@@ -164,24 +160,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/SMsearchProgress"
+            android:layout_marginBottom="150dp"
             android:divider="@color/primary_blue"
-            android:dividerHeight="1dp"
-            android:layout_marginBottom="150dp"/>
+            android:dividerHeight="1dp" />
 
         <Button
             android:id="@+id/SMAddButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/assign_to_scout"
-            android:backgroundTint="@color/primary_blue_dark"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            android:padding="15dp"
-            android:enabled="false"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/primary_blue_dark"
+            android:enabled="false"
+            android:padding="15dp"
+            android:text="@string/assign_to_scout"
+            android:textColor="@color/white"
+            android:textSize="25sp" />
 
     </RelativeLayout>
 

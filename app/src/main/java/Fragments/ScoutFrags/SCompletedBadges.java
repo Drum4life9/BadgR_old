@@ -2,8 +2,6 @@ package Fragments.ScoutFrags;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +34,29 @@ import java.util.concurrent.Executors;
 
 public class SCompletedBadges extends Fragment {
 
-    private ListView list;
-    private static String[] compTitles;
     private static final MutableLiveData<ArrayList<meritBadge>> completedBadgesLive = new MutableLiveData<>();
+    private static String[] compTitles;
     private static ArrayList<meritBadge> completedBadges = new ArrayList<>();
     private static scoutPerson user;
+    private ListView list;
 
     //creates tab, sets user
-    public SCompletedBadges (scoutPerson p) {user = p;}
+    public SCompletedBadges(scoutPerson p) {
+        user = p;
+    }
+
+    public static void getFinishedBadges(scoutPerson user) {
+        ExecutorService sTE = Executors.newSingleThreadExecutor();
+
+        //gets which badges have been completed
+        sTE.execute(() ->
+        {
+            try {
+                completedBadgesLive.postValue(sqlRunner.getCompletedBadges(user));
+            } catch (SQLException ignored) {
+            }
+        });
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -156,19 +169,6 @@ public class SCompletedBadges extends Fragment {
 
         });
 
-    }
-
-
-    public static void getFinishedBadges(scoutPerson user) {
-        ExecutorService sTE = Executors.newSingleThreadExecutor();
-
-        //gets which badges have been completed
-        sTE.execute(() ->
-        {
-            try {
-                completedBadgesLive.postValue(sqlRunner.getCompletedBadges(user));
-            } catch (SQLException ignored) {}
-        });
     }
 
     private void setTitles() {

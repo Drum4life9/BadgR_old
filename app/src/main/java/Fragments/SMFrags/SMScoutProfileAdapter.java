@@ -65,8 +65,7 @@ public class SMScoutProfileAdapter extends ArrayAdapter<String> {
             String one = "Completed!!";
             percent.setText(one);
             bar.setVisibility(View.INVISIBLE);
-        }
-        else {
+        } else {
 
             //get badge
             int id = added.get(position).getId();

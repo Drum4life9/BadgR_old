@@ -72,5 +72,6 @@
     <string name="cancel">Cancel</string>
     <string name="smNoNots">There are no notifications. Have your scouts complete some badges!</string>
     <string name="scoutNoBadges">No badges added! Go to &quot;Search&quot; to add some!</string>
+    <string name="noScouts">There are no scouts added to your troop.</string>
 
 </resources>

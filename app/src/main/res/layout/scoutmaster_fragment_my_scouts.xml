@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
 
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -29,20 +28,28 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:scaleX="3"
-        android:scaleY="3"
         android:layout_below="@id/spacer"
         android:layout_centerInParent="true"
-        android:layout_margin="100dp"/>
+        android:layout_margin="100dp"
+        android:scaleX="3"
+        android:scaleY="3" />
+
+    <TextView
+        android:id="@+id/noScouts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spacer"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:text="@string/noScouts"
+        android:textSize="30sp" />
 
     <ListView
         android:id="@+id/scoutsList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/spacer"
-        android:visibility="gone"
-        />
-
+        android:visibility="gone" />
 
 
 </RelativeLayout>

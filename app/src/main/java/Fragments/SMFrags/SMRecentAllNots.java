@@ -17,8 +17,6 @@ import com.badgr.scoutClasses.notification;
 import com.badgr.scoutClasses.scoutMaster;
 import com.badgr.sql.sqlRunner;
 
-import org.w3c.dom.Text;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
@@ -28,6 +26,31 @@ public class SMRecentAllNots extends Activity {
 
     private static ArrayList<notification> nots;
     private static scoutMaster user;
+
+    public static void setNots(ArrayList<notification> n) {
+        nots = n;
+    }
+
+    //gets strings
+    private static String[] getStrings() {
+        String[] strs = new String[nots.size()];
+        int i = 0;
+
+        for (notification n : nots) {
+            //set respective string
+            if (n.getMb() == null)
+                strs[i] = n.getPerson().getFullName() + " has been added to your troop!";
+            else
+                strs[i] = n.getPerson().getFullName() + " has completed the " + n.getMb().getName() + " merit badge!";
+            i++;
+        }
+
+        return strs;
+    }
+
+    public static void setUser(scoutMaster u) {
+        user = u;
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +65,6 @@ public class SMRecentAllNots extends Activity {
         TextView noNots = findViewById(R.id.noNots);
 
 
-
         //back button on click, finish activity
         back.setOnClickListener(l -> finish());
 
@@ -50,8 +72,7 @@ public class SMRecentAllNots extends Activity {
         String[] strings = SMRecentFragment.getStrings(false);
 
         //if no notifications, display text and remove clear button
-        if (strings.length == 0)
-        {
+        if (strings.length == 0) {
             noNots.setVisibility(View.VISIBLE);
             spinner.setVisibility(View.INVISIBLE);
             clear.setVisibility(View.INVISIBLE);
@@ -63,8 +84,6 @@ public class SMRecentAllNots extends Activity {
         lv.setAdapter(adapter);
         lv.setVisibility(View.VISIBLE);
         spinner.setVisibility(View.INVISIBLE);
-
-
 
 
         //clear button on click, try to clear nots. If error, toast message.
@@ -88,28 +107,4 @@ public class SMRecentAllNots extends Activity {
             }, 100);
         });
     }
-
-    public static void setNots(ArrayList<notification> n)
-    {
-        nots = n;
-    }
-
-    //gets strings
-    private static String[] getStrings()
-    {
-        String[] strs = new String[nots.size()];
-        int i = 0;
-
-        for (notification n : nots)
-        {
-            //set respective string
-            if (n.getMb() == null) strs[i] = n.getPerson().getFullName() + " has been added to your troop!";
-            else strs[i] = n.getPerson().getFullName() + " has completed the " + n.getMb().getName() + " merit badge!";
-            i++;
-        }
-
-        return strs;
-    }
-
-    public static void setUser(scoutMaster u) {user = u;}
 }
